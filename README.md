@@ -26,6 +26,10 @@ Right now, the workflow looks roughly like this:
 
 In short: the science and the sensors already exist. What's missing is a layer that connects them, reasons across them, and surfaces what matters before a person has to go looking for it.
 
+## Proposed Architecture
+
+![RAG Pipeline](./assets/samudra_data_rag_pipeline.png)
+
 ## What SAMUDRA does
 
 SAMUDRA is a single platform that unifies these data sources around one interactive map, and adds three layers of intelligence on top:
