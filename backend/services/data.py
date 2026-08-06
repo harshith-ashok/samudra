@@ -43,3 +43,15 @@ def range_shift_series() -> dict:
 
 def text_chunks() -> list[dict]:
     return _load("text_chunks.json")
+
+
+def glossary() -> list[dict]:
+    return _load("glossary.json")
+
+
+def mpa_zones() -> list[dict]:
+    return _load("mpa_zones.json")
+
+
+def pollution() -> list[dict]:
+    return _load("pollution.json")

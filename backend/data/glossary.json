@@ -1,0 +1,80 @@
+[
+  {
+    "key": "sst",
+    "title": "Sea Surface Temperature",
+    "what_it_is": "How warm the top few meters of ocean water are, in °C. Measured by buoys and satellites.",
+    "why_it_matters": "Small rises (even 0.5–1°C) can drive coral bleaching, shift fish habitats, and hurt spawning."
+  },
+  {
+    "key": "salinity",
+    "title": "Salinity",
+    "what_it_is": "How much salt is dissolved in the water, in practical salinity units (psu).",
+    "why_it_matters": "Freshwater runoff and evaporation change salinity, which affects which species can live where."
+  },
+  {
+    "key": "chlorophyll",
+    "title": "Chlorophyll-a",
+    "what_it_is": "A proxy for how much microscopic plant life (phytoplankton) is in the water, in mg/m³.",
+    "why_it_matters": "Phytoplankton is the base of the marine food chain — a drop here often shows up as a fish-catch decline months later."
+  },
+  {
+    "key": "dhw",
+    "title": "Degree Heating Weeks (DHW)",
+    "what_it_is": "A running total of how far above normal, and for how long, sea temperature has been at a reef site.",
+    "why_it_matters": "It's the standard early-warning number for coral bleaching risk — the higher it climbs, the more likely bleaching becomes."
+  },
+  {
+    "key": "edna_confidence",
+    "title": "eDNA Confidence",
+    "what_it_is": "How sure the lab's classification pipeline is that a genetic fragment found in a water sample belongs to a given species.",
+    "why_it_matters": "eDNA can detect species without ever seeing or catching them — useful for rare or shy species — but confidence tells you how much to trust a given match."
+  },
+  {
+    "key": "conservation_status",
+    "title": "Conservation Status",
+    "what_it_is": "IUCN Red List category — Least Concern, Near Threatened, Vulnerable, Endangered.",
+    "why_it_matters": "It's the standard, internationally recognized measure of a species' extinction risk."
+  },
+  {
+    "key": "advisory",
+    "title": "Fishing / Conservation Advisory",
+    "what_it_is": "An active recommendation to reduce fishing pressure or protect habitat in a specific region, issued when catch or sensor data crosses a concerning threshold.",
+    "why_it_matters": "Advisories are the actionable output of all this monitoring — the point where data turns into a recommendation someone can act on."
+  },
+  {
+    "key": "vessel_tracking",
+    "title": "Vessel Tracking",
+    "what_it_is": "Ship positions broadcast via AIS (Automatic Identification System) and cross-checked against protected-area boundaries.",
+    "why_it_matters": "It's how illegal fishing inside marine protected areas gets caught — a boat with no business being there, sitting still or trawling."
+  },
+  {
+    "key": "mpa",
+    "title": "Marine Protected Area (MPA)",
+    "what_it_is": "A defined ocean zone where fishing, dredging, or other extractive activity is restricted or banned by law.",
+    "why_it_matters": "MPAs only work if violations are actually detected — most rely on patrol boats or self-reporting, which is why vessel tracking matters."
+  },
+  {
+    "key": "treatment_compliance",
+    "title": "Treatment Plant Compliance",
+    "what_it_is": "Whether a coastal sewage/effluent treatment plant meets discharge standards set by the Central Pollution Control Board (CPCB).",
+    "why_it_matters": "Non-compliant discharge is a direct, local driver of coastal water quality decline — often the real cause behind a biodiversity drop that looks climate-related at first glance."
+  },
+  {
+    "key": "stock_forecast",
+    "title": "Stock Forecast",
+    "what_it_is": "A simple trend line fit to recent catch tonnage, projected 6 months ahead with a confidence band.",
+    "why_it_matters": "It flags direction and rough magnitude early — not a substitute for a full scientific stock assessment, but enough to justify a closer look."
+  },
+  {
+    "key": "range_shift",
+    "title": "Range Shift",
+    "what_it_is": "A trend line of where a species has actually been observed (latitude) over time, from real occurrence records.",
+    "why_it_matters": "Species moving toward the poles over years is one of the clearest fingerprints of ocean warming on marine life."
+  },
+  {
+    "key": "biodiversity_index",
+    "title": "Biodiversity Index",
+    "what_it_is": "A simple count of distinct species observed or detected (survey + eDNA) in a region.",
+    "why_it_matters": "A rough, comparable stand-in for ecosystem health across regions that otherwise have very different monitoring histories."
+  }
+]

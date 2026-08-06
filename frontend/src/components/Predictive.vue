@@ -3,6 +3,7 @@ import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
 import Chart from "chart.js/auto";
 import { getBleachingRisk, getRangeShift, getStockForecast } from "../api";
 import type { BleachingRisk, RangeShift, StockForecast } from "../api/types";
+import InfoTip from "./InfoTip.vue";
 
 const stock = ref<StockForecast | null>(null);
 const bleaching = ref<BleachingRisk | null>(null);
@@ -134,14 +135,14 @@ onBeforeUnmount(() => {
     <p v-if="error" class="error">{{ error }}</p>
     <template v-else>
       <div class="pred-block" v-if="stock">
-        <h4>Sardine Stock Forecast — Kerala</h4>
+        <h4>Sardine Stock Forecast — Kerala<InfoTip glossary-key="stock_forecast" /></h4>
         <div class="sub">{{ stock.forecast.length }}-month projection, 80% CI · trend {{ stock.trend_tonnage_per_month }} t/month</div>
         <canvas ref="forecastCanvas" height="140"></canvas>
         <p class="methodology">{{ stock.methodology }}</p>
       </div>
 
       <div class="pred-block" v-if="bleaching">
-        <h4>Coral Bleaching Risk</h4>
+        <h4>Coral Bleaching Risk<InfoTip glossary-key="dhw" /></h4>
         <div class="sub">{{ bleaching.station_name }}, current reading</div>
         <div class="gauge-wrap">
           <div class="gauge">
@@ -156,7 +157,7 @@ onBeforeUnmount(() => {
       </div>
 
       <div class="pred-block" v-if="rangeA && rangeB">
-        <h4>Range Shift Projection</h4>
+        <h4>Range Shift Projection<InfoTip glossary-key="range_shift" /></h4>
         <div class="sub">Observed + 5yr projection, mean occurrence latitude</div>
         <canvas ref="rangeCanvas" height="140"></canvas>
         <p class="methodology">{{ rangeA.methodology }}</p>

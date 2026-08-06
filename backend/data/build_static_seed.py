@@ -17,15 +17,31 @@ random.seed(42)
 OUT_DIR = os.path.dirname(__file__)
 
 STATIONS = [
-    {"id": "mumbai", "name": "Mumbai Buoy", "lat": 19.076, "lng": 72.8777, "type": "buoy", "base_sst": 28.2, "base_sal": 35.1},
-    {"id": "goa", "name": "Goa eDNA Site", "lat": 15.4909, "lng": 73.8278, "type": "edna", "base_sst": 28.6, "base_sal": 34.8},
-    {"id": "kochi", "name": "Kochi Advisory Zone", "lat": 9.9312, "lng": 76.2673, "type": "advisory", "base_sst": 29.1, "base_sal": 34.5},
-    {"id": "chennai", "name": "Chennai Buoy", "lat": 13.0827, "lng": 80.2707, "type": "buoy", "base_sst": 28.9, "base_sal": 34.9},
-    {"id": "vizag", "name": "Visakhapatnam eDNA Site", "lat": 17.6868, "lng": 83.2185, "type": "edna", "base_sst": 28.3, "base_sal": 34.6},
-    {"id": "sundarbans", "name": "Sundarbans Buoy", "lat": 21.9497, "lng": 88.9468, "type": "buoy", "base_sst": 27.3, "base_sal": 31.4},
-    {"id": "lakshadweep", "name": "Lakshadweep Coral Site", "lat": 10.5593, "lng": 72.6358, "type": "coral", "base_sst": 30.4, "base_sal": 35.3},
-    {"id": "mannar", "name": "Gulf of Mannar Advisory", "lat": 9.1, "lng": 79.3, "type": "advisory", "base_sst": 28.7, "base_sal": 34.7},
-    {"id": "portblair", "name": "Port Blair eDNA Site", "lat": 11.6234, "lng": 92.7265, "type": "edna", "base_sst": 28.5, "base_sal": 34.2},
+    {"id": "mumbai", "name": "Mumbai Buoy", "lat": 19.076, "lng": 72.8777, "type": "buoy", "state": "Maharashtra", "base_sst": 28.2, "base_sal": 35.1},
+    {"id": "goa", "name": "Goa eDNA Site", "lat": 15.4909, "lng": 73.8278, "type": "edna", "state": "Goa", "base_sst": 28.6, "base_sal": 34.8},
+    {"id": "kochi", "name": "Kochi Advisory Zone", "lat": 9.9312, "lng": 76.2673, "type": "advisory", "state": "Kerala", "base_sst": 29.1, "base_sal": 34.5},
+    {"id": "chennai", "name": "Chennai Buoy", "lat": 13.0827, "lng": 80.2707, "type": "buoy", "state": "Tamil Nadu", "base_sst": 28.9, "base_sal": 34.9},
+    {"id": "vizag", "name": "Visakhapatnam eDNA Site", "lat": 17.6868, "lng": 83.2185, "type": "edna", "state": "Andhra Pradesh", "base_sst": 28.3, "base_sal": 34.6},
+    {"id": "sundarbans", "name": "Sundarbans Buoy", "lat": 21.9497, "lng": 88.9468, "type": "buoy", "state": "West Bengal", "base_sst": 27.3, "base_sal": 31.4},
+    {"id": "lakshadweep", "name": "Lakshadweep Coral Site", "lat": 10.5593, "lng": 72.6358, "type": "coral", "state": "Lakshadweep", "base_sst": 30.4, "base_sal": 35.3},
+    {"id": "mannar", "name": "Gulf of Mannar Advisory", "lat": 9.1, "lng": 79.3, "type": "advisory", "state": "Tamil Nadu", "base_sst": 28.7, "base_sal": 34.7},
+    {"id": "portblair", "name": "Port Blair eDNA Site", "lat": 11.6234, "lng": 92.7265, "type": "edna", "state": "Andaman & Nicobar", "base_sst": 28.5, "base_sal": 34.2},
+    # Phase 10 — expanded coastline coverage. Appended (not inserted) so the
+    # seeded random draws for the original 9 stations above stay identical.
+    {"id": "ratnagiri", "name": "Ratnagiri Buoy", "lat": 16.9902, "lng": 73.312, "type": "buoy", "state": "Maharashtra", "base_sst": 28.0, "base_sal": 35.0},
+    {"id": "mangalore", "name": "Mangalore eDNA Site", "lat": 12.9141, "lng": 74.856, "type": "edna", "state": "Karnataka", "base_sst": 28.5, "base_sal": 34.7},
+    {"id": "kollam", "name": "Kollam Advisory Zone", "lat": 8.8932, "lng": 76.6141, "type": "advisory", "state": "Kerala", "base_sst": 29.0, "base_sal": 34.4},
+    {"id": "puducherry", "name": "Puducherry Buoy", "lat": 11.9139, "lng": 79.8145, "type": "buoy", "state": "Puducherry", "base_sst": 28.8, "base_sal": 34.9},
+    {"id": "paradip", "name": "Paradip Buoy", "lat": 20.3167, "lng": 86.6167, "type": "buoy", "state": "Odisha", "base_sst": 27.9, "base_sal": 32.0},
+    {"id": "digha", "name": "Digha eDNA Site", "lat": 21.627, "lng": 87.509, "type": "edna", "state": "West Bengal", "base_sst": 27.5, "base_sal": 30.5},
+    {"id": "porbandar", "name": "Porbandar Buoy", "lat": 21.6417, "lng": 69.6293, "type": "buoy", "state": "Gujarat", "base_sst": 27.0, "base_sal": 36.0},
+    {"id": "veraval", "name": "Veraval Advisory Zone", "lat": 20.9159, "lng": 70.3629, "type": "advisory", "state": "Gujarat", "base_sst": 27.2, "base_sal": 35.8},
+    {"id": "kutch", "name": "Gulf of Kutch Coral Site", "lat": 22.45, "lng": 69.0667, "type": "coral", "state": "Gujarat", "base_sst": 26.8, "base_sal": 36.5},
+    {"id": "agatti", "name": "Agatti eDNA Site", "lat": 10.8386, "lng": 72.1948, "type": "edna", "state": "Lakshadweep", "base_sst": 30.0, "base_sal": 35.2},
+    {"id": "kadmat", "name": "Kadmat Coral Site", "lat": 11.2233, "lng": 72.7833, "type": "coral", "state": "Lakshadweep", "base_sst": 30.2, "base_sal": 35.3},
+    {"id": "havelock", "name": "Havelock eDNA Site", "lat": 12.0146, "lng": 92.9871, "type": "edna", "state": "Andaman & Nicobar", "base_sst": 28.6, "base_sal": 33.0},
+    {"id": "diu", "name": "Diu Buoy", "lat": 20.7144, "lng": 70.9876, "type": "buoy", "state": "Daman & Diu", "base_sst": 27.3, "base_sal": 35.9},
+    {"id": "alappuzha", "name": "Alappuzha Advisory Zone", "lat": 9.4981, "lng": 76.3388, "type": "advisory", "state": "Kerala", "base_sst": 29.2, "base_sal": 34.2},
 ]
 
 DAYS = 60  # ~2 months of daily history so DHW / regression have something to chew on
@@ -63,6 +79,7 @@ def main():
                 "lat": st["lat"],
                 "lng": st["lng"],
                 "type": st["type"],
+                "state": st["state"],
                 "latest": {
                     "sst_c": latest["sst"],
                     "salinity_psu": latest["salinity"],
@@ -79,17 +96,29 @@ def main():
     # ---- Fisheries catch records ----
     # Kerala sardine: declining trend (matches published CMFRI narrative + ref.html demo).
     # Tamil Nadu mackerel / Arabian Sea tuna: broadly stable/rising.
+    # sst_c is a paired monthly value for the catch-vs-SST correlation chart (Phase 13) —
+    # simulated alongside the tonnage series, shaped to match the "warm anomaly -> sardine
+    # decline" narrative already used elsewhere, not measured data.
     catch_series = {
-        "Sardinella longiceps|Kerala coast": [520, 505, 490, 475, 460, 445, 430, 415, 400, 390, 380, 360],
-        "Rastrelliger kanagurta|Tamil Nadu coast": [210, 214, 208, 220, 225, 218, 230, 235, 228, 240, 238, 245],
-        "Thunnus albacares|Arabian Sea": [340, 345, 350, 348, 355, 360, 358, 365, 370, 368, 375, 380],
+        "Sardinella longiceps|Kerala coast": {
+            "tonnage": [520, 505, 490, 475, 460, 445, 430, 415, 400, 390, 380, 360],
+            "sst_c": [28.3, 28.4, 28.5, 28.6, 28.7, 28.8, 28.9, 29.0, 29.0, 29.1, 29.2, 29.3],
+        },
+        "Rastrelliger kanagurta|Tamil Nadu coast": {
+            "tonnage": [210, 214, 208, 220, 225, 218, 230, 235, 228, 240, 238, 245],
+            "sst_c": [28.6, 28.6, 28.7, 28.6, 28.7, 28.7, 28.8, 28.7, 28.8, 28.7, 28.8, 28.8],
+        },
+        "Thunnus albacares|Arabian Sea": {
+            "tonnage": [340, 345, 350, 348, 355, 360, 358, 365, 370, 368, 375, 380],
+            "sst_c": [27.9, 27.9, 28.0, 28.0, 28.0, 28.1, 28.1, 28.1, 28.2, 28.2, 28.2, 28.3],
+        },
     }
     months = [f"2025-{m:02d}" if m <= 12 else f"2026-{m - 12:02d}" for m in range(3, 15)]
     catch_records = []
     cid = 1
-    for key, values in catch_series.items():
+    for key, series in catch_series.items():
         species, region = key.split("|")
-        for month, tonnage in zip(months, values):
+        for month, tonnage, sst_c in zip(months, series["tonnage"], series["sst_c"]):
             catch_records.append(
                 {
                     "id": f"catch-{cid:04d}",
@@ -97,6 +126,7 @@ def main():
                     "region": region,
                     "date": f"{month}-01",
                     "tonnage": tonnage,
+                    "sst_c": sst_c,
                     "advisory_status": "active" if species == "Sardinella longiceps" and tonnage < 430 else "none",
                 }
             )

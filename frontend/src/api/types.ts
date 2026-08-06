@@ -6,6 +6,7 @@ export interface StationSummary {
   lat: number;
   lng: number;
   type: StationType;
+  state: string;
   latest: {
     sst_c: number;
     salinity_psu: number;
@@ -76,6 +77,105 @@ export interface BleachingRisk {
   latest_sst_c: number;
   methodology: string;
   source: string;
+}
+
+export interface TimelinePoint {
+  day: number;
+  value: number;
+  kind: "recorded" | "forecast";
+}
+
+export interface TimelineResponse {
+  metric: string;
+  days: number;
+  min_day: number;
+  max_day: number;
+  forecast_from_day: number;
+  stations: Record<string, TimelinePoint[]>;
+  methodology: string;
+}
+
+export interface MpaZone {
+  id: string;
+  name: string;
+  region: string;
+  source: string;
+  polygon: [number, number][];
+}
+
+export interface Vessel {
+  id: string;
+  name: string;
+  type: string;
+  lat: number;
+  lng: number;
+  heading_deg: number;
+  speed_knots: number;
+  track: [number, number][];
+  in_violation: boolean;
+  violation_zone: string | null;
+}
+
+export interface VesselsResponse {
+  vessels: Vessel[];
+  mpa_zones: MpaZone[];
+  violation_count: number;
+  source: string;
+}
+
+export interface TreatmentPlant {
+  id: string;
+  name: string;
+  city: string;
+  region: string;
+  lat: number;
+  lng: number;
+  type: "STP" | "ETP";
+  discharge_mld: number;
+  compliance: "compliant" | "non-compliant" | "under-review";
+  last_inspected: string;
+}
+
+export interface PollutionResponse {
+  plants: TreatmentPlant[];
+  non_compliant_count: number;
+  source: string;
+}
+
+export interface CatchVsSstSeries {
+  species: string;
+  region: string;
+  points: { date: string; sst_c: number; tonnage: number }[];
+  correlation_r: number;
+}
+
+export interface CatchVsSstResponse {
+  series: CatchVsSstSeries[];
+  methodology: string;
+}
+
+export interface BiodiversityIndexResponse {
+  regions: { region: string; species_count: number }[];
+  methodology: string;
+}
+
+export interface ComplianceTrendResponse {
+  trend: { month: string; pct_compliant: number }[];
+  current_snapshot_pct: number;
+  methodology: string;
+}
+
+export interface VesselActivityResponse {
+  zones: { zone_id: string; zone_name: string; violation_ticks: number; total_ticks: number }[];
+  samples_per_vessel_loop: number;
+  methodology: string;
+}
+
+export interface GlossaryEntry {
+  key: string;
+  title: string;
+  what_it_is: string;
+  why_it_matters: string;
 }
 
 export interface RangeShift {

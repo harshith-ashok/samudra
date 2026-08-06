@@ -64,9 +64,9 @@ onBeforeUnmount(() => chartInst?.destroy());
     <span class="stat-badge">{{ station.type.toUpperCase() }}</span>
     <h3 class="stat-name">{{ station.name }}</h3>
     <div class="stat-readout">
-      <b>SST {{ station.latest.sst_c }}°C</b><br />
-      <b>Salinity {{ station.latest.salinity_psu }} psu</b><br />
-      <b>Chlorophyll {{ station.latest.chlorophyll_mg_m3 }} mg/m³</b>
+      <b>Water temperature: {{ station.latest.sst_c }}°C</b> <span class="unit-note">(SST)</span><br />
+      <b>Saltiness: {{ station.latest.salinity_psu }} psu</b> <span class="unit-note">(salinity)</span><br />
+      <b>Plankton level: {{ station.latest.chlorophyll_mg_m3 }} mg/m³</b> <span class="unit-note">(chlorophyll-a)</span>
     </div>
     <canvas ref="canvasEl" height="120"></canvas>
     <p class="source-note">Source: {{ station.source }}</p>
@@ -116,6 +116,12 @@ onBeforeUnmount(() => chartInst?.destroy());
   font-size: 10px;
   color: var(--muted);
   margin-top: 8px;
+}
+.unit-note {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  color: var(--muted);
+  font-weight: 400;
 }
 .chip {
   background: var(--surface);

@@ -1,15 +1,30 @@
 <script setup lang="ts">
 import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
 import L from "leaflet";
+import "leaflet.markercluster";
 import gsap from "gsap";
-import { getStation, getStations, postNlq } from "../api";
-import type { NlqResponse, StationDetail, StationSummary, StationType } from "../api/types";
+import { getPollution, getSpecies, getStation, getStations, getVessels, postNlq } from "../api";
+import type { NlqResponse, StationDetail, StationSummary, StationType, Vessel, VesselsResponse } from "../api/types";
 import StationDetailPanel from "./StationDetail.vue";
 import AIChat from "./AIChat.vue";
 import SpeciesExplorer from "./SpeciesExplorer.vue";
 import Predictive from "./Predictive.vue";
+import Analytics from "./Analytics.vue";
+import GlossaryPanel from "./GlossaryPanel.vue";
+import VesselDetail from "./VesselDetail.vue";
+import ImpactCard from "./ImpactCard.vue";
+import GuidedIntro from "./GuidedIntro.vue";
+import ModuleRail, { type ModuleDef } from "./ModuleRail.vue";
+import LayerPanel, { type KpiDef, type LayerDef } from "./LayerPanel.vue";
+import TimelineScrubber, { type TimelineChangePayload } from "./TimelineScrubber.vue";
+import { colorForMetricValue } from "../utils/colorScale";
 
-type PanelType = "station" | "ai" | "species" | "predict" | null;
+const VESSEL_POLL_MS = 4000;
+
+// Panel keys are plain strings (not a closed union) on purpose: new modules
+// (analytics, vessel detail, ...) get added by pushing to `modules` below,
+// not by touching every switch/type in this file.
+type PanelKey = string | null;
 
 const mapEl = ref<HTMLDivElement | null>(null);
 const panelEl = ref<HTMLDivElement | null>(null);
@@ -17,7 +32,14 @@ const aiChatRef = ref<InstanceType<typeof AIChat> | null>(null);
 
 const stations = ref<StationSummary[]>([]);
 const selectedStation = ref<StationDetail | null>(null);
-const activePanel = ref<PanelType>(null);
+const vessels = ref<Vessel[]>([]);
+const selectedVessel = ref<Vessel | null>(null);
+const violationCount = computed(() => vessels.value.filter((v) => v.in_violation).length);
+const nonCompliantCount = ref(0);
+const speciesCount = ref(0);
+const stateCount = computed(() => new Set(stations.value.map((s) => s.state)).size);
+const showIntro = ref(false);
+const activePanel = ref<PanelKey>(null);
 const clock = ref("");
 
 const searchQuery = ref("");
@@ -40,24 +62,74 @@ const typeColors: Record<StationType, string> = {
   coral: "#B9800F",
 };
 
-const panelTitles: Record<Exclude<PanelType, null>, string> = {
+const modules: ModuleDef[] = [
+  { key: "ai", label: "AI Assistant", iconPaths: ["M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"] },
+  { key: "species", label: "Species Explorer", iconPaths: ["M12 2C7 6 4 10 4 14a8 8 0 0 0 16 0c0-4-3-8-8-12z"] },
+  { key: "predict", label: "Predictive Analytics", iconPaths: ["M3 17l6-6 4 4 8-8", "M15 7h6v6"] },
+  { key: "analytics", label: "Analytics", iconPaths: ["M4 19V9", "M11 19V4", "M18 19v-7"] },
+  { key: "glossary", label: "Data Glossary", iconPaths: ["M12 2 2 7l10 5 10-5-10-5z", "M2 17l10 5 10-5", "M2 12l10 5 10-5"] },
+];
+
+const panelTitles: Record<string, string> = {
   station: "Station Detail",
+  vessel: "Vessel Detail",
   ai: "AI Assistant",
   species: "Species Explorer",
   predict: "Predictive Analytics",
+  analytics: "Analytics",
+  glossary: "Data Glossary",
 };
 
-const layerVisible = ref<Record<StationType | "shift", boolean>>({
+const stationLayerMeta: Record<StationType, { label: string; glossaryKey: string }> = {
+  buoy: { label: "Ocean buoys", glossaryKey: "sst" },
+  edna: { label: "eDNA sites", glossaryKey: "edna_confidence" },
+  advisory: { label: "Fishing advisories", glossaryKey: "advisory" },
+  coral: { label: "Coral bleaching risk", glossaryKey: "dhw" },
+};
+
+const layerVisible = ref<Record<string, boolean>>({
   buoy: true,
   edna: true,
   advisory: true,
   coral: true,
   shift: true,
+  vessels: true,
+  pollution: true,
 });
 
+const layers = computed<LayerDef[]>(() => [
+  ...(Object.keys(stationLayerMeta) as StationType[]).map((key) => ({
+    key,
+    label: stationLayerMeta[key].label,
+    color: typeColors[key],
+    glossaryKey: stationLayerMeta[key].glossaryKey,
+    visible: layerVisible.value[key],
+  })),
+  { key: "shift", label: "Predicted range shift", color: "#0F2620", glossaryKey: "range_shift", visible: layerVisible.value.shift },
+  { key: "vessels", label: "Vessel tracking", color: "#5C7370", glossaryKey: "vessel_tracking", visible: layerVisible.value.vessels },
+  { key: "pollution", label: "Pollution sources", color: "#B9800F", glossaryKey: "treatment_compliance", visible: layerVisible.value.pollution },
+]);
+
+const kpis = computed<KpiDef[]>(() => [
+  { label: "Stations tracked", value: stations.value.length },
+  { label: "Vessels in restricted waters", value: violationCount.value, glossaryKey: "mpa" },
+  { label: "Non-compliant plants", value: nonCompliantCount.value, glossaryKey: "treatment_compliance" },
+]);
+
 let map: L.Map | null = null;
-const layerGroups: Partial<Record<StationType | "shift", L.LayerGroup>> = {};
+const layerGroups: Record<string, L.LayerGroup> = {}; // "shift" and "vessels" — low density, no clustering needed
+const radiusLayers: Partial<Record<StationType, L.LayerGroup>> = {}; // the 70km advisory/coral circle overlays
+let stationCluster: L.MarkerClusterGroup | null = null; // all station markers, regardless of type — declutters at low zoom
+const stationMarkers: Record<string, L.CircleMarker> = {};
+const stationBaseRadius: Record<string, number> = {};
+const vesselMarkers: Record<string, L.CircleMarker> = {};
+let mpaPolygonsDrawn = false;
 let clockTimer: number | undefined;
+let vesselPollTimer: number | undefined;
+
+function isStationType(key: string): key is StationType {
+  return key in typeColors;
+}
 
 function fmtClock() {
   clock.value = new Date().toLocaleTimeString("en-IN");
@@ -83,9 +155,18 @@ async function initMap() {
     maxZoom: 19,
   }).addTo(map);
 
-  (["buoy", "edna", "advisory", "coral", "shift"] as const).forEach((key) => {
+  (["shift", "vessels", "pollution"] as const).forEach((key) => {
     layerGroups[key] = L.layerGroup().addTo(map!);
   });
+  (["advisory", "coral"] as const).forEach((key) => {
+    radiusLayers[key] = L.layerGroup().addTo(map!);
+  });
+
+  // One shared cluster group across all station types — with 20+ stations,
+  // per-type layer groups left dense clumps (Lakshadweep, Gujarat, Kerala) that
+  // overlapped and were hard to click at country-level zoom.
+  stationCluster = L.markerClusterGroup({ maxClusterRadius: 45, spiderfyOnMaxZoom: true, showCoverageOnHover: false });
+  stationCluster.addTo(map);
 
   stations.value.forEach((s) => {
     const marker = L.circleMarker([s.lat, s.lng], {
@@ -97,8 +178,11 @@ async function initMap() {
     });
     marker.bindTooltip(`<b>${s.name}</b>`, { direction: "top", offset: [0, -6] });
     marker.on("click", () => openStation(s.id));
-    marker.addTo(layerGroups[s.type]!);
-    pulseMarker(marker, s.type === "advisory" ? 9 : 7);
+    stationCluster!.addLayer(marker);
+    const baseRadius = s.type === "advisory" ? 9 : 7;
+    stationMarkers[s.id] = marker;
+    stationBaseRadius[s.id] = baseRadius;
+    pulseMarker(marker, baseRadius);
 
     if (s.type === "advisory" || s.type === "coral") {
       L.circle([s.lat, s.lng], {
@@ -107,7 +191,7 @@ async function initMap() {
         weight: 1,
         fillColor: typeColors[s.type],
         fillOpacity: 0.07,
-      }).addTo(layerGroups[s.type]!);
+      }).addTo(radiusLayers[s.type]!);
     }
   });
 
@@ -137,12 +221,121 @@ async function initMap() {
   });
 }
 
-function toggleLayer(key: StationType | "shift") {
+function openVessel(id: string) {
+  const v = vessels.value.find((x) => x.id === id);
+  if (!v) return;
+  selectedVessel.value = v;
+  openPanel("vessel");
+}
+
+function renderVessels(payload: VesselsResponse) {
   if (!map) return;
+  if (!mpaPolygonsDrawn) {
+    payload.mpa_zones.forEach((zone) => {
+      L.polygon(zone.polygon, { color: "#D6512D", weight: 1.5, fillColor: "#D6512D", fillOpacity: 0.08, dashArray: "4,4" })
+        .bindTooltip(`<b>${zone.name}</b>`, { direction: "center" })
+        .addTo(layerGroups.vessels!);
+    });
+    mpaPolygonsDrawn = true;
+  }
+  payload.vessels.forEach((v) => {
+    const color = v.in_violation ? "#D6512D" : "#5C7370";
+    let marker = vesselMarkers[v.id];
+    if (!marker) {
+      marker = L.circleMarker([v.lat, v.lng], { radius: 5, color: "#FFFFFF", weight: 1.5, fillColor: color, fillOpacity: 0.95 });
+      marker.on("click", () => openVessel(v.id));
+      marker.addTo(layerGroups.vessels!);
+      vesselMarkers[v.id] = marker;
+    } else {
+      marker.setLatLng([v.lat, v.lng]);
+      marker.setStyle({ fillColor: color });
+    }
+    marker.bindTooltip(`<b>${v.name}</b>${v.in_violation ? " — in protected zone" : ""}`, { direction: "top", offset: [0, -6] });
+  });
+  vessels.value = payload.vessels;
+  if (activePanel.value === "vessel" && selectedVessel.value) {
+    selectedVessel.value = payload.vessels.find((v) => v.id === selectedVessel.value!.id) ?? selectedVessel.value;
+  }
+}
+
+async function loadVessels() {
+  try {
+    renderVessels(await getVessels());
+  } catch {
+    // backend unreachable — leave existing markers as-is
+  }
+}
+
+const complianceColors: Record<string, string> = {
+  compliant: "#2E9E5B",
+  "non-compliant": "#D6512D",
+  "under-review": "#B9800F",
+};
+
+async function loadPollution() {
+  if (!map) return;
+  try {
+    const payload = await getPollution();
+    nonCompliantCount.value = payload.non_compliant_count;
+    payload.plants.forEach((p) => {
+      const color = complianceColors[p.compliance] ?? "#5C7370";
+      const marker = L.circleMarker([p.lat, p.lng], {
+        radius: 6,
+        color: "#FFFFFF",
+        weight: 1.5,
+        fillColor: color,
+        fillOpacity: 0.9,
+      });
+      marker.bindTooltip(`<b>${p.name}</b>`, { direction: "top", offset: [0, -6] });
+      marker.bindPopup(
+        `<b>${p.name}</b><br>${p.city} · ${p.type}<br>Discharge: ${p.discharge_mld} MLD<br>Compliance: ${p.compliance}<br>Last inspected: ${p.last_inspected}`,
+      );
+      marker.addTo(layerGroups.pollution!);
+    });
+  } catch {
+    // backend unreachable — pollution layer stays empty
+  }
+}
+
+function onTimelineChange(payload: TimelineChangePayload) {
+  for (const [stationId, value] of Object.entries(payload.values)) {
+    const marker = stationMarkers[stationId];
+    if (!marker) continue;
+    marker.setStyle({
+      fillColor: colorForMetricValue(payload.metric, value),
+      fillOpacity: payload.kind === "forecast" ? 0.5 : 0.95,
+      dashArray: payload.kind === "forecast" ? "2,3" : undefined,
+    });
+    marker.setRadius(stationBaseRadius[stationId] ?? 7);
+  }
+}
+
+function toggleLayer(key: string) {
+  if (!map) return;
+  layerVisible.value[key] = !layerVisible.value[key];
+  const visible = layerVisible.value[key];
+
+  if (isStationType(key)) {
+    if (!stationCluster) return;
+    stations.value
+      .filter((s) => s.type === key)
+      .forEach((s) => {
+        const marker = stationMarkers[s.id];
+        if (!marker) return;
+        if (visible) stationCluster!.addLayer(marker);
+        else stationCluster!.removeLayer(marker);
+      });
+    const radiusLayer = radiusLayers[key];
+    if (radiusLayer) {
+      if (visible) map.addLayer(radiusLayer);
+      else map.removeLayer(radiusLayer);
+    }
+    return;
+  }
+
   const group = layerGroups[key];
   if (!group) return;
-  layerVisible.value[key] = !layerVisible.value[key];
-  if (layerVisible.value[key]) map.addLayer(group);
+  if (visible) map.addLayer(group);
   else map.removeLayer(group);
 }
 
@@ -155,7 +348,7 @@ async function openStation(id: string) {
   }
 }
 
-function openPanel(panel: Exclude<PanelType, null>) {
+function openPanel(panel: string) {
   activePanel.value = panel;
 }
 
@@ -229,10 +422,23 @@ onMounted(async () => {
   }
   await nextTick();
   initMap();
+  await loadVessels();
+  vesselPollTimer = window.setInterval(loadVessels, VESSEL_POLL_MS);
+  await loadPollution();
+  try {
+    speciesCount.value = (await getSpecies()).length;
+  } catch {
+    speciesCount.value = 0;
+  }
+
+  if (!localStorage.getItem("samudra_intro_seen")) {
+    window.setTimeout(() => (showIntro.value = true), 600);
+  }
 });
 
 onBeforeUnmount(() => {
   window.clearInterval(clockTimer);
+  window.clearInterval(vesselPollTimer);
   map?.remove();
 });
 </script>
@@ -247,6 +453,9 @@ onBeforeUnmount(() => {
     </div>
     <div class="ticker">
       <span><span class="dot"></span>{{ stations.length }} stations live</span>
+      <span v-if="violationCount > 0" class="alert"
+        >{{ violationCount }} vessel{{ violationCount === 1 ? "" : "s" }} in restricted waters</span
+      >
       <span id="clock">{{ clock }}</span>
     </div>
   </div>
@@ -290,35 +499,15 @@ onBeforeUnmount(() => {
     </div>
   </div>
 
-  <div class="fab-stack">
-    <div class="fab" :class="{ active: activePanel === 'ai' }" @click="openPanel('ai')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-      </svg>AI Assistant
-    </div>
-    <div class="fab" :class="{ active: activePanel === 'species' }" @click="openPanel('species')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-        <path d="M12 2C7 6 4 10 4 14a8 8 0 0 0 16 0c0-4-3-8-8-12z" />
-      </svg>Species Explorer
-    </div>
-    <div class="fab" :class="{ active: activePanel === 'predict' }" @click="openPanel('predict')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
-        <path d="M3 17l6-6 4 4 8-8" />
-        <path d="M15 7h6v6" />
-      </svg>Predictive Analytics
-    </div>
-  </div>
+  <ModuleRail :modules="modules" :active-panel="activePanel" @open="openPanel" />
 
-  <div class="layer-panel">
-    <h4>Map Layers</h4>
-    <label class="layer-row" v-for="key in (['buoy', 'edna', 'advisory', 'coral', 'shift'] as const)" :key="key">
-      <input type="checkbox" :checked="layerVisible[key]" @change="toggleLayer(key)" />
-      <i :style="{ background: key === 'shift' ? '#0F2620' : typeColors[key] }"></i>
-      {{ { buoy: "Ocean buoys", edna: "eDNA sites", advisory: "Fishing advisories", coral: "Coral bleaching risk", shift: "Predicted range shift" }[key] }}
-    </label>
-    <div class="divider"></div>
-    <div class="kpi-mini"><span>Stations tracked</span><b>{{ stations.length }}</b></div>
-  </div>
+  <LayerPanel :layers="layers" :kpis="kpis" @toggle="toggleLayer" />
+
+  <ImpactCard :station-count="stations.length" :state-count="stateCount" :species-count="speciesCount" />
+
+  <TimelineScrubber @change="onTimelineChange" />
+
+  <GuidedIntro v-if="showIntro" @done="showIntro = false" />
 
   <div class="side-panel" ref="panelEl">
     <div class="panel-header">
@@ -327,9 +516,12 @@ onBeforeUnmount(() => {
     </div>
     <div class="panel-body">
       <StationDetailPanel v-if="activePanel === 'station'" :station="selectedStation" @ask-ai="askAiAboutStation" />
+      <VesselDetail v-if="activePanel === 'vessel'" :vessel="selectedVessel" />
       <AIChat v-if="activePanel === 'ai'" ref="aiChatRef" :station-context="selectedStation" />
       <SpeciesExplorer v-if="activePanel === 'species'" />
       <Predictive v-if="activePanel === 'predict'" />
+      <Analytics v-if="activePanel === 'analytics'" />
+      <GlossaryPanel v-if="activePanel === 'glossary'" />
     </div>
   </div>
 </template>
@@ -390,6 +582,10 @@ onBeforeUnmount(() => {
 .ticker span {
   display: flex;
   align-items: center;
+}
+.ticker .alert {
+  color: var(--coral);
+  font-weight: 600;
 }
 .ticker .dot {
   display: inline-block;
@@ -493,106 +689,6 @@ onBeforeUnmount(() => {
 .search-results .loading-row {
   cursor: default;
   color: var(--muted);
-}
-
-.fab-stack {
-  position: fixed;
-  left: 20px;
-  top: 150px;
-  z-index: 25;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  width: 186px;
-}
-.fab {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 9px;
-  padding: 11px 13px;
-  cursor: pointer;
-  font-size: 12.5px;
-  font-weight: 600;
-  color: var(--text);
-  box-shadow: var(--shadow);
-  transition: border-color 0.12s, color 0.12s;
-}
-.fab svg {
-  width: 15px;
-  height: 15px;
-  flex-shrink: 0;
-  color: var(--muted);
-}
-.fab:hover {
-  border-color: var(--teal);
-}
-.fab.active {
-  background: var(--teal);
-  color: #fff;
-  border-color: var(--teal);
-}
-.fab.active svg {
-  color: #fff;
-}
-
-.layer-panel {
-  position: fixed;
-  right: 20px;
-  bottom: 26px;
-  z-index: 20;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 14px 16px;
-  box-shadow: var(--shadow);
-  width: 200px;
-}
-.layer-panel h4 {
-  font-family: var(--font-mono);
-  font-size: 9.5px;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--muted);
-  margin-bottom: 10px;
-}
-.layer-row {
-  display: flex;
-  align-items: center;
-  gap: 9px;
-  padding: 5px 0;
-  font-size: 12.5px;
-  cursor: pointer;
-}
-.layer-row input {
-  accent-color: var(--teal);
-  width: 14px;
-  height: 14px;
-}
-.layer-row i {
-  width: 8px;
-  height: 8px;
-  border-radius: 2px;
-  display: inline-block;
-}
-.layer-panel .divider {
-  height: 1px;
-  background: var(--border);
-  margin: 10px 0;
-}
-.kpi-mini {
-  display: flex;
-  justify-content: space-between;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  color: var(--muted);
-  padding: 3px 0;
-}
-.kpi-mini b {
-  color: var(--text);
-  font-weight: 600;
 }
 
 .side-panel {

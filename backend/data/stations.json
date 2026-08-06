@@ -5,6 +5,7 @@
     "lat": 19.076,
     "lng": 72.8777,
     "type": "buoy",
+    "state": "Maharashtra",
     "latest": {
       "sst_c": 28.17,
       "salinity_psu": 35.07,
@@ -380,6 +381,7 @@
     "lat": 15.4909,
     "lng": 73.8278,
     "type": "edna",
+    "state": "Goa",
     "latest": {
       "sst_c": 28.52,
       "salinity_psu": 34.64,
@@ -755,6 +757,7 @@
     "lat": 9.9312,
     "lng": 76.2673,
     "type": "advisory",
+    "state": "Kerala",
     "latest": {
       "sst_c": 29.12,
       "salinity_psu": 34.6,
@@ -1130,6 +1133,7 @@
     "lat": 13.0827,
     "lng": 80.2707,
     "type": "buoy",
+    "state": "Tamil Nadu",
     "latest": {
       "sst_c": 28.87,
       "salinity_psu": 34.83,
@@ -1505,6 +1509,7 @@
     "lat": 17.6868,
     "lng": 83.2185,
     "type": "edna",
+    "state": "Andhra Pradesh",
     "latest": {
       "sst_c": 28.21,
       "salinity_psu": 34.63,
@@ -1880,6 +1885,7 @@
     "lat": 21.9497,
     "lng": 88.9468,
     "type": "buoy",
+    "state": "West Bengal",
     "latest": {
       "sst_c": 27.37,
       "salinity_psu": 31.49,
@@ -2255,6 +2261,7 @@
     "lat": 10.5593,
     "lng": 72.6358,
     "type": "coral",
+    "state": "Lakshadweep",
     "latest": {
       "sst_c": 30.38,
       "salinity_psu": 35.23,
@@ -2630,6 +2637,7 @@
     "lat": 9.1,
     "lng": 79.3,
     "type": "advisory",
+    "state": "Tamil Nadu",
     "latest": {
       "sst_c": 28.55,
       "salinity_psu": 34.72,
@@ -3005,6 +3013,7 @@
     "lat": 11.6234,
     "lng": 92.7265,
     "type": "edna",
+    "state": "Andaman & Nicobar",
     "latest": {
       "sst_c": 28.53,
       "salinity_psu": 34.12,
@@ -3370,6 +3379,5270 @@
         "sst": 28.53,
         "salinity": 34.12,
         "chlorophyll": 1.07
+      }
+    ],
+    "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"
+  },
+  {
+    "id": "ratnagiri",
+    "name": "Ratnagiri Buoy",
+    "lat": 16.9902,
+    "lng": 73.312,
+    "type": "buoy",
+    "state": "Maharashtra",
+    "latest": {
+      "sst_c": 28.02,
+      "salinity_psu": 34.9,
+      "chlorophyll_mg_m3": 0.84
+    },
+    "history": [
+      {
+        "day": -59,
+        "sst": 27.39,
+        "salinity": 35.12,
+        "chlorophyll": 0.85
+      },
+      {
+        "day": -58,
+        "sst": 27.35,
+        "salinity": 34.83,
+        "chlorophyll": 0.35
+      },
+      {
+        "day": -57,
+        "sst": 27.4,
+        "salinity": 34.99,
+        "chlorophyll": 0.46
+      },
+      {
+        "day": -56,
+        "sst": 27.46,
+        "salinity": 34.93,
+        "chlorophyll": 0.87
+      },
+      {
+        "day": -55,
+        "sst": 27.51,
+        "salinity": 35.14,
+        "chlorophyll": 1.08
+      },
+      {
+        "day": -54,
+        "sst": 27.34,
+        "salinity": 34.95,
+        "chlorophyll": 0.75
+      },
+      {
+        "day": -53,
+        "sst": 27.41,
+        "salinity": 34.99,
+        "chlorophyll": 0.51
+      },
+      {
+        "day": -52,
+        "sst": 27.39,
+        "salinity": 34.84,
+        "chlorophyll": 0.53
+      },
+      {
+        "day": -51,
+        "sst": 27.45,
+        "salinity": 35.05,
+        "chlorophyll": 0.5
+      },
+      {
+        "day": -50,
+        "sst": 27.6,
+        "salinity": 34.86,
+        "chlorophyll": 0.56
+      },
+      {
+        "day": -49,
+        "sst": 27.52,
+        "salinity": 34.93,
+        "chlorophyll": 0.91
+      },
+      {
+        "day": -48,
+        "sst": 27.51,
+        "salinity": 35.01,
+        "chlorophyll": 0.7
+      },
+      {
+        "day": -47,
+        "sst": 27.46,
+        "salinity": 34.81,
+        "chlorophyll": 1.06
+      },
+      {
+        "day": -46,
+        "sst": 27.53,
+        "salinity": 35.19,
+        "chlorophyll": 0.47
+      },
+      {
+        "day": -45,
+        "sst": 27.5,
+        "salinity": 34.82,
+        "chlorophyll": 0.7
+      },
+      {
+        "day": -44,
+        "sst": 27.66,
+        "salinity": 35.06,
+        "chlorophyll": 0.68
+      },
+      {
+        "day": -43,
+        "sst": 27.57,
+        "salinity": 35.14,
+        "chlorophyll": 0.64
+      },
+      {
+        "day": -42,
+        "sst": 27.68,
+        "salinity": 35.09,
+        "chlorophyll": 0.91
+      },
+      {
+        "day": -41,
+        "sst": 27.54,
+        "salinity": 34.96,
+        "chlorophyll": 0.76
+      },
+      {
+        "day": -40,
+        "sst": 27.5,
+        "salinity": 35.02,
+        "chlorophyll": 0.36
+      },
+      {
+        "day": -39,
+        "sst": 27.6,
+        "salinity": 35.11,
+        "chlorophyll": 0.52
+      },
+      {
+        "day": -38,
+        "sst": 27.76,
+        "salinity": 35.07,
+        "chlorophyll": 0.4
+      },
+      {
+        "day": -37,
+        "sst": 27.76,
+        "salinity": 34.96,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -36,
+        "sst": 27.58,
+        "salinity": 35.18,
+        "chlorophyll": 0.9
+      },
+      {
+        "day": -35,
+        "sst": 27.55,
+        "salinity": 35.0,
+        "chlorophyll": 0.7
+      },
+      {
+        "day": -34,
+        "sst": 27.51,
+        "salinity": 34.85,
+        "chlorophyll": 0.57
+      },
+      {
+        "day": -33,
+        "sst": 27.65,
+        "salinity": 34.98,
+        "chlorophyll": 0.79
+      },
+      {
+        "day": -32,
+        "sst": 27.67,
+        "salinity": 34.93,
+        "chlorophyll": 0.79
+      },
+      {
+        "day": -31,
+        "sst": 27.58,
+        "salinity": 35.2,
+        "chlorophyll": 0.89
+      },
+      {
+        "day": -30,
+        "sst": 27.63,
+        "salinity": 34.93,
+        "chlorophyll": 0.96
+      },
+      {
+        "day": -29,
+        "sst": 27.71,
+        "salinity": 35.08,
+        "chlorophyll": 0.54
+      },
+      {
+        "day": -28,
+        "sst": 27.8,
+        "salinity": 34.95,
+        "chlorophyll": 0.84
+      },
+      {
+        "day": -27,
+        "sst": 27.86,
+        "salinity": 35.03,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -26,
+        "sst": 27.8,
+        "salinity": 35.08,
+        "chlorophyll": 0.32
+      },
+      {
+        "day": -25,
+        "sst": 27.73,
+        "salinity": 35.19,
+        "chlorophyll": 0.93
+      },
+      {
+        "day": -24,
+        "sst": 27.83,
+        "salinity": 35.03,
+        "chlorophyll": 0.88
+      },
+      {
+        "day": -23,
+        "sst": 27.79,
+        "salinity": 34.87,
+        "chlorophyll": 0.8
+      },
+      {
+        "day": -22,
+        "sst": 27.81,
+        "salinity": 35.14,
+        "chlorophyll": 0.42
+      },
+      {
+        "day": -21,
+        "sst": 27.83,
+        "salinity": 34.81,
+        "chlorophyll": 1.06
+      },
+      {
+        "day": -20,
+        "sst": 27.67,
+        "salinity": 34.81,
+        "chlorophyll": 0.55
+      },
+      {
+        "day": -19,
+        "sst": 27.7,
+        "salinity": 35.08,
+        "chlorophyll": 0.63
+      },
+      {
+        "day": -18,
+        "sst": 27.89,
+        "salinity": 35.17,
+        "chlorophyll": 1.0
+      },
+      {
+        "day": -17,
+        "sst": 27.89,
+        "salinity": 34.82,
+        "chlorophyll": 0.41
+      },
+      {
+        "day": -16,
+        "sst": 27.74,
+        "salinity": 34.93,
+        "chlorophyll": 0.83
+      },
+      {
+        "day": -15,
+        "sst": 27.85,
+        "salinity": 34.93,
+        "chlorophyll": 0.44
+      },
+      {
+        "day": -14,
+        "sst": 27.97,
+        "salinity": 34.94,
+        "chlorophyll": 0.58
+      },
+      {
+        "day": -13,
+        "sst": 27.94,
+        "salinity": 35.09,
+        "chlorophyll": 0.81
+      },
+      {
+        "day": -12,
+        "sst": 27.93,
+        "salinity": 35.04,
+        "chlorophyll": 0.45
+      },
+      {
+        "day": -11,
+        "sst": 27.8,
+        "salinity": 35.02,
+        "chlorophyll": 0.48
+      },
+      {
+        "day": -10,
+        "sst": 28.03,
+        "salinity": 34.92,
+        "chlorophyll": 0.53
+      },
+      {
+        "day": -9,
+        "sst": 27.81,
+        "salinity": 35.08,
+        "chlorophyll": 0.55
+      },
+      {
+        "day": -8,
+        "sst": 27.86,
+        "salinity": 35.17,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -7,
+        "sst": 27.85,
+        "salinity": 34.85,
+        "chlorophyll": 0.84
+      },
+      {
+        "day": -6,
+        "sst": 27.89,
+        "salinity": 35.19,
+        "chlorophyll": 0.95
+      },
+      {
+        "day": -5,
+        "sst": 28.08,
+        "salinity": 35.12,
+        "chlorophyll": 0.53
+      },
+      {
+        "day": -4,
+        "sst": 27.89,
+        "salinity": 35.09,
+        "chlorophyll": 0.58
+      },
+      {
+        "day": -3,
+        "sst": 27.94,
+        "salinity": 34.9,
+        "chlorophyll": 0.68
+      },
+      {
+        "day": -2,
+        "sst": 27.88,
+        "salinity": 35.02,
+        "chlorophyll": 1.05
+      },
+      {
+        "day": -1,
+        "sst": 28.04,
+        "salinity": 34.85,
+        "chlorophyll": 0.79
+      },
+      {
+        "day": 0,
+        "sst": 28.02,
+        "salinity": 34.9,
+        "chlorophyll": 0.84
+      }
+    ],
+    "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"
+  },
+  {
+    "id": "mangalore",
+    "name": "Mangalore eDNA Site",
+    "lat": 12.9141,
+    "lng": 74.856,
+    "type": "edna",
+    "state": "Karnataka",
+    "latest": {
+      "sst_c": 28.61,
+      "salinity_psu": 34.51,
+      "chlorophyll_mg_m3": 0.46
+    },
+    "history": [
+      {
+        "day": -59,
+        "sst": 27.91,
+        "salinity": 34.76,
+        "chlorophyll": 0.34
+      },
+      {
+        "day": -58,
+        "sst": 27.88,
+        "salinity": 34.79,
+        "chlorophyll": 0.38
+      },
+      {
+        "day": -57,
+        "sst": 28.0,
+        "salinity": 34.5,
+        "chlorophyll": 0.74
+      },
+      {
+        "day": -56,
+        "sst": 28.06,
+        "salinity": 34.66,
+        "chlorophyll": 1.05
+      },
+      {
+        "day": -55,
+        "sst": 28.05,
+        "salinity": 34.69,
+        "chlorophyll": 0.46
+      },
+      {
+        "day": -54,
+        "sst": 28.09,
+        "salinity": 34.63,
+        "chlorophyll": 0.82
+      },
+      {
+        "day": -53,
+        "sst": 28.08,
+        "salinity": 34.54,
+        "chlorophyll": 0.76
+      },
+      {
+        "day": -52,
+        "sst": 27.98,
+        "salinity": 34.79,
+        "chlorophyll": 1.05
+      },
+      {
+        "day": -51,
+        "sst": 28.1,
+        "salinity": 34.57,
+        "chlorophyll": 1.01
+      },
+      {
+        "day": -50,
+        "sst": 27.89,
+        "salinity": 34.87,
+        "chlorophyll": 1.1
+      },
+      {
+        "day": -49,
+        "sst": 27.97,
+        "salinity": 34.7,
+        "chlorophyll": 1.05
+      },
+      {
+        "day": -48,
+        "sst": 28.15,
+        "salinity": 34.87,
+        "chlorophyll": 1.0
+      },
+      {
+        "day": -47,
+        "sst": 27.87,
+        "salinity": 34.73,
+        "chlorophyll": 0.39
+      },
+      {
+        "day": -46,
+        "sst": 28.17,
+        "salinity": 34.61,
+        "chlorophyll": 1.09
+      },
+      {
+        "day": -45,
+        "sst": 28.05,
+        "salinity": 34.7,
+        "chlorophyll": 1.05
+      },
+      {
+        "day": -44,
+        "sst": 28.16,
+        "salinity": 34.69,
+        "chlorophyll": 0.45
+      },
+      {
+        "day": -43,
+        "sst": 27.94,
+        "salinity": 34.56,
+        "chlorophyll": 0.67
+      },
+      {
+        "day": -42,
+        "sst": 28.0,
+        "salinity": 34.57,
+        "chlorophyll": 0.89
+      },
+      {
+        "day": -41,
+        "sst": 28.17,
+        "salinity": 34.73,
+        "chlorophyll": 0.91
+      },
+      {
+        "day": -40,
+        "sst": 27.99,
+        "salinity": 34.84,
+        "chlorophyll": 1.02
+      },
+      {
+        "day": -39,
+        "sst": 28.2,
+        "salinity": 34.71,
+        "chlorophyll": 0.37
+      },
+      {
+        "day": -38,
+        "sst": 28.16,
+        "salinity": 34.57,
+        "chlorophyll": 0.41
+      },
+      {
+        "day": -37,
+        "sst": 28.07,
+        "salinity": 34.6,
+        "chlorophyll": 0.51
+      },
+      {
+        "day": -36,
+        "sst": 28.05,
+        "salinity": 34.8,
+        "chlorophyll": 1.06
+      },
+      {
+        "day": -35,
+        "sst": 28.08,
+        "salinity": 34.79,
+        "chlorophyll": 0.31
+      },
+      {
+        "day": -34,
+        "sst": 28.2,
+        "salinity": 34.78,
+        "chlorophyll": 0.35
+      },
+      {
+        "day": -33,
+        "sst": 28.05,
+        "salinity": 34.62,
+        "chlorophyll": 0.62
+      },
+      {
+        "day": -32,
+        "sst": 28.17,
+        "salinity": 34.86,
+        "chlorophyll": 0.86
+      },
+      {
+        "day": -31,
+        "sst": 28.12,
+        "salinity": 34.55,
+        "chlorophyll": 1.03
+      },
+      {
+        "day": -30,
+        "sst": 28.13,
+        "salinity": 34.75,
+        "chlorophyll": 0.48
+      },
+      {
+        "day": -29,
+        "sst": 28.09,
+        "salinity": 34.56,
+        "chlorophyll": 0.9
+      },
+      {
+        "day": -28,
+        "sst": 28.24,
+        "salinity": 34.67,
+        "chlorophyll": 0.74
+      },
+      {
+        "day": -27,
+        "sst": 28.21,
+        "salinity": 34.72,
+        "chlorophyll": 0.83
+      },
+      {
+        "day": -26,
+        "sst": 28.15,
+        "salinity": 34.6,
+        "chlorophyll": 0.9
+      },
+      {
+        "day": -25,
+        "sst": 28.35,
+        "salinity": 34.53,
+        "chlorophyll": 0.66
+      },
+      {
+        "day": -24,
+        "sst": 28.31,
+        "salinity": 34.53,
+        "chlorophyll": 0.75
+      },
+      {
+        "day": -23,
+        "sst": 28.13,
+        "salinity": 34.72,
+        "chlorophyll": 0.7
+      },
+      {
+        "day": -22,
+        "sst": 28.29,
+        "salinity": 34.56,
+        "chlorophyll": 0.56
+      },
+      {
+        "day": -21,
+        "sst": 28.29,
+        "salinity": 34.55,
+        "chlorophyll": 0.46
+      },
+      {
+        "day": -20,
+        "sst": 28.31,
+        "salinity": 34.54,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -19,
+        "sst": 28.39,
+        "salinity": 34.68,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -18,
+        "sst": 28.3,
+        "salinity": 34.52,
+        "chlorophyll": 0.67
+      },
+      {
+        "day": -17,
+        "sst": 28.41,
+        "salinity": 34.79,
+        "chlorophyll": 0.62
+      },
+      {
+        "day": -16,
+        "sst": 28.42,
+        "salinity": 34.8,
+        "chlorophyll": 0.76
+      },
+      {
+        "day": -15,
+        "sst": 28.2,
+        "salinity": 34.64,
+        "chlorophyll": 0.35
+      },
+      {
+        "day": -14,
+        "sst": 28.5,
+        "salinity": 34.87,
+        "chlorophyll": 0.36
+      },
+      {
+        "day": -13,
+        "sst": 28.49,
+        "salinity": 34.51,
+        "chlorophyll": 0.63
+      },
+      {
+        "day": -12,
+        "sst": 28.45,
+        "salinity": 34.81,
+        "chlorophyll": 1.08
+      },
+      {
+        "day": -11,
+        "sst": 28.42,
+        "salinity": 34.67,
+        "chlorophyll": 1.09
+      },
+      {
+        "day": -10,
+        "sst": 28.35,
+        "salinity": 34.85,
+        "chlorophyll": 1.03
+      },
+      {
+        "day": -9,
+        "sst": 28.36,
+        "salinity": 34.77,
+        "chlorophyll": 0.83
+      },
+      {
+        "day": -8,
+        "sst": 28.42,
+        "salinity": 34.76,
+        "chlorophyll": 0.58
+      },
+      {
+        "day": -7,
+        "sst": 28.32,
+        "salinity": 34.71,
+        "chlorophyll": 0.72
+      },
+      {
+        "day": -6,
+        "sst": 28.5,
+        "salinity": 34.59,
+        "chlorophyll": 0.3
+      },
+      {
+        "day": -5,
+        "sst": 28.3,
+        "salinity": 34.62,
+        "chlorophyll": 0.84
+      },
+      {
+        "day": -4,
+        "sst": 28.46,
+        "salinity": 34.71,
+        "chlorophyll": 0.96
+      },
+      {
+        "day": -3,
+        "sst": 28.38,
+        "salinity": 34.64,
+        "chlorophyll": 0.52
+      },
+      {
+        "day": -2,
+        "sst": 28.6,
+        "salinity": 34.79,
+        "chlorophyll": 0.39
+      },
+      {
+        "day": -1,
+        "sst": 28.57,
+        "salinity": 34.67,
+        "chlorophyll": 0.91
+      },
+      {
+        "day": 0,
+        "sst": 28.61,
+        "salinity": 34.51,
+        "chlorophyll": 0.46
+      }
+    ],
+    "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"
+  },
+  {
+    "id": "kollam",
+    "name": "Kollam Advisory Zone",
+    "lat": 8.8932,
+    "lng": 76.6141,
+    "type": "advisory",
+    "state": "Kerala",
+    "latest": {
+      "sst_c": 29.08,
+      "salinity_psu": 34.43,
+      "chlorophyll_mg_m3": 0.99
+    },
+    "history": [
+      {
+        "day": -59,
+        "sst": 28.28,
+        "salinity": 34.21,
+        "chlorophyll": 0.78
+      },
+      {
+        "day": -58,
+        "sst": 28.47,
+        "salinity": 34.22,
+        "chlorophyll": 0.89
+      },
+      {
+        "day": -57,
+        "sst": 28.39,
+        "salinity": 34.29,
+        "chlorophyll": 0.47
+      },
+      {
+        "day": -56,
+        "sst": 28.54,
+        "salinity": 34.22,
+        "chlorophyll": 0.7
+      },
+      {
+        "day": -55,
+        "sst": 28.38,
+        "salinity": 34.53,
+        "chlorophyll": 0.89
+      },
+      {
+        "day": -54,
+        "sst": 28.4,
+        "salinity": 34.44,
+        "chlorophyll": 0.84
+      },
+      {
+        "day": -53,
+        "sst": 28.41,
+        "salinity": 34.32,
+        "chlorophyll": 0.41
+      },
+      {
+        "day": -52,
+        "sst": 28.52,
+        "salinity": 34.29,
+        "chlorophyll": 0.54
+      },
+      {
+        "day": -51,
+        "sst": 28.35,
+        "salinity": 34.58,
+        "chlorophyll": 1.0
+      },
+      {
+        "day": -50,
+        "sst": 28.61,
+        "salinity": 34.45,
+        "chlorophyll": 0.64
+      },
+      {
+        "day": -49,
+        "sst": 28.5,
+        "salinity": 34.59,
+        "chlorophyll": 1.05
+      },
+      {
+        "day": -48,
+        "sst": 28.56,
+        "salinity": 34.51,
+        "chlorophyll": 0.55
+      },
+      {
+        "day": -47,
+        "sst": 28.49,
+        "salinity": 34.26,
+        "chlorophyll": 0.6
+      },
+      {
+        "day": -46,
+        "sst": 28.61,
+        "salinity": 34.39,
+        "chlorophyll": 0.98
+      },
+      {
+        "day": -45,
+        "sst": 28.48,
+        "salinity": 34.48,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -44,
+        "sst": 28.67,
+        "salinity": 34.42,
+        "chlorophyll": 1.07
+      },
+      {
+        "day": -43,
+        "sst": 28.58,
+        "salinity": 34.25,
+        "chlorophyll": 0.49
+      },
+      {
+        "day": -42,
+        "sst": 28.48,
+        "salinity": 34.46,
+        "chlorophyll": 1.04
+      },
+      {
+        "day": -41,
+        "sst": 28.68,
+        "salinity": 34.24,
+        "chlorophyll": 0.88
+      },
+      {
+        "day": -40,
+        "sst": 28.5,
+        "salinity": 34.31,
+        "chlorophyll": 0.84
+      },
+      {
+        "day": -39,
+        "sst": 28.63,
+        "salinity": 34.55,
+        "chlorophyll": 0.45
+      },
+      {
+        "day": -38,
+        "sst": 28.69,
+        "salinity": 34.49,
+        "chlorophyll": 0.75
+      },
+      {
+        "day": -37,
+        "sst": 28.61,
+        "salinity": 34.55,
+        "chlorophyll": 0.57
+      },
+      {
+        "day": -36,
+        "sst": 28.77,
+        "salinity": 34.21,
+        "chlorophyll": 1.05
+      },
+      {
+        "day": -35,
+        "sst": 28.78,
+        "salinity": 34.25,
+        "chlorophyll": 1.1
+      },
+      {
+        "day": -34,
+        "sst": 28.64,
+        "salinity": 34.3,
+        "chlorophyll": 0.78
+      },
+      {
+        "day": -33,
+        "sst": 28.57,
+        "salinity": 34.57,
+        "chlorophyll": 0.74
+      },
+      {
+        "day": -32,
+        "sst": 28.75,
+        "salinity": 34.35,
+        "chlorophyll": 0.73
+      },
+      {
+        "day": -31,
+        "sst": 28.64,
+        "salinity": 34.3,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -30,
+        "sst": 28.69,
+        "salinity": 34.24,
+        "chlorophyll": 1.09
+      },
+      {
+        "day": -29,
+        "sst": 28.69,
+        "salinity": 34.54,
+        "chlorophyll": 1.03
+      },
+      {
+        "day": -28,
+        "sst": 28.67,
+        "salinity": 34.37,
+        "chlorophyll": 0.75
+      },
+      {
+        "day": -27,
+        "sst": 28.64,
+        "salinity": 34.26,
+        "chlorophyll": 0.51
+      },
+      {
+        "day": -26,
+        "sst": 28.86,
+        "salinity": 34.43,
+        "chlorophyll": 0.63
+      },
+      {
+        "day": -25,
+        "sst": 28.64,
+        "salinity": 34.33,
+        "chlorophyll": 0.6
+      },
+      {
+        "day": -24,
+        "sst": 28.85,
+        "salinity": 34.4,
+        "chlorophyll": 0.82
+      },
+      {
+        "day": -23,
+        "sst": 28.82,
+        "salinity": 34.3,
+        "chlorophyll": 0.96
+      },
+      {
+        "day": -22,
+        "sst": 28.91,
+        "salinity": 34.46,
+        "chlorophyll": 0.69
+      },
+      {
+        "day": -21,
+        "sst": 28.68,
+        "salinity": 34.52,
+        "chlorophyll": 0.44
+      },
+      {
+        "day": -20,
+        "sst": 28.86,
+        "salinity": 34.4,
+        "chlorophyll": 1.03
+      },
+      {
+        "day": -19,
+        "sst": 28.81,
+        "salinity": 34.46,
+        "chlorophyll": 0.35
+      },
+      {
+        "day": -18,
+        "sst": 28.67,
+        "salinity": 34.54,
+        "chlorophyll": 1.06
+      },
+      {
+        "day": -17,
+        "sst": 28.87,
+        "salinity": 34.51,
+        "chlorophyll": 0.63
+      },
+      {
+        "day": -16,
+        "sst": 28.93,
+        "salinity": 34.29,
+        "chlorophyll": 0.87
+      },
+      {
+        "day": -15,
+        "sst": 28.69,
+        "salinity": 34.4,
+        "chlorophyll": 0.6
+      },
+      {
+        "day": -14,
+        "sst": 28.89,
+        "salinity": 34.47,
+        "chlorophyll": 0.79
+      },
+      {
+        "day": -13,
+        "sst": 28.85,
+        "salinity": 34.4,
+        "chlorophyll": 0.31
+      },
+      {
+        "day": -12,
+        "sst": 28.89,
+        "salinity": 34.2,
+        "chlorophyll": 0.72
+      },
+      {
+        "day": -11,
+        "sst": 28.81,
+        "salinity": 34.59,
+        "chlorophyll": 0.31
+      },
+      {
+        "day": -10,
+        "sst": 28.98,
+        "salinity": 34.47,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -9,
+        "sst": 29.02,
+        "salinity": 34.24,
+        "chlorophyll": 0.38
+      },
+      {
+        "day": -8,
+        "sst": 28.8,
+        "salinity": 34.28,
+        "chlorophyll": 0.72
+      },
+      {
+        "day": -7,
+        "sst": 29.01,
+        "salinity": 34.31,
+        "chlorophyll": 0.62
+      },
+      {
+        "day": -6,
+        "sst": 28.89,
+        "salinity": 34.36,
+        "chlorophyll": 0.75
+      },
+      {
+        "day": -5,
+        "sst": 29.09,
+        "salinity": 34.29,
+        "chlorophyll": 0.85
+      },
+      {
+        "day": -4,
+        "sst": 29.05,
+        "salinity": 34.46,
+        "chlorophyll": 0.99
+      },
+      {
+        "day": -3,
+        "sst": 29.04,
+        "salinity": 34.24,
+        "chlorophyll": 0.6
+      },
+      {
+        "day": -2,
+        "sst": 28.99,
+        "salinity": 34.22,
+        "chlorophyll": 0.31
+      },
+      {
+        "day": -1,
+        "sst": 28.88,
+        "salinity": 34.4,
+        "chlorophyll": 0.65
+      },
+      {
+        "day": 0,
+        "sst": 29.08,
+        "salinity": 34.43,
+        "chlorophyll": 0.99
+      }
+    ],
+    "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"
+  },
+  {
+    "id": "puducherry",
+    "name": "Puducherry Buoy",
+    "lat": 11.9139,
+    "lng": 79.8145,
+    "type": "buoy",
+    "state": "Puducherry",
+    "latest": {
+      "sst_c": 28.76,
+      "salinity_psu": 35.01,
+      "chlorophyll_mg_m3": 0.77
+    },
+    "history": [
+      {
+        "day": -59,
+        "sst": 28.08,
+        "salinity": 34.91,
+        "chlorophyll": 0.33
+      },
+      {
+        "day": -58,
+        "sst": 28.12,
+        "salinity": 35.05,
+        "chlorophyll": 1.01
+      },
+      {
+        "day": -57,
+        "sst": 28.21,
+        "salinity": 34.72,
+        "chlorophyll": 0.36
+      },
+      {
+        "day": -56,
+        "sst": 28.36,
+        "salinity": 35.06,
+        "chlorophyll": 0.75
+      },
+      {
+        "day": -55,
+        "sst": 28.1,
+        "salinity": 35.07,
+        "chlorophyll": 0.55
+      },
+      {
+        "day": -54,
+        "sst": 28.39,
+        "salinity": 34.93,
+        "chlorophyll": 0.9
+      },
+      {
+        "day": -53,
+        "sst": 28.32,
+        "salinity": 34.86,
+        "chlorophyll": 0.36
+      },
+      {
+        "day": -52,
+        "sst": 28.17,
+        "salinity": 34.8,
+        "chlorophyll": 0.97
+      },
+      {
+        "day": -51,
+        "sst": 28.25,
+        "salinity": 35.06,
+        "chlorophyll": 0.57
+      },
+      {
+        "day": -50,
+        "sst": 28.37,
+        "salinity": 34.76,
+        "chlorophyll": 1.09
+      },
+      {
+        "day": -49,
+        "sst": 28.37,
+        "salinity": 34.9,
+        "chlorophyll": 1.08
+      },
+      {
+        "day": -48,
+        "sst": 28.18,
+        "salinity": 34.87,
+        "chlorophyll": 0.97
+      },
+      {
+        "day": -47,
+        "sst": 28.27,
+        "salinity": 35.01,
+        "chlorophyll": 1.06
+      },
+      {
+        "day": -46,
+        "sst": 28.3,
+        "salinity": 35.01,
+        "chlorophyll": 0.32
+      },
+      {
+        "day": -45,
+        "sst": 28.27,
+        "salinity": 35.1,
+        "chlorophyll": 0.69
+      },
+      {
+        "day": -44,
+        "sst": 28.31,
+        "salinity": 35.08,
+        "chlorophyll": 0.65
+      },
+      {
+        "day": -43,
+        "sst": 28.41,
+        "salinity": 34.96,
+        "chlorophyll": 0.37
+      },
+      {
+        "day": -42,
+        "sst": 28.41,
+        "salinity": 35.02,
+        "chlorophyll": 0.87
+      },
+      {
+        "day": -41,
+        "sst": 28.25,
+        "salinity": 34.76,
+        "chlorophyll": 0.87
+      },
+      {
+        "day": -40,
+        "sst": 28.43,
+        "salinity": 35.0,
+        "chlorophyll": 0.55
+      },
+      {
+        "day": -39,
+        "sst": 28.28,
+        "salinity": 34.7,
+        "chlorophyll": 0.55
+      },
+      {
+        "day": -38,
+        "sst": 28.37,
+        "salinity": 34.81,
+        "chlorophyll": 0.41
+      },
+      {
+        "day": -37,
+        "sst": 28.33,
+        "salinity": 34.88,
+        "chlorophyll": 0.74
+      },
+      {
+        "day": -36,
+        "sst": 28.4,
+        "salinity": 34.71,
+        "chlorophyll": 0.58
+      },
+      {
+        "day": -35,
+        "sst": 28.32,
+        "salinity": 34.94,
+        "chlorophyll": 0.56
+      },
+      {
+        "day": -34,
+        "sst": 28.42,
+        "salinity": 34.82,
+        "chlorophyll": 0.61
+      },
+      {
+        "day": -33,
+        "sst": 28.34,
+        "salinity": 35.06,
+        "chlorophyll": 1.02
+      },
+      {
+        "day": -32,
+        "sst": 28.61,
+        "salinity": 34.93,
+        "chlorophyll": 0.44
+      },
+      {
+        "day": -31,
+        "sst": 28.44,
+        "salinity": 34.76,
+        "chlorophyll": 0.54
+      },
+      {
+        "day": -30,
+        "sst": 28.49,
+        "salinity": 34.73,
+        "chlorophyll": 0.65
+      },
+      {
+        "day": -29,
+        "sst": 28.48,
+        "salinity": 34.89,
+        "chlorophyll": 0.36
+      },
+      {
+        "day": -28,
+        "sst": 28.44,
+        "salinity": 34.8,
+        "chlorophyll": 0.8
+      },
+      {
+        "day": -27,
+        "sst": 28.55,
+        "salinity": 34.78,
+        "chlorophyll": 0.39
+      },
+      {
+        "day": -26,
+        "sst": 28.47,
+        "salinity": 35.08,
+        "chlorophyll": 0.57
+      },
+      {
+        "day": -25,
+        "sst": 28.58,
+        "salinity": 35.02,
+        "chlorophyll": 0.56
+      },
+      {
+        "day": -24,
+        "sst": 28.5,
+        "salinity": 35.03,
+        "chlorophyll": 0.99
+      },
+      {
+        "day": -23,
+        "sst": 28.7,
+        "salinity": 34.75,
+        "chlorophyll": 0.56
+      },
+      {
+        "day": -22,
+        "sst": 28.7,
+        "salinity": 34.78,
+        "chlorophyll": 0.55
+      },
+      {
+        "day": -21,
+        "sst": 28.72,
+        "salinity": 35.09,
+        "chlorophyll": 0.53
+      },
+      {
+        "day": -20,
+        "sst": 28.65,
+        "salinity": 34.9,
+        "chlorophyll": 0.76
+      },
+      {
+        "day": -19,
+        "sst": 28.52,
+        "salinity": 34.85,
+        "chlorophyll": 0.95
+      },
+      {
+        "day": -18,
+        "sst": 28.58,
+        "salinity": 34.75,
+        "chlorophyll": 0.75
+      },
+      {
+        "day": -17,
+        "sst": 28.65,
+        "salinity": 34.92,
+        "chlorophyll": 0.85
+      },
+      {
+        "day": -16,
+        "sst": 28.65,
+        "salinity": 35.08,
+        "chlorophyll": 0.67
+      },
+      {
+        "day": -15,
+        "sst": 28.7,
+        "salinity": 34.88,
+        "chlorophyll": 0.53
+      },
+      {
+        "day": -14,
+        "sst": 28.71,
+        "salinity": 35.03,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -13,
+        "sst": 28.63,
+        "salinity": 34.9,
+        "chlorophyll": 0.81
+      },
+      {
+        "day": -12,
+        "sst": 28.59,
+        "salinity": 34.96,
+        "chlorophyll": 0.87
+      },
+      {
+        "day": -11,
+        "sst": 28.77,
+        "salinity": 34.73,
+        "chlorophyll": 1.09
+      },
+      {
+        "day": -10,
+        "sst": 28.68,
+        "salinity": 34.86,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -9,
+        "sst": 28.83,
+        "salinity": 34.98,
+        "chlorophyll": 0.73
+      },
+      {
+        "day": -8,
+        "sst": 28.8,
+        "salinity": 34.84,
+        "chlorophyll": 1.02
+      },
+      {
+        "day": -7,
+        "sst": 28.73,
+        "salinity": 34.96,
+        "chlorophyll": 0.37
+      },
+      {
+        "day": -6,
+        "sst": 28.81,
+        "salinity": 34.96,
+        "chlorophyll": 0.58
+      },
+      {
+        "day": -5,
+        "sst": 28.78,
+        "salinity": 34.72,
+        "chlorophyll": 1.09
+      },
+      {
+        "day": -4,
+        "sst": 28.8,
+        "salinity": 34.86,
+        "chlorophyll": 0.9
+      },
+      {
+        "day": -3,
+        "sst": 28.9,
+        "salinity": 34.87,
+        "chlorophyll": 0.31
+      },
+      {
+        "day": -2,
+        "sst": 28.7,
+        "salinity": 34.9,
+        "chlorophyll": 0.72
+      },
+      {
+        "day": -1,
+        "sst": 28.8,
+        "salinity": 34.93,
+        "chlorophyll": 0.66
+      },
+      {
+        "day": 0,
+        "sst": 28.76,
+        "salinity": 35.01,
+        "chlorophyll": 0.77
+      }
+    ],
+    "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"
+  },
+  {
+    "id": "paradip",
+    "name": "Paradip Buoy",
+    "lat": 20.3167,
+    "lng": 86.6167,
+    "type": "buoy",
+    "state": "Odisha",
+    "latest": {
+      "sst_c": 27.97,
+      "salinity_psu": 32.09,
+      "chlorophyll_mg_m3": 0.88
+    },
+    "history": [
+      {
+        "day": -59,
+        "sst": 27.3,
+        "salinity": 31.94,
+        "chlorophyll": 0.32
+      },
+      {
+        "day": -58,
+        "sst": 27.19,
+        "salinity": 31.97,
+        "chlorophyll": 1.07
+      },
+      {
+        "day": -57,
+        "sst": 27.2,
+        "salinity": 32.18,
+        "chlorophyll": 0.41
+      },
+      {
+        "day": -56,
+        "sst": 27.27,
+        "salinity": 31.98,
+        "chlorophyll": 0.47
+      },
+      {
+        "day": -55,
+        "sst": 27.33,
+        "salinity": 31.99,
+        "chlorophyll": 0.65
+      },
+      {
+        "day": -54,
+        "sst": 27.41,
+        "salinity": 31.93,
+        "chlorophyll": 0.54
+      },
+      {
+        "day": -53,
+        "sst": 27.45,
+        "salinity": 31.85,
+        "chlorophyll": 0.98
+      },
+      {
+        "day": -52,
+        "sst": 27.41,
+        "salinity": 32.07,
+        "chlorophyll": 0.43
+      },
+      {
+        "day": -51,
+        "sst": 27.53,
+        "salinity": 31.9,
+        "chlorophyll": 0.44
+      },
+      {
+        "day": -50,
+        "sst": 27.29,
+        "salinity": 32.02,
+        "chlorophyll": 1.07
+      },
+      {
+        "day": -49,
+        "sst": 27.32,
+        "salinity": 31.96,
+        "chlorophyll": 0.45
+      },
+      {
+        "day": -48,
+        "sst": 27.45,
+        "salinity": 31.97,
+        "chlorophyll": 0.32
+      },
+      {
+        "day": -47,
+        "sst": 27.45,
+        "salinity": 31.88,
+        "chlorophyll": 0.77
+      },
+      {
+        "day": -46,
+        "sst": 27.4,
+        "salinity": 32.08,
+        "chlorophyll": 0.46
+      },
+      {
+        "day": -45,
+        "sst": 27.52,
+        "salinity": 32.12,
+        "chlorophyll": 0.35
+      },
+      {
+        "day": -44,
+        "sst": 27.33,
+        "salinity": 32.15,
+        "chlorophyll": 0.45
+      },
+      {
+        "day": -43,
+        "sst": 27.41,
+        "salinity": 31.98,
+        "chlorophyll": 0.51
+      },
+      {
+        "day": -42,
+        "sst": 27.58,
+        "salinity": 32.01,
+        "chlorophyll": 0.81
+      },
+      {
+        "day": -41,
+        "sst": 27.51,
+        "salinity": 32.04,
+        "chlorophyll": 0.77
+      },
+      {
+        "day": -40,
+        "sst": 27.44,
+        "salinity": 32.14,
+        "chlorophyll": 0.79
+      },
+      {
+        "day": -39,
+        "sst": 27.59,
+        "salinity": 32.08,
+        "chlorophyll": 0.54
+      },
+      {
+        "day": -38,
+        "sst": 27.54,
+        "salinity": 31.83,
+        "chlorophyll": 0.41
+      },
+      {
+        "day": -37,
+        "sst": 27.41,
+        "salinity": 31.92,
+        "chlorophyll": 0.45
+      },
+      {
+        "day": -36,
+        "sst": 27.59,
+        "salinity": 32.0,
+        "chlorophyll": 0.63
+      },
+      {
+        "day": -35,
+        "sst": 27.43,
+        "salinity": 31.95,
+        "chlorophyll": 0.45
+      },
+      {
+        "day": -34,
+        "sst": 27.59,
+        "salinity": 32.08,
+        "chlorophyll": 0.82
+      },
+      {
+        "day": -33,
+        "sst": 27.71,
+        "salinity": 32.02,
+        "chlorophyll": 0.69
+      },
+      {
+        "day": -32,
+        "sst": 27.46,
+        "salinity": 31.93,
+        "chlorophyll": 0.66
+      },
+      {
+        "day": -31,
+        "sst": 27.45,
+        "salinity": 31.94,
+        "chlorophyll": 0.31
+      },
+      {
+        "day": -30,
+        "sst": 27.48,
+        "salinity": 32.13,
+        "chlorophyll": 1.07
+      },
+      {
+        "day": -29,
+        "sst": 27.6,
+        "salinity": 32.0,
+        "chlorophyll": 0.85
+      },
+      {
+        "day": -28,
+        "sst": 27.58,
+        "salinity": 32.14,
+        "chlorophyll": 0.69
+      },
+      {
+        "day": -27,
+        "sst": 27.49,
+        "salinity": 31.81,
+        "chlorophyll": 0.91
+      },
+      {
+        "day": -26,
+        "sst": 27.57,
+        "salinity": 31.91,
+        "chlorophyll": 0.73
+      },
+      {
+        "day": -25,
+        "sst": 27.54,
+        "salinity": 31.98,
+        "chlorophyll": 0.89
+      },
+      {
+        "day": -24,
+        "sst": 27.73,
+        "salinity": 32.02,
+        "chlorophyll": 0.39
+      },
+      {
+        "day": -23,
+        "sst": 27.54,
+        "salinity": 32.11,
+        "chlorophyll": 0.96
+      },
+      {
+        "day": -22,
+        "sst": 27.63,
+        "salinity": 32.13,
+        "chlorophyll": 0.33
+      },
+      {
+        "day": -21,
+        "sst": 27.75,
+        "salinity": 32.02,
+        "chlorophyll": 1.09
+      },
+      {
+        "day": -20,
+        "sst": 27.57,
+        "salinity": 32.13,
+        "chlorophyll": 0.9
+      },
+      {
+        "day": -19,
+        "sst": 27.64,
+        "salinity": 32.2,
+        "chlorophyll": 0.66
+      },
+      {
+        "day": -18,
+        "sst": 27.66,
+        "salinity": 32.13,
+        "chlorophyll": 0.65
+      },
+      {
+        "day": -17,
+        "sst": 27.87,
+        "salinity": 32.11,
+        "chlorophyll": 0.49
+      },
+      {
+        "day": -16,
+        "sst": 27.82,
+        "salinity": 32.04,
+        "chlorophyll": 0.58
+      },
+      {
+        "day": -15,
+        "sst": 27.8,
+        "salinity": 32.05,
+        "chlorophyll": 0.43
+      },
+      {
+        "day": -14,
+        "sst": 27.64,
+        "salinity": 31.88,
+        "chlorophyll": 0.47
+      },
+      {
+        "day": -13,
+        "sst": 27.63,
+        "salinity": 31.94,
+        "chlorophyll": 0.52
+      },
+      {
+        "day": -12,
+        "sst": 27.78,
+        "salinity": 31.93,
+        "chlorophyll": 0.86
+      },
+      {
+        "day": -11,
+        "sst": 27.72,
+        "salinity": 31.91,
+        "chlorophyll": 0.99
+      },
+      {
+        "day": -10,
+        "sst": 27.94,
+        "salinity": 32.07,
+        "chlorophyll": 0.38
+      },
+      {
+        "day": -9,
+        "sst": 27.94,
+        "salinity": 32.11,
+        "chlorophyll": 1.04
+      },
+      {
+        "day": -8,
+        "sst": 27.96,
+        "salinity": 32.15,
+        "chlorophyll": 0.4
+      },
+      {
+        "day": -7,
+        "sst": 27.93,
+        "salinity": 31.9,
+        "chlorophyll": 0.87
+      },
+      {
+        "day": -6,
+        "sst": 27.93,
+        "salinity": 32.1,
+        "chlorophyll": 0.84
+      },
+      {
+        "day": -5,
+        "sst": 27.84,
+        "salinity": 32.03,
+        "chlorophyll": 0.51
+      },
+      {
+        "day": -4,
+        "sst": 27.82,
+        "salinity": 31.98,
+        "chlorophyll": 0.81
+      },
+      {
+        "day": -3,
+        "sst": 27.97,
+        "salinity": 31.84,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -2,
+        "sst": 27.8,
+        "salinity": 32.17,
+        "chlorophyll": 0.6
+      },
+      {
+        "day": -1,
+        "sst": 28.02,
+        "salinity": 31.93,
+        "chlorophyll": 0.3
+      },
+      {
+        "day": 0,
+        "sst": 27.97,
+        "salinity": 32.09,
+        "chlorophyll": 0.88
+      }
+    ],
+    "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"
+  },
+  {
+    "id": "digha",
+    "name": "Digha eDNA Site",
+    "lat": 21.627,
+    "lng": 87.509,
+    "type": "edna",
+    "state": "West Bengal",
+    "latest": {
+      "sst_c": 27.51,
+      "salinity_psu": 30.45,
+      "chlorophyll_mg_m3": 0.5
+    },
+    "history": [
+      {
+        "day": -59,
+        "sst": 26.89,
+        "salinity": 30.57,
+        "chlorophyll": 0.59
+      },
+      {
+        "day": -58,
+        "sst": 26.78,
+        "salinity": 30.51,
+        "chlorophyll": 0.47
+      },
+      {
+        "day": -57,
+        "sst": 26.9,
+        "salinity": 30.38,
+        "chlorophyll": 0.51
+      },
+      {
+        "day": -56,
+        "sst": 27.03,
+        "salinity": 30.44,
+        "chlorophyll": 0.76
+      },
+      {
+        "day": -55,
+        "sst": 26.96,
+        "salinity": 30.49,
+        "chlorophyll": 0.57
+      },
+      {
+        "day": -54,
+        "sst": 27.0,
+        "salinity": 30.32,
+        "chlorophyll": 0.38
+      },
+      {
+        "day": -53,
+        "sst": 27.05,
+        "salinity": 30.48,
+        "chlorophyll": 0.4
+      },
+      {
+        "day": -52,
+        "sst": 27.08,
+        "salinity": 30.48,
+        "chlorophyll": 0.3
+      },
+      {
+        "day": -51,
+        "sst": 27.12,
+        "salinity": 30.38,
+        "chlorophyll": 0.85
+      },
+      {
+        "day": -50,
+        "sst": 26.88,
+        "salinity": 30.56,
+        "chlorophyll": 0.43
+      },
+      {
+        "day": -49,
+        "sst": 27.13,
+        "salinity": 30.41,
+        "chlorophyll": 0.82
+      },
+      {
+        "day": -48,
+        "sst": 26.94,
+        "salinity": 30.45,
+        "chlorophyll": 1.02
+      },
+      {
+        "day": -47,
+        "sst": 26.92,
+        "salinity": 30.46,
+        "chlorophyll": 0.54
+      },
+      {
+        "day": -46,
+        "sst": 27.09,
+        "salinity": 30.39,
+        "chlorophyll": 0.82
+      },
+      {
+        "day": -45,
+        "sst": 27.1,
+        "salinity": 30.3,
+        "chlorophyll": 0.68
+      },
+      {
+        "day": -44,
+        "sst": 26.94,
+        "salinity": 30.39,
+        "chlorophyll": 0.84
+      },
+      {
+        "day": -43,
+        "sst": 26.91,
+        "salinity": 30.58,
+        "chlorophyll": 0.95
+      },
+      {
+        "day": -42,
+        "sst": 27.22,
+        "salinity": 30.47,
+        "chlorophyll": 0.41
+      },
+      {
+        "day": -41,
+        "sst": 26.95,
+        "salinity": 30.45,
+        "chlorophyll": 0.88
+      },
+      {
+        "day": -40,
+        "sst": 26.97,
+        "salinity": 30.43,
+        "chlorophyll": 1.0
+      },
+      {
+        "day": -39,
+        "sst": 26.99,
+        "salinity": 30.61,
+        "chlorophyll": 0.9
+      },
+      {
+        "day": -38,
+        "sst": 27.0,
+        "salinity": 30.7,
+        "chlorophyll": 0.41
+      },
+      {
+        "day": -37,
+        "sst": 27.13,
+        "salinity": 30.3,
+        "chlorophyll": 0.82
+      },
+      {
+        "day": -36,
+        "sst": 27.11,
+        "salinity": 30.59,
+        "chlorophyll": 0.8
+      },
+      {
+        "day": -35,
+        "sst": 27.04,
+        "salinity": 30.46,
+        "chlorophyll": 0.85
+      },
+      {
+        "day": -34,
+        "sst": 27.26,
+        "salinity": 30.33,
+        "chlorophyll": 0.38
+      },
+      {
+        "day": -33,
+        "sst": 27.24,
+        "salinity": 30.54,
+        "chlorophyll": 0.61
+      },
+      {
+        "day": -32,
+        "sst": 27.31,
+        "salinity": 30.43,
+        "chlorophyll": 0.41
+      },
+      {
+        "day": -31,
+        "sst": 27.11,
+        "salinity": 30.33,
+        "chlorophyll": 0.74
+      },
+      {
+        "day": -30,
+        "sst": 27.22,
+        "salinity": 30.54,
+        "chlorophyll": 0.92
+      },
+      {
+        "day": -29,
+        "sst": 27.26,
+        "salinity": 30.64,
+        "chlorophyll": 0.83
+      },
+      {
+        "day": -28,
+        "sst": 27.15,
+        "salinity": 30.51,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -27,
+        "sst": 27.29,
+        "salinity": 30.42,
+        "chlorophyll": 0.34
+      },
+      {
+        "day": -26,
+        "sst": 27.35,
+        "salinity": 30.68,
+        "chlorophyll": 0.7
+      },
+      {
+        "day": -25,
+        "sst": 27.12,
+        "salinity": 30.5,
+        "chlorophyll": 0.78
+      },
+      {
+        "day": -24,
+        "sst": 27.26,
+        "salinity": 30.69,
+        "chlorophyll": 1.09
+      },
+      {
+        "day": -23,
+        "sst": 27.39,
+        "salinity": 30.35,
+        "chlorophyll": 0.99
+      },
+      {
+        "day": -22,
+        "sst": 27.29,
+        "salinity": 30.45,
+        "chlorophyll": 0.85
+      },
+      {
+        "day": -21,
+        "sst": 27.36,
+        "salinity": 30.68,
+        "chlorophyll": 0.92
+      },
+      {
+        "day": -20,
+        "sst": 27.15,
+        "salinity": 30.33,
+        "chlorophyll": 0.51
+      },
+      {
+        "day": -19,
+        "sst": 27.16,
+        "salinity": 30.32,
+        "chlorophyll": 0.93
+      },
+      {
+        "day": -18,
+        "sst": 27.31,
+        "salinity": 30.55,
+        "chlorophyll": 0.7
+      },
+      {
+        "day": -17,
+        "sst": 27.29,
+        "salinity": 30.58,
+        "chlorophyll": 0.37
+      },
+      {
+        "day": -16,
+        "sst": 27.34,
+        "salinity": 30.55,
+        "chlorophyll": 0.52
+      },
+      {
+        "day": -15,
+        "sst": 27.28,
+        "salinity": 30.5,
+        "chlorophyll": 0.46
+      },
+      {
+        "day": -14,
+        "sst": 27.44,
+        "salinity": 30.51,
+        "chlorophyll": 0.61
+      },
+      {
+        "day": -13,
+        "sst": 27.4,
+        "salinity": 30.63,
+        "chlorophyll": 0.84
+      },
+      {
+        "day": -12,
+        "sst": 27.24,
+        "salinity": 30.58,
+        "chlorophyll": 0.88
+      },
+      {
+        "day": -11,
+        "sst": 27.48,
+        "salinity": 30.32,
+        "chlorophyll": 0.37
+      },
+      {
+        "day": -10,
+        "sst": 27.37,
+        "salinity": 30.48,
+        "chlorophyll": 0.79
+      },
+      {
+        "day": -9,
+        "sst": 27.34,
+        "salinity": 30.6,
+        "chlorophyll": 0.89
+      },
+      {
+        "day": -8,
+        "sst": 27.3,
+        "salinity": 30.58,
+        "chlorophyll": 0.86
+      },
+      {
+        "day": -7,
+        "sst": 27.32,
+        "salinity": 30.68,
+        "chlorophyll": 0.72
+      },
+      {
+        "day": -6,
+        "sst": 27.51,
+        "salinity": 30.59,
+        "chlorophyll": 0.43
+      },
+      {
+        "day": -5,
+        "sst": 27.33,
+        "salinity": 30.61,
+        "chlorophyll": 0.52
+      },
+      {
+        "day": -4,
+        "sst": 27.57,
+        "salinity": 30.61,
+        "chlorophyll": 0.32
+      },
+      {
+        "day": -3,
+        "sst": 27.55,
+        "salinity": 30.41,
+        "chlorophyll": 0.35
+      },
+      {
+        "day": -2,
+        "sst": 27.53,
+        "salinity": 30.53,
+        "chlorophyll": 0.36
+      },
+      {
+        "day": -1,
+        "sst": 27.47,
+        "salinity": 30.44,
+        "chlorophyll": 0.7
+      },
+      {
+        "day": 0,
+        "sst": 27.51,
+        "salinity": 30.45,
+        "chlorophyll": 0.5
+      }
+    ],
+    "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"
+  },
+  {
+    "id": "porbandar",
+    "name": "Porbandar Buoy",
+    "lat": 21.6417,
+    "lng": 69.6293,
+    "type": "buoy",
+    "state": "Gujarat",
+    "latest": {
+      "sst_c": 27.11,
+      "salinity_psu": 36.0,
+      "chlorophyll_mg_m3": 0.61
+    },
+    "history": [
+      {
+        "day": -59,
+        "sst": 26.28,
+        "salinity": 36.03,
+        "chlorophyll": 0.88
+      },
+      {
+        "day": -58,
+        "sst": 26.33,
+        "salinity": 36.0,
+        "chlorophyll": 0.34
+      },
+      {
+        "day": -57,
+        "sst": 26.53,
+        "salinity": 35.9,
+        "chlorophyll": 0.68
+      },
+      {
+        "day": -56,
+        "sst": 26.39,
+        "salinity": 35.86,
+        "chlorophyll": 1.04
+      },
+      {
+        "day": -55,
+        "sst": 26.55,
+        "salinity": 36.02,
+        "chlorophyll": 1.03
+      },
+      {
+        "day": -54,
+        "sst": 26.52,
+        "salinity": 35.97,
+        "chlorophyll": 0.56
+      },
+      {
+        "day": -53,
+        "sst": 26.43,
+        "salinity": 36.09,
+        "chlorophyll": 0.52
+      },
+      {
+        "day": -52,
+        "sst": 26.34,
+        "salinity": 35.95,
+        "chlorophyll": 0.7
+      },
+      {
+        "day": -51,
+        "sst": 26.6,
+        "salinity": 35.87,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -50,
+        "sst": 26.63,
+        "salinity": 36.18,
+        "chlorophyll": 0.36
+      },
+      {
+        "day": -49,
+        "sst": 26.49,
+        "salinity": 35.91,
+        "chlorophyll": 0.98
+      },
+      {
+        "day": -48,
+        "sst": 26.46,
+        "salinity": 36.02,
+        "chlorophyll": 0.31
+      },
+      {
+        "day": -47,
+        "sst": 26.43,
+        "salinity": 36.03,
+        "chlorophyll": 0.54
+      },
+      {
+        "day": -46,
+        "sst": 26.57,
+        "salinity": 35.99,
+        "chlorophyll": 0.77
+      },
+      {
+        "day": -45,
+        "sst": 26.54,
+        "salinity": 36.11,
+        "chlorophyll": 0.46
+      },
+      {
+        "day": -44,
+        "sst": 26.67,
+        "salinity": 36.1,
+        "chlorophyll": 0.5
+      },
+      {
+        "day": -43,
+        "sst": 26.41,
+        "salinity": 35.96,
+        "chlorophyll": 0.49
+      },
+      {
+        "day": -42,
+        "sst": 26.52,
+        "salinity": 36.14,
+        "chlorophyll": 1.0
+      },
+      {
+        "day": -41,
+        "sst": 26.72,
+        "salinity": 35.8,
+        "chlorophyll": 0.83
+      },
+      {
+        "day": -40,
+        "sst": 26.69,
+        "salinity": 36.09,
+        "chlorophyll": 0.38
+      },
+      {
+        "day": -39,
+        "sst": 26.61,
+        "salinity": 35.9,
+        "chlorophyll": 0.69
+      },
+      {
+        "day": -38,
+        "sst": 26.48,
+        "salinity": 36.2,
+        "chlorophyll": 0.87
+      },
+      {
+        "day": -37,
+        "sst": 26.5,
+        "salinity": 36.17,
+        "chlorophyll": 1.02
+      },
+      {
+        "day": -36,
+        "sst": 26.64,
+        "salinity": 36.08,
+        "chlorophyll": 0.6
+      },
+      {
+        "day": -35,
+        "sst": 26.78,
+        "salinity": 35.83,
+        "chlorophyll": 0.38
+      },
+      {
+        "day": -34,
+        "sst": 26.54,
+        "salinity": 36.13,
+        "chlorophyll": 0.36
+      },
+      {
+        "day": -33,
+        "sst": 26.68,
+        "salinity": 35.97,
+        "chlorophyll": 1.07
+      },
+      {
+        "day": -32,
+        "sst": 26.59,
+        "salinity": 35.9,
+        "chlorophyll": 0.55
+      },
+      {
+        "day": -31,
+        "sst": 26.77,
+        "salinity": 36.08,
+        "chlorophyll": 0.89
+      },
+      {
+        "day": -30,
+        "sst": 26.64,
+        "salinity": 35.91,
+        "chlorophyll": 0.36
+      },
+      {
+        "day": -29,
+        "sst": 26.61,
+        "salinity": 36.11,
+        "chlorophyll": 0.77
+      },
+      {
+        "day": -28,
+        "sst": 26.61,
+        "salinity": 35.87,
+        "chlorophyll": 0.67
+      },
+      {
+        "day": -27,
+        "sst": 26.69,
+        "salinity": 36.01,
+        "chlorophyll": 1.07
+      },
+      {
+        "day": -26,
+        "sst": 26.64,
+        "salinity": 35.92,
+        "chlorophyll": 0.51
+      },
+      {
+        "day": -25,
+        "sst": 26.63,
+        "salinity": 35.86,
+        "chlorophyll": 0.85
+      },
+      {
+        "day": -24,
+        "sst": 26.85,
+        "salinity": 36.08,
+        "chlorophyll": 0.33
+      },
+      {
+        "day": -23,
+        "sst": 26.86,
+        "salinity": 35.93,
+        "chlorophyll": 0.37
+      },
+      {
+        "day": -22,
+        "sst": 26.69,
+        "salinity": 35.94,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -21,
+        "sst": 26.83,
+        "salinity": 35.9,
+        "chlorophyll": 1.09
+      },
+      {
+        "day": -20,
+        "sst": 26.65,
+        "salinity": 35.96,
+        "chlorophyll": 0.66
+      },
+      {
+        "day": -19,
+        "sst": 26.87,
+        "salinity": 35.9,
+        "chlorophyll": 0.67
+      },
+      {
+        "day": -18,
+        "sst": 26.9,
+        "salinity": 35.86,
+        "chlorophyll": 0.31
+      },
+      {
+        "day": -17,
+        "sst": 26.92,
+        "salinity": 36.19,
+        "chlorophyll": 0.4
+      },
+      {
+        "day": -16,
+        "sst": 26.93,
+        "salinity": 35.95,
+        "chlorophyll": 0.8
+      },
+      {
+        "day": -15,
+        "sst": 26.88,
+        "salinity": 36.03,
+        "chlorophyll": 0.51
+      },
+      {
+        "day": -14,
+        "sst": 26.94,
+        "salinity": 35.81,
+        "chlorophyll": 0.35
+      },
+      {
+        "day": -13,
+        "sst": 26.98,
+        "salinity": 35.98,
+        "chlorophyll": 0.4
+      },
+      {
+        "day": -12,
+        "sst": 26.99,
+        "salinity": 36.13,
+        "chlorophyll": 0.57
+      },
+      {
+        "day": -11,
+        "sst": 26.74,
+        "salinity": 35.98,
+        "chlorophyll": 0.43
+      },
+      {
+        "day": -10,
+        "sst": 26.91,
+        "salinity": 36.13,
+        "chlorophyll": 0.62
+      },
+      {
+        "day": -9,
+        "sst": 26.76,
+        "salinity": 36.07,
+        "chlorophyll": 0.44
+      },
+      {
+        "day": -8,
+        "sst": 26.82,
+        "salinity": 35.87,
+        "chlorophyll": 0.52
+      },
+      {
+        "day": -7,
+        "sst": 27.04,
+        "salinity": 35.81,
+        "chlorophyll": 0.8
+      },
+      {
+        "day": -6,
+        "sst": 26.85,
+        "salinity": 35.92,
+        "chlorophyll": 0.63
+      },
+      {
+        "day": -5,
+        "sst": 26.96,
+        "salinity": 35.82,
+        "chlorophyll": 0.52
+      },
+      {
+        "day": -4,
+        "sst": 26.84,
+        "salinity": 35.88,
+        "chlorophyll": 1.01
+      },
+      {
+        "day": -3,
+        "sst": 26.97,
+        "salinity": 36.05,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -2,
+        "sst": 27.06,
+        "salinity": 36.2,
+        "chlorophyll": 0.93
+      },
+      {
+        "day": -1,
+        "sst": 26.94,
+        "salinity": 36.02,
+        "chlorophyll": 0.69
+      },
+      {
+        "day": 0,
+        "sst": 27.11,
+        "salinity": 36.0,
+        "chlorophyll": 0.61
+      }
+    ],
+    "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"
+  },
+  {
+    "id": "veraval",
+    "name": "Veraval Advisory Zone",
+    "lat": 20.9159,
+    "lng": 70.3629,
+    "type": "advisory",
+    "state": "Gujarat",
+    "latest": {
+      "sst_c": 27.17,
+      "salinity_psu": 35.71,
+      "chlorophyll_mg_m3": 0.67
+    },
+    "history": [
+      {
+        "day": -59,
+        "sst": 26.5,
+        "salinity": 35.73,
+        "chlorophyll": 0.48
+      },
+      {
+        "day": -58,
+        "sst": 26.73,
+        "salinity": 35.91,
+        "chlorophyll": 0.35
+      },
+      {
+        "day": -57,
+        "sst": 26.77,
+        "salinity": 35.81,
+        "chlorophyll": 0.91
+      },
+      {
+        "day": -56,
+        "sst": 26.78,
+        "salinity": 35.99,
+        "chlorophyll": 0.38
+      },
+      {
+        "day": -55,
+        "sst": 26.69,
+        "salinity": 35.71,
+        "chlorophyll": 0.95
+      },
+      {
+        "day": -54,
+        "sst": 26.78,
+        "salinity": 35.62,
+        "chlorophyll": 1.1
+      },
+      {
+        "day": -53,
+        "sst": 26.58,
+        "salinity": 35.94,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -52,
+        "sst": 26.63,
+        "salinity": 35.94,
+        "chlorophyll": 0.98
+      },
+      {
+        "day": -51,
+        "sst": 26.58,
+        "salinity": 35.84,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -50,
+        "sst": 26.75,
+        "salinity": 35.97,
+        "chlorophyll": 0.32
+      },
+      {
+        "day": -49,
+        "sst": 26.76,
+        "salinity": 35.98,
+        "chlorophyll": 0.75
+      },
+      {
+        "day": -48,
+        "sst": 26.73,
+        "salinity": 35.68,
+        "chlorophyll": 1.09
+      },
+      {
+        "day": -47,
+        "sst": 26.83,
+        "salinity": 35.8,
+        "chlorophyll": 0.55
+      },
+      {
+        "day": -46,
+        "sst": 26.73,
+        "salinity": 35.64,
+        "chlorophyll": 0.49
+      },
+      {
+        "day": -45,
+        "sst": 26.66,
+        "salinity": 35.81,
+        "chlorophyll": 0.3
+      },
+      {
+        "day": -44,
+        "sst": 26.88,
+        "salinity": 35.68,
+        "chlorophyll": 0.4
+      },
+      {
+        "day": -43,
+        "sst": 26.83,
+        "salinity": 35.97,
+        "chlorophyll": 0.98
+      },
+      {
+        "day": -42,
+        "sst": 26.72,
+        "salinity": 35.61,
+        "chlorophyll": 0.77
+      },
+      {
+        "day": -41,
+        "sst": 26.91,
+        "salinity": 35.91,
+        "chlorophyll": 0.98
+      },
+      {
+        "day": -40,
+        "sst": 26.9,
+        "salinity": 35.98,
+        "chlorophyll": 0.6
+      },
+      {
+        "day": -39,
+        "sst": 26.93,
+        "salinity": 35.76,
+        "chlorophyll": 0.38
+      },
+      {
+        "day": -38,
+        "sst": 26.75,
+        "salinity": 35.65,
+        "chlorophyll": 0.43
+      },
+      {
+        "day": -37,
+        "sst": 26.95,
+        "salinity": 35.92,
+        "chlorophyll": 1.07
+      },
+      {
+        "day": -36,
+        "sst": 26.87,
+        "salinity": 35.67,
+        "chlorophyll": 1.07
+      },
+      {
+        "day": -35,
+        "sst": 26.9,
+        "salinity": 35.97,
+        "chlorophyll": 0.93
+      },
+      {
+        "day": -34,
+        "sst": 26.77,
+        "salinity": 35.84,
+        "chlorophyll": 0.44
+      },
+      {
+        "day": -33,
+        "sst": 26.8,
+        "salinity": 35.88,
+        "chlorophyll": 0.4
+      },
+      {
+        "day": -32,
+        "sst": 26.94,
+        "salinity": 35.98,
+        "chlorophyll": 1.06
+      },
+      {
+        "day": -31,
+        "sst": 26.85,
+        "salinity": 36.0,
+        "chlorophyll": 1.07
+      },
+      {
+        "day": -30,
+        "sst": 26.75,
+        "salinity": 35.84,
+        "chlorophyll": 1.04
+      },
+      {
+        "day": -29,
+        "sst": 27.04,
+        "salinity": 35.69,
+        "chlorophyll": 0.75
+      },
+      {
+        "day": -28,
+        "sst": 27.04,
+        "salinity": 35.66,
+        "chlorophyll": 0.9
+      },
+      {
+        "day": -27,
+        "sst": 26.84,
+        "salinity": 35.99,
+        "chlorophyll": 0.43
+      },
+      {
+        "day": -26,
+        "sst": 27.05,
+        "salinity": 35.64,
+        "chlorophyll": 0.87
+      },
+      {
+        "day": -25,
+        "sst": 26.98,
+        "salinity": 35.95,
+        "chlorophyll": 0.66
+      },
+      {
+        "day": -24,
+        "sst": 26.88,
+        "salinity": 35.7,
+        "chlorophyll": 0.35
+      },
+      {
+        "day": -23,
+        "sst": 26.89,
+        "salinity": 35.64,
+        "chlorophyll": 0.3
+      },
+      {
+        "day": -22,
+        "sst": 26.94,
+        "salinity": 35.89,
+        "chlorophyll": 1.08
+      },
+      {
+        "day": -21,
+        "sst": 27.1,
+        "salinity": 35.8,
+        "chlorophyll": 0.6
+      },
+      {
+        "day": -20,
+        "sst": 27.0,
+        "salinity": 35.64,
+        "chlorophyll": 0.68
+      },
+      {
+        "day": -19,
+        "sst": 27.11,
+        "salinity": 35.86,
+        "chlorophyll": 0.85
+      },
+      {
+        "day": -18,
+        "sst": 26.91,
+        "salinity": 35.63,
+        "chlorophyll": 0.98
+      },
+      {
+        "day": -17,
+        "sst": 26.96,
+        "salinity": 35.73,
+        "chlorophyll": 1.06
+      },
+      {
+        "day": -16,
+        "sst": 26.9,
+        "salinity": 35.67,
+        "chlorophyll": 0.6
+      },
+      {
+        "day": -15,
+        "sst": 27.11,
+        "salinity": 35.82,
+        "chlorophyll": 1.02
+      },
+      {
+        "day": -14,
+        "sst": 26.93,
+        "salinity": 35.84,
+        "chlorophyll": 0.79
+      },
+      {
+        "day": -13,
+        "sst": 27.05,
+        "salinity": 35.61,
+        "chlorophyll": 1.05
+      },
+      {
+        "day": -12,
+        "sst": 26.97,
+        "salinity": 35.96,
+        "chlorophyll": 0.43
+      },
+      {
+        "day": -11,
+        "sst": 26.96,
+        "salinity": 35.68,
+        "chlorophyll": 0.45
+      },
+      {
+        "day": -10,
+        "sst": 27.15,
+        "salinity": 35.89,
+        "chlorophyll": 0.88
+      },
+      {
+        "day": -9,
+        "sst": 27.03,
+        "salinity": 35.71,
+        "chlorophyll": 0.49
+      },
+      {
+        "day": -8,
+        "sst": 26.97,
+        "salinity": 35.83,
+        "chlorophyll": 0.97
+      },
+      {
+        "day": -7,
+        "sst": 27.02,
+        "salinity": 35.74,
+        "chlorophyll": 0.64
+      },
+      {
+        "day": -6,
+        "sst": 27.07,
+        "salinity": 35.86,
+        "chlorophyll": 0.78
+      },
+      {
+        "day": -5,
+        "sst": 27.05,
+        "salinity": 35.61,
+        "chlorophyll": 0.44
+      },
+      {
+        "day": -4,
+        "sst": 27.09,
+        "salinity": 35.63,
+        "chlorophyll": 0.98
+      },
+      {
+        "day": -3,
+        "sst": 27.1,
+        "salinity": 35.76,
+        "chlorophyll": 0.69
+      },
+      {
+        "day": -2,
+        "sst": 27.22,
+        "salinity": 35.64,
+        "chlorophyll": 0.74
+      },
+      {
+        "day": -1,
+        "sst": 27.09,
+        "salinity": 35.95,
+        "chlorophyll": 0.6
+      },
+      {
+        "day": 0,
+        "sst": 27.17,
+        "salinity": 35.71,
+        "chlorophyll": 0.67
+      }
+    ],
+    "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"
+  },
+  {
+    "id": "kutch",
+    "name": "Gulf of Kutch Coral Site",
+    "lat": 22.45,
+    "lng": 69.0667,
+    "type": "coral",
+    "state": "Gujarat",
+    "latest": {
+      "sst_c": 26.85,
+      "salinity_psu": 36.4,
+      "chlorophyll_mg_m3": 0.57
+    },
+    "history": [
+      {
+        "day": -59,
+        "sst": 22.97,
+        "salinity": 36.41,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -58,
+        "sst": 23.19,
+        "salinity": 36.57,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -57,
+        "sst": 23.13,
+        "salinity": 36.52,
+        "chlorophyll": 0.78
+      },
+      {
+        "day": -56,
+        "sst": 23.26,
+        "salinity": 36.52,
+        "chlorophyll": 0.67
+      },
+      {
+        "day": -55,
+        "sst": 23.4,
+        "salinity": 36.47,
+        "chlorophyll": 0.43
+      },
+      {
+        "day": -54,
+        "sst": 23.47,
+        "salinity": 36.49,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -53,
+        "sst": 23.42,
+        "salinity": 36.33,
+        "chlorophyll": 0.72
+      },
+      {
+        "day": -52,
+        "sst": 23.55,
+        "salinity": 36.5,
+        "chlorophyll": 0.72
+      },
+      {
+        "day": -51,
+        "sst": 23.64,
+        "salinity": 36.57,
+        "chlorophyll": 0.5
+      },
+      {
+        "day": -50,
+        "sst": 23.5,
+        "salinity": 36.6,
+        "chlorophyll": 0.14
+      },
+      {
+        "day": -49,
+        "sst": 23.82,
+        "salinity": 36.69,
+        "chlorophyll": 0.65
+      },
+      {
+        "day": -48,
+        "sst": 23.63,
+        "salinity": 36.47,
+        "chlorophyll": 0.79
+      },
+      {
+        "day": -47,
+        "sst": 23.78,
+        "salinity": 36.7,
+        "chlorophyll": 0.5
+      },
+      {
+        "day": -46,
+        "sst": 23.96,
+        "salinity": 36.4,
+        "chlorophyll": 0.73
+      },
+      {
+        "day": -45,
+        "sst": 24.05,
+        "salinity": 36.33,
+        "chlorophyll": 0.31
+      },
+      {
+        "day": -44,
+        "sst": 23.96,
+        "salinity": 36.43,
+        "chlorophyll": 0.22
+      },
+      {
+        "day": -43,
+        "sst": 24.04,
+        "salinity": 36.65,
+        "chlorophyll": 0.63
+      },
+      {
+        "day": -42,
+        "sst": 24.15,
+        "salinity": 36.51,
+        "chlorophyll": 0.34
+      },
+      {
+        "day": -41,
+        "sst": 24.15,
+        "salinity": 36.36,
+        "chlorophyll": 0.47
+      },
+      {
+        "day": -40,
+        "sst": 24.32,
+        "salinity": 36.68,
+        "chlorophyll": 0.74
+      },
+      {
+        "day": -39,
+        "sst": 24.32,
+        "salinity": 36.34,
+        "chlorophyll": 0.23
+      },
+      {
+        "day": -38,
+        "sst": 24.37,
+        "salinity": 36.44,
+        "chlorophyll": 0.33
+      },
+      {
+        "day": -37,
+        "sst": 24.39,
+        "salinity": 36.49,
+        "chlorophyll": 0.49
+      },
+      {
+        "day": -36,
+        "sst": 24.35,
+        "salinity": 36.41,
+        "chlorophyll": 0.12
+      },
+      {
+        "day": -35,
+        "sst": 24.58,
+        "salinity": 36.58,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -34,
+        "sst": 24.73,
+        "salinity": 36.43,
+        "chlorophyll": 0.19
+      },
+      {
+        "day": -33,
+        "sst": 24.75,
+        "salinity": 36.67,
+        "chlorophyll": 0.72
+      },
+      {
+        "day": -32,
+        "sst": 24.59,
+        "salinity": 36.63,
+        "chlorophyll": 0.24
+      },
+      {
+        "day": -31,
+        "sst": 24.73,
+        "salinity": 36.5,
+        "chlorophyll": 0.56
+      },
+      {
+        "day": -30,
+        "sst": 24.74,
+        "salinity": 36.65,
+        "chlorophyll": 0.11
+      },
+      {
+        "day": -29,
+        "sst": 25.07,
+        "salinity": 36.48,
+        "chlorophyll": 0.66
+      },
+      {
+        "day": -28,
+        "sst": 24.92,
+        "salinity": 36.47,
+        "chlorophyll": 0.52
+      },
+      {
+        "day": -27,
+        "sst": 24.96,
+        "salinity": 36.38,
+        "chlorophyll": 0.66
+      },
+      {
+        "day": -26,
+        "sst": 25.18,
+        "salinity": 36.6,
+        "chlorophyll": 0.69
+      },
+      {
+        "day": -25,
+        "sst": 25.27,
+        "salinity": 36.51,
+        "chlorophyll": 0.13
+      },
+      {
+        "day": -24,
+        "sst": 25.18,
+        "salinity": 36.5,
+        "chlorophyll": 0.11
+      },
+      {
+        "day": -23,
+        "sst": 25.41,
+        "salinity": 36.65,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -22,
+        "sst": 25.27,
+        "salinity": 36.63,
+        "chlorophyll": 0.67
+      },
+      {
+        "day": -21,
+        "sst": 25.35,
+        "salinity": 36.48,
+        "chlorophyll": 0.73
+      },
+      {
+        "day": -20,
+        "sst": 25.55,
+        "salinity": 36.41,
+        "chlorophyll": 0.66
+      },
+      {
+        "day": -19,
+        "sst": 25.55,
+        "salinity": 36.55,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -18,
+        "sst": 25.47,
+        "salinity": 36.45,
+        "chlorophyll": 0.48
+      },
+      {
+        "day": -17,
+        "sst": 25.58,
+        "salinity": 36.65,
+        "chlorophyll": 0.47
+      },
+      {
+        "day": -16,
+        "sst": 25.69,
+        "salinity": 36.37,
+        "chlorophyll": 0.72
+      },
+      {
+        "day": -15,
+        "sst": 25.87,
+        "salinity": 36.58,
+        "chlorophyll": 0.23
+      },
+      {
+        "day": -14,
+        "sst": 25.83,
+        "salinity": 36.37,
+        "chlorophyll": 0.46
+      },
+      {
+        "day": -13,
+        "sst": 26.06,
+        "salinity": 36.64,
+        "chlorophyll": 0.52
+      },
+      {
+        "day": -12,
+        "sst": 26.04,
+        "salinity": 36.41,
+        "chlorophyll": 0.33
+      },
+      {
+        "day": -11,
+        "sst": 25.91,
+        "salinity": 36.61,
+        "chlorophyll": 0.61
+      },
+      {
+        "day": -10,
+        "sst": 25.97,
+        "salinity": 36.66,
+        "chlorophyll": 0.52
+      },
+      {
+        "day": -9,
+        "sst": 26.21,
+        "salinity": 36.3,
+        "chlorophyll": 0.2
+      },
+      {
+        "day": -8,
+        "sst": 26.33,
+        "salinity": 36.42,
+        "chlorophyll": 0.77
+      },
+      {
+        "day": -7,
+        "sst": 26.34,
+        "salinity": 36.47,
+        "chlorophyll": 0.3
+      },
+      {
+        "day": -6,
+        "sst": 26.32,
+        "salinity": 36.4,
+        "chlorophyll": 0.37
+      },
+      {
+        "day": -5,
+        "sst": 26.48,
+        "salinity": 36.63,
+        "chlorophyll": 0.32
+      },
+      {
+        "day": -4,
+        "sst": 26.37,
+        "salinity": 36.5,
+        "chlorophyll": 0.53
+      },
+      {
+        "day": -3,
+        "sst": 26.65,
+        "salinity": 36.45,
+        "chlorophyll": 0.52
+      },
+      {
+        "day": -2,
+        "sst": 26.65,
+        "salinity": 36.42,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -1,
+        "sst": 26.54,
+        "salinity": 36.7,
+        "chlorophyll": 0.51
+      },
+      {
+        "day": 0,
+        "sst": 26.85,
+        "salinity": 36.4,
+        "chlorophyll": 0.57
+      }
+    ],
+    "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"
+  },
+  {
+    "id": "agatti",
+    "name": "Agatti eDNA Site",
+    "lat": 10.8386,
+    "lng": 72.1948,
+    "type": "edna",
+    "state": "Lakshadweep",
+    "latest": {
+      "sst_c": 29.91,
+      "salinity_psu": 35.4,
+      "chlorophyll_mg_m3": 0.54
+    },
+    "history": [
+      {
+        "day": -59,
+        "sst": 29.52,
+        "salinity": 35.12,
+        "chlorophyll": 0.42
+      },
+      {
+        "day": -58,
+        "sst": 29.49,
+        "salinity": 35.36,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -57,
+        "sst": 29.51,
+        "salinity": 35.24,
+        "chlorophyll": 0.83
+      },
+      {
+        "day": -56,
+        "sst": 29.48,
+        "salinity": 35.29,
+        "chlorophyll": 0.82
+      },
+      {
+        "day": -55,
+        "sst": 29.59,
+        "salinity": 35.1,
+        "chlorophyll": 0.63
+      },
+      {
+        "day": -54,
+        "sst": 29.42,
+        "salinity": 35.01,
+        "chlorophyll": 0.87
+      },
+      {
+        "day": -53,
+        "sst": 29.48,
+        "salinity": 35.08,
+        "chlorophyll": 0.88
+      },
+      {
+        "day": -52,
+        "sst": 29.39,
+        "salinity": 35.21,
+        "chlorophyll": 0.93
+      },
+      {
+        "day": -51,
+        "sst": 29.6,
+        "salinity": 35.27,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -50,
+        "sst": 29.59,
+        "salinity": 35.34,
+        "chlorophyll": 1.0
+      },
+      {
+        "day": -49,
+        "sst": 29.4,
+        "salinity": 35.04,
+        "chlorophyll": 0.4
+      },
+      {
+        "day": -48,
+        "sst": 29.44,
+        "salinity": 35.32,
+        "chlorophyll": 0.91
+      },
+      {
+        "day": -47,
+        "sst": 29.42,
+        "salinity": 35.27,
+        "chlorophyll": 0.57
+      },
+      {
+        "day": -46,
+        "sst": 29.41,
+        "salinity": 35.14,
+        "chlorophyll": 0.9
+      },
+      {
+        "day": -45,
+        "sst": 29.48,
+        "salinity": 35.32,
+        "chlorophyll": 0.57
+      },
+      {
+        "day": -44,
+        "sst": 29.48,
+        "salinity": 35.12,
+        "chlorophyll": 0.98
+      },
+      {
+        "day": -43,
+        "sst": 29.55,
+        "salinity": 35.35,
+        "chlorophyll": 0.77
+      },
+      {
+        "day": -42,
+        "sst": 29.7,
+        "salinity": 35.03,
+        "chlorophyll": 1.01
+      },
+      {
+        "day": -41,
+        "sst": 29.58,
+        "salinity": 35.35,
+        "chlorophyll": 0.61
+      },
+      {
+        "day": -40,
+        "sst": 29.53,
+        "salinity": 35.02,
+        "chlorophyll": 0.98
+      },
+      {
+        "day": -39,
+        "sst": 29.49,
+        "salinity": 35.08,
+        "chlorophyll": 0.63
+      },
+      {
+        "day": -38,
+        "sst": 29.63,
+        "salinity": 35.36,
+        "chlorophyll": 0.67
+      },
+      {
+        "day": -37,
+        "sst": 29.56,
+        "salinity": 35.29,
+        "chlorophyll": 0.92
+      },
+      {
+        "day": -36,
+        "sst": 29.63,
+        "salinity": 35.25,
+        "chlorophyll": 0.44
+      },
+      {
+        "day": -35,
+        "sst": 29.68,
+        "salinity": 35.0,
+        "chlorophyll": 0.52
+      },
+      {
+        "day": -34,
+        "sst": 29.73,
+        "salinity": 35.07,
+        "chlorophyll": 0.91
+      },
+      {
+        "day": -33,
+        "sst": 29.66,
+        "salinity": 35.31,
+        "chlorophyll": 0.37
+      },
+      {
+        "day": -32,
+        "sst": 29.7,
+        "salinity": 35.25,
+        "chlorophyll": 0.62
+      },
+      {
+        "day": -31,
+        "sst": 29.82,
+        "salinity": 35.15,
+        "chlorophyll": 0.33
+      },
+      {
+        "day": -30,
+        "sst": 29.6,
+        "salinity": 35.15,
+        "chlorophyll": 0.31
+      },
+      {
+        "day": -29,
+        "sst": 29.65,
+        "salinity": 35.33,
+        "chlorophyll": 0.45
+      },
+      {
+        "day": -28,
+        "sst": 29.76,
+        "salinity": 35.25,
+        "chlorophyll": 0.5
+      },
+      {
+        "day": -27,
+        "sst": 29.78,
+        "salinity": 35.14,
+        "chlorophyll": 0.4
+      },
+      {
+        "day": -26,
+        "sst": 29.7,
+        "salinity": 35.24,
+        "chlorophyll": 0.43
+      },
+      {
+        "day": -25,
+        "sst": 29.84,
+        "salinity": 35.12,
+        "chlorophyll": 0.53
+      },
+      {
+        "day": -24,
+        "sst": 29.82,
+        "salinity": 35.24,
+        "chlorophyll": 0.57
+      },
+      {
+        "day": -23,
+        "sst": 29.88,
+        "salinity": 35.4,
+        "chlorophyll": 0.57
+      },
+      {
+        "day": -22,
+        "sst": 29.89,
+        "salinity": 35.14,
+        "chlorophyll": 0.45
+      },
+      {
+        "day": -21,
+        "sst": 29.91,
+        "salinity": 35.37,
+        "chlorophyll": 0.62
+      },
+      {
+        "day": -20,
+        "sst": 29.71,
+        "salinity": 35.29,
+        "chlorophyll": 0.4
+      },
+      {
+        "day": -19,
+        "sst": 29.87,
+        "salinity": 35.24,
+        "chlorophyll": 0.44
+      },
+      {
+        "day": -18,
+        "sst": 29.77,
+        "salinity": 35.26,
+        "chlorophyll": 0.33
+      },
+      {
+        "day": -17,
+        "sst": 29.93,
+        "salinity": 35.1,
+        "chlorophyll": 0.73
+      },
+      {
+        "day": -16,
+        "sst": 29.69,
+        "salinity": 35.4,
+        "chlorophyll": 0.83
+      },
+      {
+        "day": -15,
+        "sst": 29.89,
+        "salinity": 35.01,
+        "chlorophyll": 0.85
+      },
+      {
+        "day": -14,
+        "sst": 29.83,
+        "salinity": 35.15,
+        "chlorophyll": 0.74
+      },
+      {
+        "day": -13,
+        "sst": 29.85,
+        "salinity": 35.06,
+        "chlorophyll": 0.86
+      },
+      {
+        "day": -12,
+        "sst": 29.91,
+        "salinity": 35.12,
+        "chlorophyll": 0.83
+      },
+      {
+        "day": -11,
+        "sst": 29.93,
+        "salinity": 35.11,
+        "chlorophyll": 0.78
+      },
+      {
+        "day": -10,
+        "sst": 29.78,
+        "salinity": 35.33,
+        "chlorophyll": 0.38
+      },
+      {
+        "day": -9,
+        "sst": 29.97,
+        "salinity": 35.05,
+        "chlorophyll": 0.39
+      },
+      {
+        "day": -8,
+        "sst": 29.79,
+        "salinity": 35.08,
+        "chlorophyll": 0.46
+      },
+      {
+        "day": -7,
+        "sst": 29.85,
+        "salinity": 35.21,
+        "chlorophyll": 0.46
+      },
+      {
+        "day": -6,
+        "sst": 29.99,
+        "salinity": 35.12,
+        "chlorophyll": 0.33
+      },
+      {
+        "day": -5,
+        "sst": 29.94,
+        "salinity": 35.08,
+        "chlorophyll": 1.05
+      },
+      {
+        "day": -4,
+        "sst": 29.9,
+        "salinity": 35.0,
+        "chlorophyll": 0.84
+      },
+      {
+        "day": -3,
+        "sst": 30.08,
+        "salinity": 35.33,
+        "chlorophyll": 0.84
+      },
+      {
+        "day": -2,
+        "sst": 29.86,
+        "salinity": 35.04,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -1,
+        "sst": 30.05,
+        "salinity": 35.04,
+        "chlorophyll": 0.5
+      },
+      {
+        "day": 0,
+        "sst": 29.91,
+        "salinity": 35.4,
+        "chlorophyll": 0.54
+      }
+    ],
+    "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"
+  },
+  {
+    "id": "kadmat",
+    "name": "Kadmat Coral Site",
+    "lat": 11.2233,
+    "lng": 72.7833,
+    "type": "coral",
+    "state": "Lakshadweep",
+    "latest": {
+      "sst_c": 30.25,
+      "salinity_psu": 35.38,
+      "chlorophyll_mg_m3": 0.75
+    },
+    "history": [
+      {
+        "day": -59,
+        "sst": 26.44,
+        "salinity": 35.14,
+        "chlorophyll": 0.14
+      },
+      {
+        "day": -58,
+        "sst": 26.37,
+        "salinity": 35.22,
+        "chlorophyll": 0.64
+      },
+      {
+        "day": -57,
+        "sst": 26.52,
+        "salinity": 35.4,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -56,
+        "sst": 26.71,
+        "salinity": 35.12,
+        "chlorophyll": 0.68
+      },
+      {
+        "day": -55,
+        "sst": 26.75,
+        "salinity": 35.17,
+        "chlorophyll": 0.29
+      },
+      {
+        "day": -54,
+        "sst": 26.74,
+        "salinity": 35.35,
+        "chlorophyll": 0.7
+      },
+      {
+        "day": -53,
+        "sst": 26.7,
+        "salinity": 35.43,
+        "chlorophyll": 0.15
+      },
+      {
+        "day": -52,
+        "sst": 26.86,
+        "salinity": 35.48,
+        "chlorophyll": 0.22
+      },
+      {
+        "day": -51,
+        "sst": 26.92,
+        "salinity": 35.44,
+        "chlorophyll": 0.64
+      },
+      {
+        "day": -50,
+        "sst": 27.06,
+        "salinity": 35.42,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -49,
+        "sst": 27.13,
+        "salinity": 35.12,
+        "chlorophyll": 0.75
+      },
+      {
+        "day": -48,
+        "sst": 27.04,
+        "salinity": 35.27,
+        "chlorophyll": 0.47
+      },
+      {
+        "day": -47,
+        "sst": 27.29,
+        "salinity": 35.37,
+        "chlorophyll": 0.15
+      },
+      {
+        "day": -46,
+        "sst": 27.23,
+        "salinity": 35.24,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -45,
+        "sst": 27.38,
+        "salinity": 35.44,
+        "chlorophyll": 0.78
+      },
+      {
+        "day": -44,
+        "sst": 27.28,
+        "salinity": 35.47,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -43,
+        "sst": 27.42,
+        "salinity": 35.12,
+        "chlorophyll": 0.21
+      },
+      {
+        "day": -42,
+        "sst": 27.46,
+        "salinity": 35.38,
+        "chlorophyll": 0.54
+      },
+      {
+        "day": -41,
+        "sst": 27.66,
+        "salinity": 35.33,
+        "chlorophyll": 0.45
+      },
+      {
+        "day": -40,
+        "sst": 27.78,
+        "salinity": 35.37,
+        "chlorophyll": 0.27
+      },
+      {
+        "day": -39,
+        "sst": 27.71,
+        "salinity": 35.38,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -38,
+        "sst": 27.81,
+        "salinity": 35.2,
+        "chlorophyll": 0.28
+      },
+      {
+        "day": -37,
+        "sst": 27.88,
+        "salinity": 35.25,
+        "chlorophyll": 0.67
+      },
+      {
+        "day": -36,
+        "sst": 27.91,
+        "salinity": 35.5,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -35,
+        "sst": 27.99,
+        "salinity": 35.16,
+        "chlorophyll": 0.68
+      },
+      {
+        "day": -34,
+        "sst": 28.12,
+        "salinity": 35.45,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -33,
+        "sst": 28.07,
+        "salinity": 35.2,
+        "chlorophyll": 0.78
+      },
+      {
+        "day": -32,
+        "sst": 28.0,
+        "salinity": 35.19,
+        "chlorophyll": 0.51
+      },
+      {
+        "day": -31,
+        "sst": 28.17,
+        "salinity": 35.19,
+        "chlorophyll": 0.37
+      },
+      {
+        "day": -30,
+        "sst": 28.35,
+        "salinity": 35.28,
+        "chlorophyll": 0.69
+      },
+      {
+        "day": -29,
+        "sst": 28.31,
+        "salinity": 35.15,
+        "chlorophyll": 0.4
+      },
+      {
+        "day": -28,
+        "sst": 28.43,
+        "salinity": 35.14,
+        "chlorophyll": 0.33
+      },
+      {
+        "day": -27,
+        "sst": 28.47,
+        "salinity": 35.1,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -26,
+        "sst": 28.54,
+        "salinity": 35.35,
+        "chlorophyll": 0.24
+      },
+      {
+        "day": -25,
+        "sst": 28.58,
+        "salinity": 35.18,
+        "chlorophyll": 0.54
+      },
+      {
+        "day": -24,
+        "sst": 28.77,
+        "salinity": 35.25,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -23,
+        "sst": 28.62,
+        "salinity": 35.28,
+        "chlorophyll": 0.45
+      },
+      {
+        "day": -22,
+        "sst": 28.8,
+        "salinity": 35.29,
+        "chlorophyll": 0.53
+      },
+      {
+        "day": -21,
+        "sst": 28.89,
+        "salinity": 35.15,
+        "chlorophyll": 0.61
+      },
+      {
+        "day": -20,
+        "sst": 28.8,
+        "salinity": 35.24,
+        "chlorophyll": 0.66
+      },
+      {
+        "day": -19,
+        "sst": 29.09,
+        "salinity": 35.22,
+        "chlorophyll": 0.42
+      },
+      {
+        "day": -18,
+        "sst": 29.07,
+        "salinity": 35.12,
+        "chlorophyll": 0.13
+      },
+      {
+        "day": -17,
+        "sst": 28.97,
+        "salinity": 35.39,
+        "chlorophyll": 0.58
+      },
+      {
+        "day": -16,
+        "sst": 29.02,
+        "salinity": 35.34,
+        "chlorophyll": 0.15
+      },
+      {
+        "day": -15,
+        "sst": 29.33,
+        "salinity": 35.26,
+        "chlorophyll": 0.37
+      },
+      {
+        "day": -14,
+        "sst": 29.35,
+        "salinity": 35.39,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -13,
+        "sst": 29.3,
+        "salinity": 35.47,
+        "chlorophyll": 0.67
+      },
+      {
+        "day": -12,
+        "sst": 29.41,
+        "salinity": 35.41,
+        "chlorophyll": 0.36
+      },
+      {
+        "day": -11,
+        "sst": 29.5,
+        "salinity": 35.48,
+        "chlorophyll": 0.11
+      },
+      {
+        "day": -10,
+        "sst": 29.51,
+        "salinity": 35.31,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -9,
+        "sst": 29.71,
+        "salinity": 35.44,
+        "chlorophyll": 0.39
+      },
+      {
+        "day": -8,
+        "sst": 29.64,
+        "salinity": 35.47,
+        "chlorophyll": 0.14
+      },
+      {
+        "day": -7,
+        "sst": 29.72,
+        "salinity": 35.39,
+        "chlorophyll": 0.1
+      },
+      {
+        "day": -6,
+        "sst": 29.73,
+        "salinity": 35.34,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -5,
+        "sst": 29.83,
+        "salinity": 35.25,
+        "chlorophyll": 0.78
+      },
+      {
+        "day": -4,
+        "sst": 30.01,
+        "salinity": 35.4,
+        "chlorophyll": 0.22
+      },
+      {
+        "day": -3,
+        "sst": 30.09,
+        "salinity": 35.49,
+        "chlorophyll": 0.36
+      },
+      {
+        "day": -2,
+        "sst": 29.9,
+        "salinity": 35.27,
+        "chlorophyll": 0.56
+      },
+      {
+        "day": -1,
+        "sst": 30.15,
+        "salinity": 35.22,
+        "chlorophyll": 0.56
+      },
+      {
+        "day": 0,
+        "sst": 30.25,
+        "salinity": 35.38,
+        "chlorophyll": 0.75
+      }
+    ],
+    "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"
+  },
+  {
+    "id": "havelock",
+    "name": "Havelock eDNA Site",
+    "lat": 12.0146,
+    "lng": 92.9871,
+    "type": "edna",
+    "state": "Andaman & Nicobar",
+    "latest": {
+      "sst_c": 28.68,
+      "salinity_psu": 32.92,
+      "chlorophyll_mg_m3": 0.37
+    },
+    "history": [
+      {
+        "day": -59,
+        "sst": 28.04,
+        "salinity": 32.88,
+        "chlorophyll": 0.8
+      },
+      {
+        "day": -58,
+        "sst": 27.95,
+        "salinity": 32.94,
+        "chlorophyll": 0.84
+      },
+      {
+        "day": -57,
+        "sst": 28.16,
+        "salinity": 33.06,
+        "chlorophyll": 1.07
+      },
+      {
+        "day": -56,
+        "sst": 28.03,
+        "salinity": 33.08,
+        "chlorophyll": 0.56
+      },
+      {
+        "day": -55,
+        "sst": 27.92,
+        "salinity": 32.94,
+        "chlorophyll": 0.68
+      },
+      {
+        "day": -54,
+        "sst": 28.07,
+        "salinity": 33.07,
+        "chlorophyll": 0.63
+      },
+      {
+        "day": -53,
+        "sst": 28.13,
+        "salinity": 33.14,
+        "chlorophyll": 0.53
+      },
+      {
+        "day": -52,
+        "sst": 28.17,
+        "salinity": 33.12,
+        "chlorophyll": 0.72
+      },
+      {
+        "day": -51,
+        "sst": 27.94,
+        "salinity": 32.86,
+        "chlorophyll": 0.84
+      },
+      {
+        "day": -50,
+        "sst": 28.0,
+        "salinity": 33.1,
+        "chlorophyll": 0.43
+      },
+      {
+        "day": -49,
+        "sst": 28.04,
+        "salinity": 32.9,
+        "chlorophyll": 0.97
+      },
+      {
+        "day": -48,
+        "sst": 28.17,
+        "salinity": 32.92,
+        "chlorophyll": 0.9
+      },
+      {
+        "day": -47,
+        "sst": 27.98,
+        "salinity": 33.13,
+        "chlorophyll": 0.38
+      },
+      {
+        "day": -46,
+        "sst": 28.24,
+        "salinity": 33.1,
+        "chlorophyll": 0.99
+      },
+      {
+        "day": -45,
+        "sst": 28.21,
+        "salinity": 33.02,
+        "chlorophyll": 0.49
+      },
+      {
+        "day": -44,
+        "sst": 28.24,
+        "salinity": 33.12,
+        "chlorophyll": 0.53
+      },
+      {
+        "day": -43,
+        "sst": 28.21,
+        "salinity": 33.17,
+        "chlorophyll": 0.61
+      },
+      {
+        "day": -42,
+        "sst": 28.31,
+        "salinity": 33.19,
+        "chlorophyll": 0.55
+      },
+      {
+        "day": -41,
+        "sst": 28.2,
+        "salinity": 32.81,
+        "chlorophyll": 0.5
+      },
+      {
+        "day": -40,
+        "sst": 28.23,
+        "salinity": 33.11,
+        "chlorophyll": 1.0
+      },
+      {
+        "day": -39,
+        "sst": 28.3,
+        "salinity": 33.16,
+        "chlorophyll": 0.86
+      },
+      {
+        "day": -38,
+        "sst": 28.25,
+        "salinity": 33.1,
+        "chlorophyll": 0.74
+      },
+      {
+        "day": -37,
+        "sst": 28.25,
+        "salinity": 33.11,
+        "chlorophyll": 1.07
+      },
+      {
+        "day": -36,
+        "sst": 28.17,
+        "salinity": 32.87,
+        "chlorophyll": 0.85
+      },
+      {
+        "day": -35,
+        "sst": 28.15,
+        "salinity": 32.87,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -34,
+        "sst": 28.21,
+        "salinity": 32.97,
+        "chlorophyll": 0.75
+      },
+      {
+        "day": -33,
+        "sst": 28.15,
+        "salinity": 33.03,
+        "chlorophyll": 0.5
+      },
+      {
+        "day": -32,
+        "sst": 28.22,
+        "salinity": 33.08,
+        "chlorophyll": 0.42
+      },
+      {
+        "day": -31,
+        "sst": 28.18,
+        "salinity": 32.93,
+        "chlorophyll": 0.34
+      },
+      {
+        "day": -30,
+        "sst": 28.42,
+        "salinity": 33.05,
+        "chlorophyll": 0.83
+      },
+      {
+        "day": -29,
+        "sst": 28.3,
+        "salinity": 33.03,
+        "chlorophyll": 0.59
+      },
+      {
+        "day": -28,
+        "sst": 28.4,
+        "salinity": 32.93,
+        "chlorophyll": 0.48
+      },
+      {
+        "day": -27,
+        "sst": 28.23,
+        "salinity": 32.83,
+        "chlorophyll": 0.7
+      },
+      {
+        "day": -26,
+        "sst": 28.3,
+        "salinity": 33.01,
+        "chlorophyll": 0.37
+      },
+      {
+        "day": -25,
+        "sst": 28.26,
+        "salinity": 32.89,
+        "chlorophyll": 0.57
+      },
+      {
+        "day": -24,
+        "sst": 28.31,
+        "salinity": 32.89,
+        "chlorophyll": 0.9
+      },
+      {
+        "day": -23,
+        "sst": 28.37,
+        "salinity": 33.2,
+        "chlorophyll": 0.96
+      },
+      {
+        "day": -22,
+        "sst": 28.51,
+        "salinity": 32.8,
+        "chlorophyll": 0.84
+      },
+      {
+        "day": -21,
+        "sst": 28.36,
+        "salinity": 33.16,
+        "chlorophyll": 0.79
+      },
+      {
+        "day": -20,
+        "sst": 28.43,
+        "salinity": 33.18,
+        "chlorophyll": 0.85
+      },
+      {
+        "day": -19,
+        "sst": 28.35,
+        "salinity": 33.17,
+        "chlorophyll": 1.06
+      },
+      {
+        "day": -18,
+        "sst": 28.38,
+        "salinity": 33.02,
+        "chlorophyll": 0.53
+      },
+      {
+        "day": -17,
+        "sst": 28.54,
+        "salinity": 33.13,
+        "chlorophyll": 0.6
+      },
+      {
+        "day": -16,
+        "sst": 28.52,
+        "salinity": 32.98,
+        "chlorophyll": 0.34
+      },
+      {
+        "day": -15,
+        "sst": 28.56,
+        "salinity": 32.88,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -14,
+        "sst": 28.58,
+        "salinity": 32.87,
+        "chlorophyll": 1.07
+      },
+      {
+        "day": -13,
+        "sst": 28.47,
+        "salinity": 32.8,
+        "chlorophyll": 0.35
+      },
+      {
+        "day": -12,
+        "sst": 28.52,
+        "salinity": 33.11,
+        "chlorophyll": 0.99
+      },
+      {
+        "day": -11,
+        "sst": 28.46,
+        "salinity": 32.84,
+        "chlorophyll": 0.73
+      },
+      {
+        "day": -10,
+        "sst": 28.55,
+        "salinity": 33.19,
+        "chlorophyll": 0.92
+      },
+      {
+        "day": -9,
+        "sst": 28.54,
+        "salinity": 33.18,
+        "chlorophyll": 0.9
+      },
+      {
+        "day": -8,
+        "sst": 28.41,
+        "salinity": 32.98,
+        "chlorophyll": 0.57
+      },
+      {
+        "day": -7,
+        "sst": 28.4,
+        "salinity": 32.82,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -6,
+        "sst": 28.55,
+        "salinity": 33.03,
+        "chlorophyll": 0.48
+      },
+      {
+        "day": -5,
+        "sst": 28.47,
+        "salinity": 32.96,
+        "chlorophyll": 0.8
+      },
+      {
+        "day": -4,
+        "sst": 28.53,
+        "salinity": 32.81,
+        "chlorophyll": 0.84
+      },
+      {
+        "day": -3,
+        "sst": 28.57,
+        "salinity": 33.06,
+        "chlorophyll": 0.79
+      },
+      {
+        "day": -2,
+        "sst": 28.65,
+        "salinity": 33.03,
+        "chlorophyll": 0.86
+      },
+      {
+        "day": -1,
+        "sst": 28.45,
+        "salinity": 33.17,
+        "chlorophyll": 0.38
+      },
+      {
+        "day": 0,
+        "sst": 28.68,
+        "salinity": 32.92,
+        "chlorophyll": 0.37
+      }
+    ],
+    "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"
+  },
+  {
+    "id": "diu",
+    "name": "Diu Buoy",
+    "lat": 20.7144,
+    "lng": 70.9876,
+    "type": "buoy",
+    "state": "Daman & Diu",
+    "latest": {
+      "sst_c": 27.33,
+      "salinity_psu": 35.72,
+      "chlorophyll_mg_m3": 0.76
+    },
+    "history": [
+      {
+        "day": -59,
+        "sst": 26.78,
+        "salinity": 35.88,
+        "chlorophyll": 0.62
+      },
+      {
+        "day": -58,
+        "sst": 26.76,
+        "salinity": 35.89,
+        "chlorophyll": 0.73
+      },
+      {
+        "day": -57,
+        "sst": 26.61,
+        "salinity": 35.86,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -56,
+        "sst": 26.74,
+        "salinity": 36.08,
+        "chlorophyll": 0.42
+      },
+      {
+        "day": -55,
+        "sst": 26.79,
+        "salinity": 36.07,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -54,
+        "sst": 26.82,
+        "salinity": 35.85,
+        "chlorophyll": 1.06
+      },
+      {
+        "day": -53,
+        "sst": 26.78,
+        "salinity": 35.92,
+        "chlorophyll": 0.4
+      },
+      {
+        "day": -52,
+        "sst": 26.62,
+        "salinity": 35.94,
+        "chlorophyll": 0.73
+      },
+      {
+        "day": -51,
+        "sst": 26.91,
+        "salinity": 35.82,
+        "chlorophyll": 0.9
+      },
+      {
+        "day": -50,
+        "sst": 26.91,
+        "salinity": 35.84,
+        "chlorophyll": 0.63
+      },
+      {
+        "day": -49,
+        "sst": 26.84,
+        "salinity": 35.91,
+        "chlorophyll": 0.43
+      },
+      {
+        "day": -48,
+        "sst": 26.73,
+        "salinity": 36.03,
+        "chlorophyll": 0.46
+      },
+      {
+        "day": -47,
+        "sst": 26.72,
+        "salinity": 36.02,
+        "chlorophyll": 0.98
+      },
+      {
+        "day": -46,
+        "sst": 26.94,
+        "salinity": 36.07,
+        "chlorophyll": 1.1
+      },
+      {
+        "day": -45,
+        "sst": 26.83,
+        "salinity": 35.92,
+        "chlorophyll": 0.53
+      },
+      {
+        "day": -44,
+        "sst": 26.72,
+        "salinity": 35.74,
+        "chlorophyll": 0.88
+      },
+      {
+        "day": -43,
+        "sst": 26.86,
+        "salinity": 35.83,
+        "chlorophyll": 0.4
+      },
+      {
+        "day": -42,
+        "sst": 26.92,
+        "salinity": 35.74,
+        "chlorophyll": 0.8
+      },
+      {
+        "day": -41,
+        "sst": 27.0,
+        "salinity": 35.83,
+        "chlorophyll": 0.66
+      },
+      {
+        "day": -40,
+        "sst": 26.92,
+        "salinity": 35.82,
+        "chlorophyll": 0.77
+      },
+      {
+        "day": -39,
+        "sst": 26.92,
+        "salinity": 35.85,
+        "chlorophyll": 0.55
+      },
+      {
+        "day": -38,
+        "sst": 26.89,
+        "salinity": 35.7,
+        "chlorophyll": 0.5
+      },
+      {
+        "day": -37,
+        "sst": 26.84,
+        "salinity": 36.0,
+        "chlorophyll": 0.65
+      },
+      {
+        "day": -36,
+        "sst": 27.03,
+        "salinity": 35.75,
+        "chlorophyll": 0.89
+      },
+      {
+        "day": -35,
+        "sst": 27.05,
+        "salinity": 35.89,
+        "chlorophyll": 0.59
+      },
+      {
+        "day": -34,
+        "sst": 26.89,
+        "salinity": 35.92,
+        "chlorophyll": 0.44
+      },
+      {
+        "day": -33,
+        "sst": 26.99,
+        "salinity": 36.04,
+        "chlorophyll": 0.99
+      },
+      {
+        "day": -32,
+        "sst": 26.86,
+        "salinity": 35.92,
+        "chlorophyll": 0.51
+      },
+      {
+        "day": -31,
+        "sst": 27.1,
+        "salinity": 35.73,
+        "chlorophyll": 0.36
+      },
+      {
+        "day": -30,
+        "sst": 26.85,
+        "salinity": 35.9,
+        "chlorophyll": 0.32
+      },
+      {
+        "day": -29,
+        "sst": 27.02,
+        "salinity": 35.86,
+        "chlorophyll": 0.77
+      },
+      {
+        "day": -28,
+        "sst": 27.13,
+        "salinity": 35.92,
+        "chlorophyll": 0.73
+      },
+      {
+        "day": -27,
+        "sst": 27.17,
+        "salinity": 35.89,
+        "chlorophyll": 0.92
+      },
+      {
+        "day": -26,
+        "sst": 26.99,
+        "salinity": 35.79,
+        "chlorophyll": 0.92
+      },
+      {
+        "day": -25,
+        "sst": 27.11,
+        "salinity": 35.82,
+        "chlorophyll": 0.67
+      },
+      {
+        "day": -24,
+        "sst": 27.05,
+        "salinity": 35.86,
+        "chlorophyll": 0.7
+      },
+      {
+        "day": -23,
+        "sst": 27.11,
+        "salinity": 36.04,
+        "chlorophyll": 0.95
+      },
+      {
+        "day": -22,
+        "sst": 27.1,
+        "salinity": 35.77,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -21,
+        "sst": 27.06,
+        "salinity": 35.77,
+        "chlorophyll": 1.06
+      },
+      {
+        "day": -20,
+        "sst": 27.14,
+        "salinity": 36.09,
+        "chlorophyll": 0.89
+      },
+      {
+        "day": -19,
+        "sst": 27.1,
+        "salinity": 35.84,
+        "chlorophyll": 0.48
+      },
+      {
+        "day": -18,
+        "sst": 27.11,
+        "salinity": 35.73,
+        "chlorophyll": 0.6
+      },
+      {
+        "day": -17,
+        "sst": 26.98,
+        "salinity": 35.78,
+        "chlorophyll": 1.03
+      },
+      {
+        "day": -16,
+        "sst": 27.09,
+        "salinity": 35.89,
+        "chlorophyll": 0.66
+      },
+      {
+        "day": -15,
+        "sst": 27.0,
+        "salinity": 36.09,
+        "chlorophyll": 0.56
+      },
+      {
+        "day": -14,
+        "sst": 27.21,
+        "salinity": 35.91,
+        "chlorophyll": 0.96
+      },
+      {
+        "day": -13,
+        "sst": 27.26,
+        "salinity": 35.81,
+        "chlorophyll": 0.74
+      },
+      {
+        "day": -12,
+        "sst": 27.07,
+        "salinity": 35.96,
+        "chlorophyll": 0.59
+      },
+      {
+        "day": -11,
+        "sst": 27.23,
+        "salinity": 36.03,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -10,
+        "sst": 27.15,
+        "salinity": 36.06,
+        "chlorophyll": 0.71
+      },
+      {
+        "day": -9,
+        "sst": 27.16,
+        "salinity": 36.05,
+        "chlorophyll": 0.69
+      },
+      {
+        "day": -8,
+        "sst": 27.2,
+        "salinity": 35.94,
+        "chlorophyll": 0.7
+      },
+      {
+        "day": -7,
+        "sst": 27.11,
+        "salinity": 35.77,
+        "chlorophyll": 0.36
+      },
+      {
+        "day": -6,
+        "sst": 27.27,
+        "salinity": 35.78,
+        "chlorophyll": 0.45
+      },
+      {
+        "day": -5,
+        "sst": 27.2,
+        "salinity": 35.99,
+        "chlorophyll": 0.39
+      },
+      {
+        "day": -4,
+        "sst": 27.17,
+        "salinity": 36.02,
+        "chlorophyll": 0.88
+      },
+      {
+        "day": -3,
+        "sst": 27.25,
+        "salinity": 35.89,
+        "chlorophyll": 0.47
+      },
+      {
+        "day": -2,
+        "sst": 27.17,
+        "salinity": 36.03,
+        "chlorophyll": 0.32
+      },
+      {
+        "day": -1,
+        "sst": 27.14,
+        "salinity": 35.93,
+        "chlorophyll": 0.43
+      },
+      {
+        "day": 0,
+        "sst": 27.33,
+        "salinity": 35.72,
+        "chlorophyll": 0.76
+      }
+    ],
+    "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"
+  },
+  {
+    "id": "alappuzha",
+    "name": "Alappuzha Advisory Zone",
+    "lat": 9.4981,
+    "lng": 76.3388,
+    "type": "advisory",
+    "state": "Kerala",
+    "latest": {
+      "sst_c": 29.27,
+      "salinity_psu": 34.38,
+      "chlorophyll_mg_m3": 0.67
+    },
+    "history": [
+      {
+        "day": -59,
+        "sst": 28.47,
+        "salinity": 34.1,
+        "chlorophyll": 0.44
+      },
+      {
+        "day": -58,
+        "sst": 28.75,
+        "salinity": 34.24,
+        "chlorophyll": 0.75
+      },
+      {
+        "day": -57,
+        "sst": 28.48,
+        "salinity": 34.29,
+        "chlorophyll": 0.83
+      },
+      {
+        "day": -56,
+        "sst": 28.57,
+        "salinity": 34.03,
+        "chlorophyll": 0.66
+      },
+      {
+        "day": -55,
+        "sst": 28.79,
+        "salinity": 34.35,
+        "chlorophyll": 0.44
+      },
+      {
+        "day": -54,
+        "sst": 28.75,
+        "salinity": 34.24,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -53,
+        "sst": 28.76,
+        "salinity": 34.07,
+        "chlorophyll": 0.83
+      },
+      {
+        "day": -52,
+        "sst": 28.6,
+        "salinity": 34.29,
+        "chlorophyll": 0.57
+      },
+      {
+        "day": -51,
+        "sst": 28.67,
+        "salinity": 34.24,
+        "chlorophyll": 0.48
+      },
+      {
+        "day": -50,
+        "sst": 28.66,
+        "salinity": 34.04,
+        "chlorophyll": 0.46
+      },
+      {
+        "day": -49,
+        "sst": 28.81,
+        "salinity": 34.2,
+        "chlorophyll": 0.64
+      },
+      {
+        "day": -48,
+        "sst": 28.6,
+        "salinity": 34.04,
+        "chlorophyll": 0.68
+      },
+      {
+        "day": -47,
+        "sst": 28.75,
+        "salinity": 34.02,
+        "chlorophyll": 0.93
+      },
+      {
+        "day": -46,
+        "sst": 28.73,
+        "salinity": 34.05,
+        "chlorophyll": 0.69
+      },
+      {
+        "day": -45,
+        "sst": 28.63,
+        "salinity": 34.24,
+        "chlorophyll": 0.96
+      },
+      {
+        "day": -44,
+        "sst": 28.87,
+        "salinity": 34.31,
+        "chlorophyll": 0.82
+      },
+      {
+        "day": -43,
+        "sst": 28.77,
+        "salinity": 34.15,
+        "chlorophyll": 0.33
+      },
+      {
+        "day": -42,
+        "sst": 28.78,
+        "salinity": 34.09,
+        "chlorophyll": 0.94
+      },
+      {
+        "day": -41,
+        "sst": 28.87,
+        "salinity": 34.15,
+        "chlorophyll": 0.77
+      },
+      {
+        "day": -40,
+        "sst": 28.86,
+        "salinity": 34.3,
+        "chlorophyll": 0.86
+      },
+      {
+        "day": -39,
+        "sst": 28.68,
+        "salinity": 34.05,
+        "chlorophyll": 0.68
+      },
+      {
+        "day": -38,
+        "sst": 28.73,
+        "salinity": 34.34,
+        "chlorophyll": 0.53
+      },
+      {
+        "day": -37,
+        "sst": 28.93,
+        "salinity": 34.16,
+        "chlorophyll": 0.45
+      },
+      {
+        "day": -36,
+        "sst": 28.89,
+        "salinity": 34.32,
+        "chlorophyll": 0.76
+      },
+      {
+        "day": -35,
+        "sst": 28.73,
+        "salinity": 34.0,
+        "chlorophyll": 0.82
+      },
+      {
+        "day": -34,
+        "sst": 28.91,
+        "salinity": 34.13,
+        "chlorophyll": 0.59
+      },
+      {
+        "day": -33,
+        "sst": 28.76,
+        "salinity": 34.26,
+        "chlorophyll": 0.5
+      },
+      {
+        "day": -32,
+        "sst": 28.98,
+        "salinity": 34.17,
+        "chlorophyll": 0.59
+      },
+      {
+        "day": -31,
+        "sst": 28.81,
+        "salinity": 34.27,
+        "chlorophyll": 0.9
+      },
+      {
+        "day": -30,
+        "sst": 28.86,
+        "salinity": 34.31,
+        "chlorophyll": 0.69
+      },
+      {
+        "day": -29,
+        "sst": 28.86,
+        "salinity": 34.22,
+        "chlorophyll": 0.5
+      },
+      {
+        "day": -28,
+        "sst": 28.85,
+        "salinity": 34.14,
+        "chlorophyll": 0.86
+      },
+      {
+        "day": -27,
+        "sst": 28.99,
+        "salinity": 34.34,
+        "chlorophyll": 0.83
+      },
+      {
+        "day": -26,
+        "sst": 29.0,
+        "salinity": 34.18,
+        "chlorophyll": 0.86
+      },
+      {
+        "day": -25,
+        "sst": 28.84,
+        "salinity": 34.09,
+        "chlorophyll": 0.62
+      },
+      {
+        "day": -24,
+        "sst": 28.9,
+        "salinity": 34.22,
+        "chlorophyll": 0.86
+      },
+      {
+        "day": -23,
+        "sst": 29.02,
+        "salinity": 34.06,
+        "chlorophyll": 1.07
+      },
+      {
+        "day": -22,
+        "sst": 28.82,
+        "salinity": 34.04,
+        "chlorophyll": 0.42
+      },
+      {
+        "day": -21,
+        "sst": 29.11,
+        "salinity": 34.17,
+        "chlorophyll": 0.35
+      },
+      {
+        "day": -20,
+        "sst": 28.91,
+        "salinity": 34.03,
+        "chlorophyll": 0.33
+      },
+      {
+        "day": -19,
+        "sst": 28.97,
+        "salinity": 34.39,
+        "chlorophyll": 0.79
+      },
+      {
+        "day": -18,
+        "sst": 29.02,
+        "salinity": 34.28,
+        "chlorophyll": 0.78
+      },
+      {
+        "day": -17,
+        "sst": 29.15,
+        "salinity": 34.33,
+        "chlorophyll": 0.81
+      },
+      {
+        "day": -16,
+        "sst": 29.01,
+        "salinity": 34.08,
+        "chlorophyll": 0.83
+      },
+      {
+        "day": -15,
+        "sst": 29.13,
+        "salinity": 34.11,
+        "chlorophyll": 0.33
+      },
+      {
+        "day": -14,
+        "sst": 29.08,
+        "salinity": 34.21,
+        "chlorophyll": 0.49
+      },
+      {
+        "day": -13,
+        "sst": 28.96,
+        "salinity": 34.01,
+        "chlorophyll": 0.49
+      },
+      {
+        "day": -12,
+        "sst": 28.92,
+        "salinity": 34.06,
+        "chlorophyll": 1.1
+      },
+      {
+        "day": -11,
+        "sst": 29.16,
+        "salinity": 34.14,
+        "chlorophyll": 0.62
+      },
+      {
+        "day": -10,
+        "sst": 29.12,
+        "salinity": 34.21,
+        "chlorophyll": 0.89
+      },
+      {
+        "day": -9,
+        "sst": 28.97,
+        "salinity": 34.04,
+        "chlorophyll": 0.53
+      },
+      {
+        "day": -8,
+        "sst": 29.21,
+        "salinity": 34.37,
+        "chlorophyll": 0.58
+      },
+      {
+        "day": -7,
+        "sst": 29.26,
+        "salinity": 34.11,
+        "chlorophyll": 0.79
+      },
+      {
+        "day": -6,
+        "sst": 29.04,
+        "salinity": 34.37,
+        "chlorophyll": 0.76
+      },
+      {
+        "day": -5,
+        "sst": 29.07,
+        "salinity": 34.16,
+        "chlorophyll": 0.39
+      },
+      {
+        "day": -4,
+        "sst": 29.02,
+        "salinity": 34.12,
+        "chlorophyll": 1.06
+      },
+      {
+        "day": -3,
+        "sst": 29.25,
+        "salinity": 34.38,
+        "chlorophyll": 1.0
+      },
+      {
+        "day": -2,
+        "sst": 29.26,
+        "salinity": 34.23,
+        "chlorophyll": 0.86
+      },
+      {
+        "day": -1,
+        "sst": 29.32,
+        "salinity": 34.23,
+        "chlorophyll": 0.92
+      },
+      {
+        "day": 0,
+        "sst": 29.27,
+        "salinity": 34.38,
+        "chlorophyll": 0.67
       }
     ],
     "source": "simulated (INCOIS/CMEMS-shaped; no live feed in this build)"

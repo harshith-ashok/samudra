@@ -1,13 +1,21 @@
 import type {
   Advisory,
+  BiodiversityIndexResponse,
   BleachingRisk,
+  CatchVsSstResponse,
   ChatResponse,
+  ComplianceTrendResponse,
+  GlossaryEntry,
   NlqResponse,
   RangeShift,
   Species,
   StationDetail,
   StationSummary,
+  PollutionResponse,
   StockForecast,
+  TimelineResponse,
+  VesselActivityResponse,
+  VesselsResponse,
 } from "./types";
 
 const API_BASE = import.meta.env.VITE_API_BASE ?? "http://localhost:8000";
@@ -50,3 +58,17 @@ export const getBleachingRisk = (stationId: string) =>
 
 export const getRangeShift = (species: string) =>
   getJSON<RangeShift>(`/api/predict/range-shift?species=${encodeURIComponent(species)}`);
+
+export const getGlossary = () => getJSON<GlossaryEntry[]>("/api/glossary");
+
+export const getTimeline = (metric: string, days = 30) =>
+  getJSON<TimelineResponse>(`/api/timeline/${encodeURIComponent(metric)}?days=${days}`);
+
+export const getVessels = () => getJSON<VesselsResponse>("/api/vessels");
+
+export const getPollution = () => getJSON<PollutionResponse>("/api/pollution");
+
+export const getCatchVsSst = () => getJSON<CatchVsSstResponse>("/api/analytics/catch-vs-sst");
+export const getBiodiversityIndex = () => getJSON<BiodiversityIndexResponse>("/api/analytics/biodiversity-index");
+export const getComplianceTrend = () => getJSON<ComplianceTrendResponse>("/api/analytics/compliance-trend");
+export const getVesselActivity = () => getJSON<VesselActivityResponse>("/api/analytics/vessel-activity");

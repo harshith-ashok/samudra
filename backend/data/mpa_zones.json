@@ -1,0 +1,32 @@
+[
+  {
+    "id": "mpa-mannar",
+    "name": "Gulf of Mannar Marine National Park",
+    "region": "Gulf of Mannar",
+    "source": "Approximate boundary hand-traced around the known park extent (Rameswaram–Tuticorin island chain) — not official WDPA polygon data (Protected Planet API requires an auth token we don't have in this build).",
+    "polygon": [
+      [9.25, 78.15],
+      [9.28, 78.55],
+      [9.1, 79.05],
+      [8.85, 79.25],
+      [8.75, 79.1],
+      [8.78, 78.6],
+      [8.95, 78.25],
+      [9.25, 78.15]
+    ]
+  },
+  {
+    "id": "mpa-lakshadweep",
+    "name": "Lakshadweep Coral Reef Protected Zone",
+    "region": "Lakshadweep atolls",
+    "source": "Approximate buffer zone around the monitored coral site — not official WDPA polygon data.",
+    "polygon": [
+      [10.75, 72.45],
+      [10.75, 72.85],
+      [10.45, 72.95],
+      [10.35, 72.65],
+      [10.45, 72.4],
+      [10.75, 72.45]
+    ]
+  }
+]
