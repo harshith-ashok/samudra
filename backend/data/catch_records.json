@@ -1,0 +1,290 @@
+[
+  {
+    "id": "catch-0001",
+    "species": "Sardinella longiceps",
+    "region": "Kerala coast",
+    "date": "2025-03-01",
+    "tonnage": 520,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0002",
+    "species": "Sardinella longiceps",
+    "region": "Kerala coast",
+    "date": "2025-04-01",
+    "tonnage": 505,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0003",
+    "species": "Sardinella longiceps",
+    "region": "Kerala coast",
+    "date": "2025-05-01",
+    "tonnage": 490,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0004",
+    "species": "Sardinella longiceps",
+    "region": "Kerala coast",
+    "date": "2025-06-01",
+    "tonnage": 475,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0005",
+    "species": "Sardinella longiceps",
+    "region": "Kerala coast",
+    "date": "2025-07-01",
+    "tonnage": 460,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0006",
+    "species": "Sardinella longiceps",
+    "region": "Kerala coast",
+    "date": "2025-08-01",
+    "tonnage": 445,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0007",
+    "species": "Sardinella longiceps",
+    "region": "Kerala coast",
+    "date": "2025-09-01",
+    "tonnage": 430,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0008",
+    "species": "Sardinella longiceps",
+    "region": "Kerala coast",
+    "date": "2025-10-01",
+    "tonnage": 415,
+    "advisory_status": "active"
+  },
+  {
+    "id": "catch-0009",
+    "species": "Sardinella longiceps",
+    "region": "Kerala coast",
+    "date": "2025-11-01",
+    "tonnage": 400,
+    "advisory_status": "active"
+  },
+  {
+    "id": "catch-0010",
+    "species": "Sardinella longiceps",
+    "region": "Kerala coast",
+    "date": "2025-12-01",
+    "tonnage": 390,
+    "advisory_status": "active"
+  },
+  {
+    "id": "catch-0011",
+    "species": "Sardinella longiceps",
+    "region": "Kerala coast",
+    "date": "2026-01-01",
+    "tonnage": 380,
+    "advisory_status": "active"
+  },
+  {
+    "id": "catch-0012",
+    "species": "Sardinella longiceps",
+    "region": "Kerala coast",
+    "date": "2026-02-01",
+    "tonnage": 360,
+    "advisory_status": "active"
+  },
+  {
+    "id": "catch-0013",
+    "species": "Rastrelliger kanagurta",
+    "region": "Tamil Nadu coast",
+    "date": "2025-03-01",
+    "tonnage": 210,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0014",
+    "species": "Rastrelliger kanagurta",
+    "region": "Tamil Nadu coast",
+    "date": "2025-04-01",
+    "tonnage": 214,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0015",
+    "species": "Rastrelliger kanagurta",
+    "region": "Tamil Nadu coast",
+    "date": "2025-05-01",
+    "tonnage": 208,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0016",
+    "species": "Rastrelliger kanagurta",
+    "region": "Tamil Nadu coast",
+    "date": "2025-06-01",
+    "tonnage": 220,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0017",
+    "species": "Rastrelliger kanagurta",
+    "region": "Tamil Nadu coast",
+    "date": "2025-07-01",
+    "tonnage": 225,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0018",
+    "species": "Rastrelliger kanagurta",
+    "region": "Tamil Nadu coast",
+    "date": "2025-08-01",
+    "tonnage": 218,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0019",
+    "species": "Rastrelliger kanagurta",
+    "region": "Tamil Nadu coast",
+    "date": "2025-09-01",
+    "tonnage": 230,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0020",
+    "species": "Rastrelliger kanagurta",
+    "region": "Tamil Nadu coast",
+    "date": "2025-10-01",
+    "tonnage": 235,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0021",
+    "species": "Rastrelliger kanagurta",
+    "region": "Tamil Nadu coast",
+    "date": "2025-11-01",
+    "tonnage": 228,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0022",
+    "species": "Rastrelliger kanagurta",
+    "region": "Tamil Nadu coast",
+    "date": "2025-12-01",
+    "tonnage": 240,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0023",
+    "species": "Rastrelliger kanagurta",
+    "region": "Tamil Nadu coast",
+    "date": "2026-01-01",
+    "tonnage": 238,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0024",
+    "species": "Rastrelliger kanagurta",
+    "region": "Tamil Nadu coast",
+    "date": "2026-02-01",
+    "tonnage": 245,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0025",
+    "species": "Thunnus albacares",
+    "region": "Arabian Sea",
+    "date": "2025-03-01",
+    "tonnage": 340,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0026",
+    "species": "Thunnus albacares",
+    "region": "Arabian Sea",
+    "date": "2025-04-01",
+    "tonnage": 345,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0027",
+    "species": "Thunnus albacares",
+    "region": "Arabian Sea",
+    "date": "2025-05-01",
+    "tonnage": 350,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0028",
+    "species": "Thunnus albacares",
+    "region": "Arabian Sea",
+    "date": "2025-06-01",
+    "tonnage": 348,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0029",
+    "species": "Thunnus albacares",
+    "region": "Arabian Sea",
+    "date": "2025-07-01",
+    "tonnage": 355,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0030",
+    "species": "Thunnus albacares",
+    "region": "Arabian Sea",
+    "date": "2025-08-01",
+    "tonnage": 360,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0031",
+    "species": "Thunnus albacares",
+    "region": "Arabian Sea",
+    "date": "2025-09-01",
+    "tonnage": 358,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0032",
+    "species": "Thunnus albacares",
+    "region": "Arabian Sea",
+    "date": "2025-10-01",
+    "tonnage": 365,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0033",
+    "species": "Thunnus albacares",
+    "region": "Arabian Sea",
+    "date": "2025-11-01",
+    "tonnage": 370,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0034",
+    "species": "Thunnus albacares",
+    "region": "Arabian Sea",
+    "date": "2025-12-01",
+    "tonnage": 368,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0035",
+    "species": "Thunnus albacares",
+    "region": "Arabian Sea",
+    "date": "2026-01-01",
+    "tonnage": 375,
+    "advisory_status": "none"
+  },
+  {
+    "id": "catch-0036",
+    "species": "Thunnus albacares",
+    "region": "Arabian Sea",
+    "date": "2026-02-01",
+    "tonnage": 380,
+    "advisory_status": "none"
+  }
+]

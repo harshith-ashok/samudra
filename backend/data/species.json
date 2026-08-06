@@ -1,0 +1,58 @@
+[
+  {
+    "sci": "Sardinella longiceps",
+    "common": "Indian oil sardine",
+    "region": "Kerala coast",
+    "status": "NT",
+    "note": "Backbone of Kerala's pelagic fishery; landings are tracked closely for early stock-decline signals."
+  },
+  {
+    "sci": "Chelonia mydas",
+    "common": "Green sea turtle",
+    "region": "Odisha coast",
+    "status": "VU",
+    "note": "Nests seasonally along the Odisha coast; tagged individuals feed regional migration models."
+  },
+  {
+    "sci": "Gymnothorax sp.",
+    "common": "Moray eel (eDNA match)",
+    "region": "Lakshadweep",
+    "status": null,
+    "note": "Flagged via environmental DNA sampling; morphological confirmation is still pending."
+  },
+  {
+    "sci": "Acropora formosa",
+    "common": "Staghorn coral",
+    "region": "Lakshadweep atolls",
+    "status": "VU",
+    "note": "Fast-growing reef-builder under active thermal-stress and bleaching monitoring."
+  },
+  {
+    "sci": "Hippocampus kuda",
+    "common": "Yellow seahorse",
+    "region": "Goa coast",
+    "status": "VU",
+    "note": "Slow-moving and site-faithful, making it especially vulnerable to seagrass habitat loss."
+  },
+  {
+    "sci": "Dugong dugon",
+    "common": "Dugong",
+    "region": "Gulf of Mannar",
+    "status": "VU",
+    "note": "Seagrass grazer whose population trend is a key indicator of coastal habitat health."
+  },
+  {
+    "sci": "Thunnus albacares",
+    "common": "Yellowfin tuna",
+    "region": "Arabian Sea",
+    "status": "LC",
+    "note": "Commercially significant pelagic species tracked through fisheries landings data."
+  },
+  {
+    "sci": "Rastrelliger kanagurta",
+    "common": "Indian mackerel",
+    "region": "Tamil Nadu coast",
+    "status": "LC",
+    "note": "High-volume coastal fishery species with strong, predictable seasonal landing patterns."
+  }
+]

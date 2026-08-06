@@ -1,0 +1,47 @@
+[
+  {
+    "id": "adv-001",
+    "region": "Kerala coast",
+    "species": "Sardinella longiceps",
+    "status": "active",
+    "issued": "2026-07-01",
+    "summary": "Sardine landings down 23% YoY, correlated with a 0.6\u00b0C SST anomaly and 18% chlorophyll-a drop in the upwelling zone. Advisory recommends reduced trawling effort through Q3.",
+    "severity": "high"
+  },
+  {
+    "id": "adv-002",
+    "region": "Lakshadweep atolls",
+    "species": "Acropora formosa",
+    "status": "active",
+    "issued": "2026-07-20",
+    "summary": "Degree Heating Weeks at approximately 6 (Alert Level 1 \u2014 significant bleaching risk). Field verification of reef sites recommended within 10 days. Exact DHW is computed live from station SST history, see /api/predict/bleaching.",
+    "severity": "high"
+  },
+  {
+    "id": "adv-003",
+    "region": "Gulf of Mannar",
+    "species": "Dugong dugon",
+    "status": "active",
+    "issued": "2026-05-10",
+    "summary": "Seagrass habitat protection zone. Boat traffic restrictions in effect during calving season.",
+    "severity": "medium"
+  },
+  {
+    "id": "adv-004",
+    "region": "Goa coast",
+    "species": "Hippocampus kuda",
+    "status": "active",
+    "issued": "2026-06-15",
+    "summary": "Seahorse bycatch monitoring active following seagrass habitat loss reports.",
+    "severity": "low"
+  },
+  {
+    "id": "adv-005",
+    "region": "Tamil Nadu coast",
+    "species": "Rastrelliger kanagurta",
+    "status": "resolved",
+    "issued": "2026-02-01",
+    "summary": "Mackerel landings stabilized after a brief Q1 dip; advisory closed.",
+    "severity": "low"
+  }
+]

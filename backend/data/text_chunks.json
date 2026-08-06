@@ -1,0 +1,86 @@
+[
+  {
+    "id": "doc-01",
+    "title": "Sardinella longiceps \u2014 species note",
+    "text": "Sardinella longiceps (Indian oil sardine) is the backbone of Kerala's pelagic fishery. It is a short-lived, fast-growing clupeid highly sensitive to sea-surface temperature and chlorophyll-a availability in coastal upwelling zones. Recruitment failures have historically coincided with warm SST anomalies, as seen in 2016 and 2019.",
+    "source": "CMFRI species profile (paraphrased)"
+  },
+  {
+    "id": "doc-02",
+    "title": "Kerala sardine advisory \u2014 July 2026",
+    "text": "Sardine landings off Kerala are down 23% year-on-year. Cross-referencing CMFRI catch logs with INCOIS sea-surface temperature data shows a 0.6\u00b0C SST anomaly and an 18% chlorophyll-a drop in the upwelling zone, consistent with historical low-recruitment years. Advisory recommends reduced trawling effort through Q3 2026.",
+    "source": "Fishing advisory adv-001"
+  },
+  {
+    "id": "doc-03",
+    "title": "Coral bleaching methodology \u2014 Degree Heating Weeks",
+    "text": "Degree Heating Weeks (DHW) accumulate thermal stress by summing degrees Celsius above the local bleaching threshold (typically the maximum monthly mean plus 1\u00b0C) over a rolling 12-week window. DHW >= 4 indicates significant bleaching risk (Alert Level 1); DHW >= 8 indicates risk of mortality (Alert Level 2). This follows the NOAA Coral Reef Watch methodology.",
+    "source": "NOAA Coral Reef Watch methodology"
+  },
+  {
+    "id": "doc-04",
+    "title": "Lakshadweep coral bleaching risk \u2014 current",
+    "text": "Current Degree Heating Weeks at the Lakshadweep coral site is elevated, placing several monitored reef sites at Alert Level 1 bleaching risk (significant bleaching likely). Field verification of reef sites is recommended within 10 days. Exact DHW is computed live from station SST history, see /api/predict/bleaching.",
+    "source": "Advisory adv-002 / station lakshadweep"
+  },
+  {
+    "id": "doc-05",
+    "title": "Acropora formosa \u2014 species note",
+    "text": "Acropora formosa (staghorn coral) is a fast-growing, branching reef-building coral highly susceptible to thermal stress bleaching. It is a key structural species on Lakshadweep atoll reefs and an early indicator of reef health decline.",
+    "source": "IUCN Red List summary (paraphrased)"
+  },
+  {
+    "id": "doc-06",
+    "title": "Dugong dugon \u2014 species note",
+    "text": "Dugong dugon (dugong) is a marine mammal that grazes exclusively on seagrass meadows. Its population trend is considered a key bioindicator of coastal seagrass habitat health. The Gulf of Mannar population is protected under a dedicated habitat protection zone with seasonal boat traffic restrictions.",
+    "source": "CMFRI/Wildlife Institute of India summary (paraphrased)"
+  },
+  {
+    "id": "doc-07",
+    "title": "Hippocampus kuda \u2014 species note",
+    "text": "Hippocampus kuda (yellow seahorse) is slow-moving and highly site-faithful, which makes local populations especially vulnerable to seagrass and macroalgae habitat loss along the Goa coast. It is frequently taken as bycatch in trawl fisheries.",
+    "source": "CMFRI species profile (paraphrased)"
+  },
+  {
+    "id": "doc-08",
+    "title": "Chelonia mydas \u2014 species note",
+    "text": "Chelonia mydas (green sea turtle) nests seasonally along the Odisha coast. Tagged individuals are used to feed regional migration models, and nesting beach counts are a key long-term population indicator for the eastern Indian Ocean.",
+    "source": "Wildlife Institute of India summary (paraphrased)"
+  },
+  {
+    "id": "doc-09",
+    "title": "Thunnus albacares \u2014 species note",
+    "text": "Thunnus albacares (yellowfin tuna) is a commercially significant pelagic species in the Arabian Sea, tracked primarily through fisheries landings data rather than dedicated surveys. Occurrence records show a gradual range shift correlated with warming sea-surface temperatures.",
+    "source": "OBIS occurrence records / CMFRI landings data"
+  },
+  {
+    "id": "doc-10",
+    "title": "Rastrelliger kanagurta \u2014 species note",
+    "text": "Rastrelliger kanagurta (Indian mackerel) is a high-volume coastal fishery species off Tamil Nadu with strong, predictable seasonal landing patterns. It is considered Least Concern but is closely monitored as an indicator species for coastal pelagic fishery health.",
+    "source": "CMFRI species profile (paraphrased)"
+  },
+  {
+    "id": "doc-11",
+    "title": "eDNA detection pipeline \u2014 Lakshadweep, July 2026",
+    "text": "18 new taxa were flagged this month via environmental DNA barcoding at the Lakshadweep site, including 3 previously unrecorded in this region: a moray eel species (Gymnothorax sp.), a nudibranch (Doto sp.), and a deep-sea goby (Gobiidae sp.). Classification confidence ranges from 87% to 98%. Morphological confirmation is still pending for all three.",
+    "source": "eDNA barcoding pipeline (simulated detections on real species list) / GBIF reference taxonomy"
+  },
+  {
+    "id": "doc-12",
+    "title": "Range shift methodology",
+    "text": "Range shift is estimated by correlating OBIS/GBIF occurrence record latitude against year for a given species within the Indian EEZ. A positive slope (occurrences trending toward higher latitude over time) is interpreted as a poleward range shift consistent with warming sea-surface temperatures.",
+    "source": "SAMUDRA methodology note"
+  },
+  {
+    "id": "doc-13",
+    "title": "Gulf of Mannar advisory \u2014 seagrass protection",
+    "text": "The Gulf of Mannar advisory zone restricts boat traffic during dugong calving season to protect seagrass grazing habitat. This is a standing habitat-protection advisory rather than a stock-decline response.",
+    "source": "Advisory adv-003"
+  },
+  {
+    "id": "doc-14",
+    "title": "Stock forecast methodology",
+    "text": "Stock forecasts combine a linear regression of recent monthly catch tonnage with sea-surface temperature as a covariate, projected 6 months forward. This is a simple trend-extrapolation model intended to flag direction and rough magnitude of change, not a formal stock assessment.",
+    "source": "SAMUDRA methodology note"
+  }
+]
