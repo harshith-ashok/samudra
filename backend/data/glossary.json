@@ -76,5 +76,17 @@
     "title": "Biodiversity Index",
     "what_it_is": "A simple count of distinct species observed or detected (survey + eDNA) in a region.",
     "why_it_matters": "A rough, comparable stand-in for ecosystem health across regions that otherwise have very different monitoring histories."
+  },
+  {
+    "key": "composite_bleaching_score",
+    "title": "Composite Bleaching Score",
+    "what_it_is": "A single 0-100 score combining heat stress buildup (60%), chlorophyll drift (25%), and historical bleaching frequency (15%) — weights are fixed and shown alongside the score, not hidden.",
+    "why_it_matters": "One number is easier to act on than three separate charts, but only if you can see what it's made of — the factor breakdown is what keeps it from being a black box."
+  },
+  {
+    "key": "species_trajectory",
+    "title": "Species Movement Trajectory",
+    "what_it_is": "The year-by-year center point of where a species has been recorded, smoothed to reduce noise, with a short forecast continuation based on its recent direction of travel.",
+    "why_it_matters": "A moving centroid over real years of records is a more honest picture of range shift than a single trend line — you can see the actual path, not just its slope."
   }
 ]

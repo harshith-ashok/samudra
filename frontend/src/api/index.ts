@@ -2,6 +2,7 @@ import type {
   Advisory,
   BiodiversityIndexResponse,
   BleachingRisk,
+  BleachingTrend,
   CatchVsSstResponse,
   ChatResponse,
   ComplianceTrendResponse,
@@ -9,6 +10,7 @@ import type {
   NlqResponse,
   RangeShift,
   Species,
+  SpeciesTrajectory,
   StationDetail,
   StationSummary,
   PollutionResponse,
@@ -58,6 +60,12 @@ export const getBleachingRisk = (stationId: string) =>
 
 export const getRangeShift = (species: string) =>
   getJSON<RangeShift>(`/api/predict/range-shift?species=${encodeURIComponent(species)}`);
+
+export const getBleachingTrend = (stationId: string) =>
+  getJSON<BleachingTrend>(`/api/reefs/${encodeURIComponent(stationId)}/bleaching-trend`);
+
+export const getSpeciesTrajectory = (speciesId: string) =>
+  getJSON<SpeciesTrajectory>(`/api/species/${encodeURIComponent(speciesId)}/trajectory`);
 
 export const getGlossary = () => getJSON<GlossaryEntry[]>("/api/glossary");
 

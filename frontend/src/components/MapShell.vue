@@ -4,7 +4,7 @@ import L from "leaflet";
 import "leaflet.markercluster";
 import gsap from "gsap";
 import { getPollution, getSpecies, getStation, getStations, getVessels, postNlq } from "../api";
-import type { NlqResponse, StationDetail, StationSummary, StationType, Vessel, VesselsResponse } from "../api/types";
+import type { NlqResponse, SpeciesTrajectory, StationDetail, StationSummary, StationType, Vessel, VesselsResponse } from "../api/types";
 import StationDetailPanel from "./StationDetail.vue";
 import AIChat from "./AIChat.vue";
 import SpeciesExplorer from "./SpeciesExplorer.vue";
@@ -64,7 +64,7 @@ const typeColors: Record<StationType, string> = {
 
 const modules: ModuleDef[] = [
   { key: "ai", label: "AI Assistant", iconPaths: ["M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"] },
-  { key: "species", label: "Species Explorer", iconPaths: ["M12 2C7 6 4 10 4 14a8 8 0 0 0 16 0c0-4-3-8-8-12z"] },
+  { key: "species", label: "Movement Trends", iconPaths: ["M12 2C7 6 4 10 4 14a8 8 0 0 0 16 0c0-4-3-8-8-12z"] },
   { key: "predict", label: "Predictive Analytics", iconPaths: ["M3 17l6-6 4 4 8-8", "M15 7h6v6"] },
   { key: "analytics", label: "Analytics", iconPaths: ["M4 19V9", "M11 19V4", "M18 19v-7"] },
   { key: "glossary", label: "Data Glossary", iconPaths: ["M12 2 2 7l10 5 10-5-10-5z", "M2 17l10 5 10-5", "M2 12l10 5 10-5"] },
@@ -74,7 +74,7 @@ const panelTitles: Record<string, string> = {
   station: "Station Detail",
   vessel: "Vessel Detail",
   ai: "AI Assistant",
-  species: "Species Explorer",
+  species: "Movement Trends",
   predict: "Predictive Analytics",
   analytics: "Analytics",
   glossary: "Data Glossary",
@@ -122,7 +122,9 @@ const radiusLayers: Partial<Record<StationType, L.LayerGroup>> = {}; // the 70km
 let stationCluster: L.MarkerClusterGroup | null = null; // all station markers, regardless of type — declutters at low zoom
 const stationMarkers: Record<string, L.CircleMarker> = {};
 const stationBaseRadius: Record<string, number> = {};
+const coralCircles: Record<string, L.Circle> = {}; // reef stress-zone overlays, resized/darkened as the timeline scrubs SST (Phase 16/18)
 const vesselMarkers: Record<string, L.CircleMarker> = {};
+let trajectoryLayer: L.LayerGroup | null = null; // one species' movement path, drawn from the Movement Trends panel
 let mpaPolygonsDrawn = false;
 let clockTimer: number | undefined;
 let vesselPollTimer: number | undefined;
@@ -161,6 +163,7 @@ async function initMap() {
   (["advisory", "coral"] as const).forEach((key) => {
     radiusLayers[key] = L.layerGroup().addTo(map!);
   });
+  trajectoryLayer = L.layerGroup().addTo(map);
 
   // One shared cluster group across all station types — with 20+ stations,
   // per-type layer groups left dense clumps (Lakshadweep, Gujarat, Kerala) that
@@ -185,19 +188,21 @@ async function initMap() {
     pulseMarker(marker, baseRadius);
 
     if (s.type === "advisory" || s.type === "coral") {
-      L.circle([s.lat, s.lng], {
+      const circle = L.circle([s.lat, s.lng], {
         radius: 70000,
         color: typeColors[s.type],
         weight: 1,
         fillColor: typeColors[s.type],
         fillOpacity: 0.07,
       }).addTo(radiusLayers[s.type]!);
+      if (s.type === "coral") coralCircles[s.id] = circle;
     }
   });
 
   // Illustrative range-shift paths — northward drift for warm-water pelagic species,
-  // shown as a static overlay; the actual per-species trend line lives in the
-  // Predictive Analytics panel (/api/predict/range-shift), which is the real computation.
+  // shown as a static overlay; the real per-species trajectory (computed from actual
+  // OBIS/GBIF records) is drawn on demand from the Movement Trends panel — see
+  // onSpeciesTrajectory() — and the basic single-line version lives in Predictive.vue.
   const shiftPaths: [number, number][][] = [
     [
       [13.0827, 80.2707],
@@ -297,17 +302,63 @@ async function loadPollution() {
   }
 }
 
+const SST_STRESS_MIN = 27; // baseline-ish SST in the seed data — no stress below this
+const SST_STRESS_MAX = 30.5; // near the top of the seed range — full stress at/above this
+
 function onTimelineChange(payload: TimelineChangePayload) {
   for (const [stationId, value] of Object.entries(payload.values)) {
     const marker = stationMarkers[stationId];
-    if (!marker) continue;
-    marker.setStyle({
-      fillColor: colorForMetricValue(payload.metric, value),
-      fillOpacity: payload.kind === "forecast" ? 0.5 : 0.95,
-      dashArray: payload.kind === "forecast" ? "2,3" : undefined,
-    });
-    marker.setRadius(stationBaseRadius[stationId] ?? 7);
+    if (marker) {
+      marker.setStyle({
+        fillColor: colorForMetricValue(payload.metric, value),
+        fillOpacity: payload.kind === "forecast" ? 0.5 : 0.95,
+        dashArray: payload.kind === "forecast" ? "2,3" : undefined,
+      });
+      marker.setRadius(stationBaseRadius[stationId] ?? 7);
+    }
+
+    // Reef zones visibly darken/expand as thermal stress builds while scrubbing SST —
+    // driven by the same recorded/forecast SST values as the marker color (Phase 16/18).
+    if (payload.metric === "sst") {
+      const circle = coralCircles[stationId];
+      if (!circle) continue;
+      const t = Math.max(0, Math.min(1, (value - SST_STRESS_MIN) / (SST_STRESS_MAX - SST_STRESS_MIN)));
+      circle.setRadius(70000 + t * 45000);
+      circle.setStyle({ fillColor: colorForMetricValue("sst", value), fillOpacity: 0.06 + t * 0.22 });
+    }
   }
+}
+
+function onSpeciesTrajectory(t: SpeciesTrajectory | null) {
+  if (!map || !trajectoryLayer) return;
+  trajectoryLayer.clearLayers();
+  if (!t) return;
+
+  const historicalPath: [number, number][] = t.smoothed.map((p) => [p.lat, p.lng]);
+  L.polyline(historicalPath, { color: "#128F82", weight: 2.5, opacity: 0.85 }).addTo(trajectoryLayer);
+  t.smoothed.forEach((p, i) => {
+    const isLatest = i === t.smoothed.length - 1;
+    L.circleMarker([p.lat, p.lng], {
+      radius: isLatest ? 6 : 3.5,
+      color: "#FFFFFF",
+      weight: 1.5,
+      fillColor: "#128F82",
+      fillOpacity: 0.95,
+    })
+      .bindTooltip(`${p.year}`, { direction: "top", offset: [0, -4] })
+      .addTo(trajectoryLayer!);
+  });
+
+  const last = t.smoothed[t.smoothed.length - 1];
+  const forecastPath: [number, number][] = [[last.lat, last.lng], ...t.forecast.map((p): [number, number] => [p.lat, p.lng])];
+  L.polyline(forecastPath, { color: "#B9800F", weight: 2, dashArray: "5,6", opacity: 0.8 }).addTo(trajectoryLayer);
+  t.forecast.forEach((p) => {
+    L.circleMarker([p.lat, p.lng], { radius: 3.5, color: "#FFFFFF", weight: 1.5, fillColor: "#B9800F", fillOpacity: 0.85 })
+      .bindTooltip(`${p.year} (forecast)`, { direction: "top", offset: [0, -4] })
+      .addTo(trajectoryLayer!);
+  });
+
+  map.flyTo([last.lat, last.lng], Math.max(map.getZoom(), 6), { duration: 0.8 });
 }
 
 function toggleLayer(key: string) {
@@ -518,7 +569,7 @@ onBeforeUnmount(() => {
       <StationDetailPanel v-if="activePanel === 'station'" :station="selectedStation" @ask-ai="askAiAboutStation" />
       <VesselDetail v-if="activePanel === 'vessel'" :vessel="selectedVessel" />
       <AIChat v-if="activePanel === 'ai'" ref="aiChatRef" :station-context="selectedStation" />
-      <SpeciesExplorer v-if="activePanel === 'species'" />
+      <SpeciesExplorer v-if="activePanel === 'species'" @trajectory="onSpeciesTrajectory" />
       <Predictive v-if="activePanel === 'predict'" />
       <Analytics v-if="activePanel === 'analytics'" />
       <GlossaryPanel v-if="activePanel === 'glossary'" />

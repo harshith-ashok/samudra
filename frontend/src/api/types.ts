@@ -62,6 +62,8 @@ export interface StockForecast {
   history: Array<{ date: string; tonnage: number }>;
   forecast: Array<{ month_offset: number; tonnage: number; low_80ci: number; high_80ci: number }>;
   trend_tonnage_per_month: number;
+  conclusion: string;
+  confidence: string;
   methodology: string;
   source: string;
 }
@@ -75,6 +77,61 @@ export interface BleachingRisk {
   baseline_sst_c: number;
   threshold_sst_c: number;
   latest_sst_c: number;
+  conclusion: string;
+  confidence: string;
+  methodology: string;
+  source: string;
+}
+
+export interface BleachingTrendWeek {
+  week: number;
+  mean_sst_c: number;
+  excess_c: number;
+  cumulative_dhw: number;
+}
+
+export interface BleachingFactor {
+  factor: string;
+  label: string;
+  weight: number;
+  raw_value: number;
+  normalized: number;
+  contribution_pct: number;
+}
+
+export interface BleachingTrend {
+  station_id: string;
+  station_name: string;
+  weekly_series: BleachingTrendWeek[];
+  baseline_sst_c: number;
+  threshold_sst_c: number;
+  composite_score: number;
+  alert_level: string;
+  factors: BleachingFactor[];
+  conclusion: string;
+  confidence: string;
+  methodology: string;
+  source: string;
+}
+
+export interface SpeciesTrajectoryPoint {
+  year: number;
+  lat: number;
+  lng: number;
+  n?: number;
+}
+
+export interface SpeciesTrajectory {
+  species_id: string;
+  scientific_name: string;
+  common_name: string;
+  historical: SpeciesTrajectoryPoint[];
+  smoothed: SpeciesTrajectoryPoint[];
+  forecast: SpeciesTrajectoryPoint[];
+  drift_km: number;
+  direction: string;
+  conclusion: string;
+  confidence: string;
   methodology: string;
   source: string;
 }
@@ -184,6 +241,8 @@ export interface RangeShift {
   projection: Array<{ year: number; projected_mean_lat: number }>;
   slope_deg_lat_per_year: number;
   direction: string;
+  conclusion: string;
+  confidence: string;
   methodology: string;
   source: string;
 }
