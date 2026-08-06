@@ -1,0 +1,2309 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SAMUDRA — Unified Ocean Intelligence Platform</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"
+    />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <style>
+      :root {
+        --bg: #f5f8f8;
+        --surface: #ffffff;
+        --surface-2: #eef4f4;
+        --border: #dee7e7;
+        --border-strong: #c7d6d6;
+        --teal: #128f82;
+        --teal-soft: #e4f5f2;
+        --edna: #2e9e5b;
+        --coral: #d6512d;
+        --coral-soft: #fbe8e2;
+        --amber: #b9800f;
+        --amber-soft: #faf0d8;
+        --text: #0f2620;
+        --muted: #5c7370;
+        --shadow:
+          0 1px 2px rgba(15, 38, 32, 0.05), 0 6px 18px rgba(15, 38, 32, 0.06);
+        --font-display: "Fraunces", serif;
+        --font-mono: "IBM Plex Mono", monospace;
+        --font-body: "Inter", sans-serif;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html,
+      body {
+        height: 100%;
+        background: var(--bg);
+        overflow: hidden;
+      }
+      body {
+        color: var(--text);
+        font-family: var(--font-body);
+      }
+      ::-webkit-scrollbar {
+        width: 7px;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: var(--border-strong);
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-track {
+        background: transparent;
+      }
+
+      /* ---- MAP ---- */
+      #map {
+        position: fixed;
+        inset: 0;
+        z-index: 0;
+        background: #e7eeee;
+      }
+      .leaflet-control-attribution {
+        background: rgba(255, 255, 255, 0.85) !important;
+        color: var(--muted) !important;
+        font-family: var(--font-mono);
+        font-size: 9px !important;
+      }
+      .leaflet-control-attribution a {
+        color: var(--teal) !important;
+      }
+      .leaflet-control-zoom {
+        border: 1px solid var(--border) !important;
+        box-shadow: var(--shadow);
+      }
+      .leaflet-control-zoom a {
+        background: var(--surface) !important;
+        color: var(--text) !important;
+        border-color: var(--border) !important;
+      }
+      .leaflet-popup-content-wrapper {
+        background: var(--surface);
+        color: var(--text);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        box-shadow: var(--shadow);
+      }
+      .leaflet-popup-tip {
+        background: var(--surface);
+      }
+      .leaflet-popup-content {
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        margin: 10px 12px;
+      }
+      .leaflet-popup-content b {
+        font-family: var(--font-body);
+        font-size: 12.5px;
+      }
+
+      /* ---- Top bar ---- */
+      .topbar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 20;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 14px 22px;
+        background: var(--surface);
+        border-bottom: 1px solid var(--border);
+      }
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-weight: 700;
+        font-size: 15.5px;
+        letter-spacing: -0.01em;
+      }
+      .brand .mark {
+        width: 18px;
+        height: 18px;
+        border-radius: 5px;
+        background: var(--teal);
+        flex-shrink: 0;
+      }
+      .brand small {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        color: var(--muted);
+        font-weight: 500;
+        letter-spacing: 0.08em;
+        margin-left: 3px;
+        text-transform: uppercase;
+      }
+      .ticker {
+        display: flex;
+        align-items: center;
+        gap: 18px;
+        font-family: var(--font-mono);
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .ticker span {
+        display: flex;
+        align-items: center;
+      }
+      .ticker span b {
+        color: var(--text);
+        font-weight: 600;
+        margin-left: 4px;
+      }
+      .ticker .alert {
+        color: var(--coral);
+        font-weight: 600;
+      }
+      .ticker .dot {
+        display: inline-block;
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--edna);
+        margin-right: 7px;
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.3;
+        }
+      }
+
+      /* ---- Search bar ---- */
+      .searchwrap {
+        position: fixed;
+        top: 76px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 20;
+        width: min(560px, 88vw);
+      }
+      .searchbar {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 11px 15px;
+        box-shadow: var(--shadow);
+      }
+      .searchbar svg {
+        width: 15px;
+        height: 15px;
+        color: var(--muted);
+        flex-shrink: 0;
+      }
+      .searchbar input {
+        flex: 1;
+        background: none;
+        border: none;
+        outline: none;
+        color: var(--text);
+        font-size: 13px;
+        font-family: var(--font-body);
+      }
+      .searchbar input::placeholder {
+        color: var(--muted);
+      }
+      .searchbar .hint {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        color: var(--muted);
+        border: 1px solid var(--border);
+        border-radius: 5px;
+        padding: 2px 6px;
+      }
+      .search-results {
+        margin-top: 6px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        overflow: hidden;
+        display: none;
+        box-shadow: var(--shadow);
+        max-height: 340px;
+        overflow-y: auto;
+      }
+      .search-results.show {
+        display: block;
+      }
+      .search-results .trace {
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        color: var(--teal);
+        padding: 10px 14px;
+        border-bottom: 1px solid var(--border);
+        background: var(--teal-soft);
+      }
+      .search-results .row {
+        padding: 10px 14px;
+        font-size: 12.5px;
+        border-bottom: 1px solid var(--border);
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+      }
+      .search-results .row:last-child {
+        border-bottom: none;
+      }
+      .search-results .row:hover {
+        background: var(--surface-2);
+      }
+      .search-results .row span {
+        color: var(--muted);
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+      }
+
+      /* ---- Left rail: module buttons ---- */
+      .fab-stack {
+        position: fixed;
+        left: 20px;
+        top: 150px;
+        z-index: 25;
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        width: 186px;
+      }
+      .fab {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        padding: 11px 13px;
+        cursor: pointer;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--text);
+        box-shadow: var(--shadow);
+        transition:
+          border-color 0.12s,
+          color 0.12s;
+      }
+      .fab svg {
+        width: 15px;
+        height: 15px;
+        flex-shrink: 0;
+        color: var(--muted);
+      }
+      .fab:hover {
+        border-color: var(--teal);
+      }
+      .fab.active {
+        background: var(--teal);
+        color: #fff;
+        border-color: var(--teal);
+      }
+      .fab.active svg {
+        color: #fff;
+      }
+
+      /* ---- Right-bottom: layer panel ---- */
+      .layer-panel {
+        position: fixed;
+        right: 20px;
+        bottom: 26px;
+        z-index: 20;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+        box-shadow: var(--shadow);
+        width: 210px;
+      }
+      .layer-panel h4 {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+      .layer-row {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        padding: 5px 0;
+        font-size: 12.5px;
+        cursor: pointer;
+      }
+      .layer-row input {
+        accent-color: var(--teal);
+        width: 14px;
+        height: 14px;
+      }
+      .layer-row i {
+        width: 8px;
+        height: 8px;
+        border-radius: 2px;
+        display: inline-block;
+      }
+      .layer-panel .divider {
+        height: 1px;
+        background: var(--border);
+        margin: 10px 0;
+      }
+      .kpi-mini {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        color: var(--muted);
+        padding: 3px 0;
+      }
+      .kpi-mini span {
+        display: inline-flex;
+        align-items: center;
+      }
+      .kpi-mini b {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      /* ---- Top-right: impact / coverage card ---- */
+      .impact-card {
+        position: fixed;
+        top: 76px;
+        right: 20px;
+        z-index: 20;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+        box-shadow: var(--shadow);
+        width: 200px;
+      }
+      .impact-card.collapsed {
+        width: auto;
+        padding: 8px 12px;
+      }
+      .impact-card .collapse-btn {
+        position: absolute;
+        top: 8px;
+        right: 10px;
+        background: none;
+        border: none;
+        color: var(--muted);
+        font-size: 12px;
+        cursor: pointer;
+        font-family: var(--font-mono);
+      }
+      .impact-card.collapsed .collapse-btn {
+        position: static;
+        font-weight: 600;
+        color: var(--teal);
+      }
+      .impact-card h4 {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--muted);
+        margin-bottom: 10px;
+        padding-right: 16px;
+      }
+      .impact-card .row {
+        display: flex;
+        justify-content: space-between;
+        font-size: 12px;
+        padding: 4px 0;
+      }
+      .impact-card .row span {
+        color: var(--muted);
+      }
+      .impact-card .row b {
+        color: var(--text);
+        font-weight: 600;
+      }
+      .impact-card .note {
+        font-size: 9.5px;
+        color: var(--muted);
+        line-height: 1.4;
+        margin-top: 8px;
+        border-top: 1px dashed var(--border);
+        padding-top: 8px;
+      }
+
+      /* ---- Bottom: timeline scrubber ---- */
+      .scrubber-bar {
+        position: fixed;
+        left: 220px;
+        right: 250px;
+        bottom: 20px;
+        z-index: 20;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 10px 16px 8px;
+        box-shadow: var(--shadow);
+      }
+      .scrubber-head {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        margin-bottom: 4px;
+      }
+      .metric-select {
+        font-family: var(--font-body);
+        font-size: 12px;
+        font-weight: 600;
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 3px 6px;
+        background: var(--surface-2);
+        color: var(--text);
+      }
+      .play-btn {
+        background: var(--teal);
+        color: #fff;
+        border: none;
+        border-radius: 6px;
+        padding: 4px 12px;
+        font-size: 11.5px;
+        font-weight: 700;
+        cursor: pointer;
+        margin-left: auto;
+      }
+      .day-label {
+        font-family: var(--font-mono);
+        font-size: 10.5px;
+        padding: 3px 8px;
+        border-radius: 5px;
+        background: var(--surface-2);
+        color: var(--muted);
+      }
+      .day-label.forecast {
+        color: var(--amber);
+        background: var(--amber-soft);
+      }
+      .scrubber-range {
+        width: 100%;
+        accent-color: var(--teal);
+      }
+      .scrubber-scale {
+        display: flex;
+        justify-content: space-between;
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        color: var(--muted);
+      }
+      .today-mark {
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      /* ---- Info tip (the little "i" icon used everywhere) ---- */
+      .info-tip {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        margin-left: 5px;
+      }
+      .info-tip-icon {
+        width: 14px;
+        height: 14px;
+        border-radius: 50%;
+        border: 1px solid var(--border-strong);
+        background: var(--surface-2);
+        color: var(--muted);
+        font-family: var(--font-mono);
+        font-size: 9px;
+        font-style: italic;
+        line-height: 1;
+        padding: 0;
+        cursor: help;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .info-tip-icon:hover {
+        border-color: var(--teal);
+        color: var(--teal);
+      }
+      .info-tip-popover {
+        position: absolute;
+        bottom: calc(100% + 8px);
+        left: 50%;
+        transform: translateX(-50%);
+        width: 230px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        box-shadow: var(--shadow);
+        padding: 11px 13px;
+        z-index: 60;
+        font-family: var(--font-body);
+        text-align: left;
+      }
+      .info-tip-title {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 12.5px;
+        margin-bottom: 5px;
+      }
+      .info-tip-body {
+        font-size: 11px;
+        line-height: 1.5;
+        color: var(--text);
+        margin-bottom: 6px;
+      }
+      .info-tip-why {
+        font-size: 10.5px;
+        line-height: 1.5;
+        color: var(--muted);
+      }
+      .info-tip-why b {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      /* ---- Side panel ---- */
+      .side-panel {
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        width: min(50vw, 720px);
+        min-width: min(400px, 92vw);
+        z-index: 30;
+        background: var(--surface);
+        border-left: 1px solid var(--border);
+        box-shadow: -6px 0 24px rgba(15, 38, 32, 0.06);
+        transform: translateX(100%);
+        transition: transform 0.25s ease;
+        display: flex;
+        flex-direction: column;
+      }
+      .side-panel.open {
+        transform: translateX(0);
+      }
+      .panel-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 18px 20px;
+        border-bottom: 1px solid var(--border);
+      }
+      .panel-header h3 {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 17px;
+      }
+      .panel-header button {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        color: var(--muted);
+        width: 26px;
+        height: 26px;
+        border-radius: 7px;
+        cursor: pointer;
+        font-size: 14px;
+      }
+      .panel-header button:hover {
+        color: var(--coral);
+        border-color: var(--coral);
+      }
+      .panel-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 18px 20px;
+      }
+      .pcontent {
+        display: none;
+      }
+      .pcontent.active {
+        display: block;
+      }
+
+      .stat-badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        padding: 4px 9px;
+        border-radius: 5px;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        color: var(--teal);
+        margin-bottom: 12px;
+        font-weight: 600;
+      }
+      .stat-badge.violation {
+        color: var(--coral);
+        background: var(--coral-soft);
+        border-color: #f0c4b4;
+      }
+      .stat-readout {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 9px;
+        padding: 14px;
+        margin: 12px 0;
+        font-family: var(--font-mono);
+        font-size: 11.5px;
+        color: var(--muted);
+        line-height: 1.9;
+      }
+      .stat-readout b {
+        color: var(--text);
+        font-family: var(--font-body);
+        font-weight: 600;
+      }
+      .violation-note {
+        background: var(--coral-soft);
+        border: 1px solid #f0c4b4;
+        border-radius: 9px;
+        padding: 12px 14px;
+        font-size: 12px;
+        line-height: 1.5;
+        color: var(--text);
+        margin-bottom: 12px;
+      }
+      .source-note {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--muted);
+        margin-top: 8px;
+        line-height: 1.5;
+      }
+
+      .chat-log {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 14px;
+      }
+      .msg {
+        padding: 11px 14px;
+        border-radius: 10px;
+        font-size: 13px;
+        line-height: 1.55;
+        max-width: 92%;
+      }
+      .msg.user {
+        align-self: flex-end;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+      }
+      .msg.ai {
+        background: var(--teal-soft);
+        border: 1px solid #bfe3dc;
+      }
+      .msg.ai .cite {
+        display: block;
+        margin-top: 8px;
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        color: var(--teal);
+        border-top: 1px dashed #bfe3dc;
+        padding-top: 6px;
+      }
+      .chat-input-row {
+        display: flex;
+        gap: 8px;
+        position: sticky;
+        bottom: 0;
+        background: var(--surface);
+        padding-top: 8px;
+      }
+      .chat-input-row input {
+        flex: 1;
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 10px 13px;
+        color: var(--text);
+        font-size: 12.5px;
+        outline: none;
+      }
+      .chat-input-row button {
+        background: var(--teal);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        padding: 0 14px;
+        font-weight: 700;
+        font-size: 12px;
+        cursor: pointer;
+      }
+      .chip {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 9px 11px;
+        font-size: 11.5px;
+        color: var(--muted);
+        cursor: pointer;
+        margin-bottom: 7px;
+        font-weight: 500;
+      }
+      .chip:hover {
+        color: var(--teal);
+        border-color: var(--teal);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 11.5px;
+      }
+      th {
+        text-align: left;
+        font-family: var(--font-mono);
+        font-size: 9px;
+        text-transform: uppercase;
+        color: var(--muted);
+        padding: 7px 6px;
+        border-bottom: 1px solid var(--border);
+      }
+      td {
+        padding: 8px 6px;
+        border-bottom: 1px solid var(--border);
+      }
+      tbody tr {
+        cursor: pointer;
+      }
+      tbody tr:hover {
+        background: var(--surface-2);
+      }
+      tbody tr.selected {
+        background: var(--teal-soft);
+      }
+      .tag {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        padding: 2px 7px;
+        border-radius: 5px;
+        border: 1px solid;
+        font-weight: 600;
+      }
+      .tag.lc {
+        color: #0b7a63;
+        background: #e3f5f0;
+        border-color: #bfe6dc;
+      }
+      .tag.nt {
+        color: var(--amber);
+        background: var(--amber-soft);
+        border-color: #efdba6;
+      }
+      .tag.vu {
+        color: var(--coral);
+        background: var(--coral-soft);
+        border-color: #f0c4b4;
+      }
+
+      /* ---- Species hover card ---- */
+      .species-hover-card {
+        position: fixed;
+        left: 20px;
+        bottom: 20px;
+        width: 270px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        box-shadow: var(--shadow);
+        padding: 15px 17px;
+        z-index: 40;
+        opacity: 0;
+        transform: translate(-18px, 18px) scale(0.97);
+        transition:
+          opacity 0.22s ease,
+          transform 0.22s ease;
+        pointer-events: none;
+      }
+      .species-hover-card.show {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+      }
+      .species-hover-card .shc-head {
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 8px;
+        margin-bottom: 5px;
+      }
+      .species-hover-card .shc-sci {
+        font-family: var(--font-display);
+        font-size: 14px;
+        font-style: italic;
+        line-height: 1.3;
+      }
+      .species-hover-card .shc-common {
+        font-size: 11.5px;
+        color: var(--teal);
+        font-weight: 600;
+        margin-bottom: 3px;
+      }
+      .species-hover-card .shc-region {
+        font-family: var(--font-mono);
+        font-size: 10px;
+        color: var(--muted);
+        margin-bottom: 9px;
+      }
+      .species-hover-card .shc-note {
+        font-size: 11.5px;
+        line-height: 1.5;
+        color: var(--text);
+      }
+
+      /* ---- Predictive / Movement Trends / Analytics blocks ---- */
+      .pred-block {
+        margin-bottom: 22px;
+      }
+      .pred-block h4 {
+        font-family: var(--font-display);
+        font-size: 14px;
+        margin-bottom: 6px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+      }
+      .pred-block .sub {
+        font-size: 11px;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+      .conclusion {
+        font-size: 12.5px;
+        line-height: 1.5;
+        background: var(--teal-soft);
+        color: var(--teal);
+        border-radius: 8px;
+        padding: 9px 11px;
+        margin-bottom: 8px;
+      }
+      .methodology {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        color: var(--muted);
+        margin-top: 8px;
+        line-height: 1.5;
+      }
+      .movement-block {
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid var(--border);
+        display: none;
+      }
+      .movement-block.active {
+        display: block;
+      }
+      .movement-block h4 {
+        font-family: var(--font-display);
+        font-size: 14px;
+        margin-bottom: 6px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+      }
+
+      /* ---- Data Glossary panel ---- */
+      .glossary-intro {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 16px;
+        line-height: 1.5;
+      }
+      .glossary-entry {
+        padding: 12px 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .glossary-entry:last-child {
+        border-bottom: none;
+      }
+      .glossary-entry-title {
+        font-family: var(--font-display);
+        font-weight: 600;
+        font-size: 14px;
+        margin-bottom: 4px;
+      }
+      .glossary-entry-body {
+        font-size: 12px;
+        line-height: 1.55;
+        color: var(--text);
+        margin-bottom: 5px;
+      }
+      .glossary-entry-why {
+        font-size: 11px;
+        line-height: 1.5;
+        color: var(--muted);
+      }
+      .glossary-entry-why b {
+        color: var(--text);
+        font-weight: 600;
+      }
+
+      /* ---- Guided intro (one-time spotlight tour) ---- */
+      .intro-root {
+        position: fixed;
+        inset: 0;
+        z-index: 90;
+        pointer-events: none;
+      }
+      .spotlight {
+        position: fixed;
+        border: 2px solid var(--teal);
+        border-radius: 12px;
+        box-shadow: 0 0 0 9999px rgba(15, 38, 32, 0.6);
+        pointer-events: none;
+        transition:
+          left 0.5s ease,
+          top 0.5s ease,
+          width 0.5s ease,
+          height 0.5s ease;
+      }
+      .intro-caption {
+        position: fixed;
+        width: 320px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 14px 16px;
+        box-shadow: var(--shadow);
+        pointer-events: auto;
+        transition:
+          left 0.5s ease,
+          top 0.5s ease;
+      }
+      .intro-caption-step {
+        font-family: var(--font-mono);
+        font-size: 9.5px;
+        color: var(--muted);
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+        margin-bottom: 6px;
+      }
+      .intro-caption p {
+        font-size: 13px;
+        line-height: 1.5;
+        color: var(--text);
+        margin-bottom: 10px;
+      }
+      .skip-btn {
+        background: var(--surface-2);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 5px 10px;
+        font-size: 11px;
+        color: var(--muted);
+        cursor: pointer;
+      }
+      .skip-btn:hover {
+        color: var(--coral);
+        border-color: var(--coral);
+      }
+    </style>
+  </head>
+  <body>
+    <div id="map"></div>
+
+    <div class="topbar">
+      <div class="brand">
+        <span class="mark"></span>SAMUDRA
+        <small>Unified Ocean Intelligence</small>
+      </div>
+      <div class="ticker">
+        <span><span class="dot"></span>342 stations live</span>
+        <span id="violationTicker" class="alert" style="display: none"></span>
+        <span>SST<b>28.4°C</b></span>
+        <span id="clock"></span>
+      </div>
+    </div>
+
+    <div class="searchwrap">
+      <div class="searchbar">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <circle cx="11" cy="11" r="7" />
+          <path d="M21 21l-4.35-4.35" />
+        </svg>
+        <input
+          id="searchInput"
+          placeholder="Ask the map — e.g. 'vulnerable species near Kerala since March'"
+        />
+        <span class="hint">NLQ</span>
+      </div>
+      <div class="search-results" id="searchResults"></div>
+    </div>
+
+    <div class="species-hover-card" id="speciesHoverCard"></div>
+
+    <div class="fab-stack">
+      <div class="fab" onclick="openPanel('ai')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg
+        >AI Assistant
+      </div>
+      <div class="fab" onclick="openPanel('species')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M12 2C7 6 4 10 4 14a8 8 0 0 0 16 0c0-4-3-8-8-12z" /></svg
+        >Movement Trends
+      </div>
+      <div class="fab" onclick="openPanel('predict')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M3 17l6-6 4 4 8-8" />
+          <path d="M15 7h6v6" /></svg
+        >Predictive Analytics
+      </div>
+      <div class="fab" onclick="openPanel('analytics')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M4 19V9" />
+          <path d="M11 19V4" />
+          <path d="M18 19v-7" /></svg
+        >Analytics
+      </div>
+      <div class="fab" onclick="openPanel('glossary')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+          <path d="M12 2 2 7l10 5 10-5-10-5z" />
+          <path d="M2 17l10 5 10-5" />
+          <path d="M2 12l10 5 10-5" /></svg
+        >Data Glossary
+      </div>
+    </div>
+
+    <div class="layer-panel">
+      <h4>Map Layers</h4>
+      <label class="layer-row"
+        ><input type="checkbox" checked data-layer="buoy" /><i style="background: #128f82"></i>Ocean
+        buoys<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'sst')">i</button></span></label
+      >
+      <label class="layer-row"
+        ><input type="checkbox" checked data-layer="edna" /><i style="background: #2e9e5b"></i>eDNA
+        sites<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'edna_confidence')">i</button></span></label
+      >
+      <label class="layer-row"
+        ><input type="checkbox" checked data-layer="advisory" /><i style="background: #d6512d"></i>Fishing
+        advisories<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'advisory')">i</button></span></label
+      >
+      <label class="layer-row"
+        ><input type="checkbox" checked data-layer="coral" /><i style="background: #b9800f"></i>Coral
+        bleaching risk<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'dhw')">i</button></span></label
+      >
+      <label class="layer-row"
+        ><input type="checkbox" checked data-layer="shift" /><i style="background: #0f2620"></i>Predicted
+        range shift<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'species_trajectory')">i</button></span></label
+      >
+      <label class="layer-row"
+        ><input type="checkbox" checked data-layer="vessels" /><i style="background: #5c7370"></i>Vessel
+        tracking<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'vessel_tracking')">i</button></span></label
+      >
+      <label class="layer-row"
+        ><input type="checkbox" checked data-layer="pollution" /><i style="background: #b9800f"></i>Pollution
+        sources<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'treatment_compliance')">i</button></span></label
+      >
+      <div class="divider"></div>
+      <div class="kpi-mini"><span>Stations tracked</span><b>9</b></div>
+      <div class="kpi-mini">
+        <span>Vessels in restricted waters<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'mpa')">i</button></span></span
+        ><b id="kpiViolations">0</b>
+      </div>
+      <div class="kpi-mini">
+        <span>Non-compliant plants<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'treatment_compliance')">i</button></span></span
+        ><b id="kpiNonCompliant">0</b>
+      </div>
+    </div>
+
+    <div class="impact-card" id="impactCard">
+      <button class="collapse-btn" onclick="toggleImpactCard()">×</button>
+      <div id="impactCardBody">
+        <h4>Coverage snapshot</h4>
+        <div class="row"><span>Coastline represented</span><b>~7,500 km</b></div>
+        <div class="row"><span>Stations tracked</span><b>9</b></div>
+        <div class="row"><span>States / UTs covered</span><b>8</b></div>
+        <div class="row"><span>Species indexed</span><b>8</b></div>
+        <p class="note">India's coastline length is a public figure; the rest mirrors this demo's own (simulated) data.</p>
+      </div>
+    </div>
+
+    <div class="scrubber-bar" id="scrubberBar">
+      <div class="scrubber-head">
+        <select class="metric-select" id="metricSelect" onchange="onScrubberInput()">
+          <option value="sst">How warm the water is</option>
+          <option value="chl">How much plankton is in the water</option>
+        </select>
+        <span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'sst')">i</button></span>
+        <button class="play-btn" id="playBtn" onclick="togglePlay()">Play</button>
+        <span class="day-label" id="dayLabel">Day 1 of 12 — recorded</span>
+      </div>
+      <input type="range" class="scrubber-range" id="scrubberRange" min="-6" max="5" step="1" value="0" oninput="onScrubberInput()" />
+      <div class="scrubber-scale">
+        <span>6d ago</span>
+        <span class="today-mark">today</span>
+        <span>+5d forecast</span>
+      </div>
+    </div>
+
+    <div class="intro-root" id="introRoot" style="display: none">
+      <div class="spotlight" id="introSpotlight"></div>
+      <div class="intro-caption" id="introCaption">
+        <div class="intro-caption-step" id="introStepLabel">1 / 4</div>
+        <p id="introText"></p>
+        <button class="skip-btn" onclick="finishIntro()">Skip tour</button>
+      </div>
+    </div>
+
+    <div class="side-panel" id="sidePanel">
+      <div class="panel-header">
+        <h3 id="panelTitle">Panel</h3>
+        <button onclick="closePanel()">×</button>
+      </div>
+      <div class="panel-body">
+        <div class="pcontent" id="pc-station">
+          <span class="stat-badge" id="statBadge">STATION</span>
+          <h3 id="statName" style="font-family: var(--font-display); font-weight: 600; font-size: 19px">—</h3>
+          <div class="stat-readout" id="statReadout"></div>
+          <canvas id="statChart" height="120"></canvas>
+          <div class="chip" style="margin-top: 14px" onclick="askAboutStation()">Ask AI assistant about this site →</div>
+        </div>
+
+        <div class="pcontent" id="pc-vessel">
+          <span class="stat-badge" id="vesselBadge">VESSEL</span>
+          <h3 id="vesselName" style="font-family: var(--font-display); font-weight: 600; font-size: 19px; margin-bottom: 8px">—</h3>
+          <div class="stat-readout" id="vesselReadout"></div>
+          <div id="vesselViolationNote"></div>
+          <p class="source-note">
+            Position from a simulated AIS-like track — real tracking would come from Global Fishing Watch once an API key is configured.
+          </p>
+        </div>
+
+        <div class="pcontent" id="pc-ai">
+          <div class="chat-log" id="chatLog">
+            <div class="msg ai">
+              Hi, I'm the SAMUDRA research assistant. Ask about a region, species, advisory, vessel, or pollution
+              source — I query ocean sensor, fisheries, eDNA, vessel and treatment-plant records together.
+            </div>
+          </div>
+          <div class="chip" onclick="askPreset(0)">Why is sardine catch declining off Kerala?</div>
+          <div class="chip" onclick="askPreset(1)">Show coral bleaching risk near Lakshadweep</div>
+          <div class="chip" onclick="askPreset(2)">Which species were newly detected via eDNA this month?</div>
+          <div class="chip" onclick="askPreset(3)">Which vessels are currently in restricted waters?</div>
+          <div class="chip" onclick="askPreset(4)">Any non-compliant treatment plants near declining reefs?</div>
+          <div class="chat-input-row">
+            <input type="text" id="chatInput" placeholder="Type a question..." />
+            <button onclick="sendChat()">Ask</button>
+          </div>
+        </div>
+
+        <div class="pcontent" id="pc-species">
+          <table>
+            <thead>
+              <tr>
+                <th>Species</th>
+                <th>Region</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="speciesTable"></tbody>
+          </table>
+
+          <div class="movement-block" id="movementBlock">
+            <h4 id="movementTitle">Movement Trend<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'species_trajectory')">i</button></span></h4>
+            <div id="movementBody"></div>
+          </div>
+        </div>
+
+        <div class="pcontent" id="pc-predict">
+          <div class="pred-block">
+            <h4>Sardine Stock Forecast — Kerala<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'stock_forecast')">i</button></span></h4>
+            <p class="conclusion">
+              The catch of Sardinella longiceps on Kerala's coast is decreasing by about 14 tonnes each month and is
+              expected to be roughly 346 tonnes next month (high confidence).
+            </p>
+            <div class="sub">6-month projection, 80% CI · trend −14.4 t/month</div>
+            <canvas id="forecastChart" height="140"></canvas>
+            <p class="methodology">
+              Linear regression (degree 1) of monthly catch tonnage vs. time; 80% CI band widens with forecast
+              horizon. Trend-extrapolation only, not a stock assessment.
+            </p>
+          </div>
+
+          <div class="pred-block">
+            <h4>Coral Bleaching Buildup — Lakshadweep<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'composite_bleaching_score')">i</button></span></h4>
+            <p class="conclusion">
+              The Lakshadweep coral site scores 55/100 on bleaching risk, putting it at Alert Level 1 and indicating a
+              significant chance of bleaching (high confidence).
+            </p>
+            <div class="sub">Composite score <b style="color: var(--coral)">55/100</b> · Alert Level 1 — significant bleaching risk likely</div>
+            <canvas id="dhwChart" height="130"></canvas>
+            <div class="sub" style="margin-top: 12px; display: flex; align-items: center">
+              What's driving the score<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'dhw')">i</button></span>
+            </div>
+            <canvas id="factorChart" height="100"></canvas>
+            <p class="methodology">
+              Composite = 60% Degree Heating Weeks (NOAA Coral Reef Watch-style) + 25% chlorophyll-a drift + 15%
+              historical bleaching frequency. The frequency factor is illustrative (keyed to known global
+              mass-bleaching years 2010/2016/2020, not a measured per-reef event log) — every other input is computed
+              from recorded sensor history.
+            </p>
+          </div>
+
+          <div class="pred-block">
+            <h4>Range Shift Projection<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'range_shift')">i</button></span></h4>
+            <p class="conclusion">
+              Yellowfin tuna are being found a little farther south each year, moving about 0.13 degrees toward the
+              equator annually (medium confidence).
+            </p>
+            <div class="sub">Observed + 5yr projection, mean occurrence latitude</div>
+            <canvas id="rangeChart" height="140"></canvas>
+            <p class="methodology">
+              Linear regression of yearly mean occurrence latitude (OBIS/GBIF) vs. year, projected 5 years forward. A
+              basic correlation, not a species distribution model.
+            </p>
+          </div>
+        </div>
+
+        <div class="pcontent" id="pc-analytics">
+          <div class="pred-block">
+            <h4>SST vs Catch Volume<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'sst')">i</button></span></h4>
+            <div class="sub">Per region, with Pearson's r</div>
+            <canvas id="scatterChart" height="160"></canvas>
+            <p class="methodology">Pearson correlation coefficient between monthly SST and catch tonnage, per species/region pair.</p>
+          </div>
+          <div class="pred-block">
+            <h4>Regional Biodiversity Index<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'biodiversity_index')">i</button></span></h4>
+            <div class="sub">Distinct species observed or detected, per region</div>
+            <canvas id="biodiversityChart" height="140"></canvas>
+          </div>
+          <div class="pred-block">
+            <h4>Treatment Plant Compliance Trend<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'treatment_compliance')">i</button></span></h4>
+            <div class="sub">% of monitored plants compliant, over time</div>
+            <canvas id="complianceChart" height="120"></canvas>
+          </div>
+        </div>
+
+        <div class="pcontent" id="pc-glossary">
+          <p class="glossary-intro">Plain-language notes on every metric and layer used in SAMUDRA — for a quick skim instead of hunting for the (i) icons.</p>
+          <div id="glossaryList"></div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      /* clock */
+      function tick() {
+        document.getElementById("clock").textContent = new Date().toLocaleTimeString("en-IN");
+      }
+      tick();
+      setInterval(tick, 1000);
+
+      /* ---------------- Glossary + info tips ---------------- */
+      const GLOSSARY = {
+        sst: {
+          title: "Sea Surface Temperature",
+          what_it_is: "How warm the top few meters of ocean water are, in °C. Measured by buoys and satellites.",
+          why_it_matters: "Small rises (even 0.5–1°C) can drive coral bleaching, shift fish habitats, and hurt spawning.",
+        },
+        chlorophyll: {
+          title: "Chlorophyll-a",
+          what_it_is: "A proxy for how much microscopic plant life (phytoplankton) is in the water, in mg/m³.",
+          why_it_matters: "Phytoplankton is the base of the marine food chain — a drop here often shows up as a fish-catch decline months later.",
+        },
+        dhw: {
+          title: "Degree Heating Weeks (DHW)",
+          what_it_is: "A running total of how far above normal, and for how long, sea temperature has been at a reef site.",
+          why_it_matters: "It's the standard early-warning number for coral bleaching risk — the higher it climbs, the more likely bleaching becomes.",
+        },
+        edna_confidence: {
+          title: "eDNA Confidence",
+          what_it_is: "How sure the lab's classification pipeline is that a genetic fragment found in a water sample belongs to a given species.",
+          why_it_matters: "eDNA can detect species without ever seeing or catching them — useful for rare or shy species — but confidence tells you how much to trust a given match.",
+        },
+        advisory: {
+          title: "Fishing / Conservation Advisory",
+          what_it_is: "An active recommendation to reduce fishing pressure or protect habitat in a specific region.",
+          why_it_matters: "Advisories are the actionable output of all this monitoring — where data turns into a recommendation someone can act on.",
+        },
+        vessel_tracking: {
+          title: "Vessel Tracking",
+          what_it_is: "Ship positions broadcast via AIS and cross-checked against protected-area boundaries.",
+          why_it_matters: "It's how illegal fishing inside marine protected areas gets caught — a boat with no business being there.",
+        },
+        mpa: {
+          title: "Marine Protected Area (MPA)",
+          what_it_is: "A defined ocean zone where fishing, dredging, or other extractive activity is restricted or banned by law.",
+          why_it_matters: "MPAs only work if violations are actually detected — most rely on patrol boats or self-reporting, which is why vessel tracking matters.",
+        },
+        treatment_compliance: {
+          title: "Treatment Plant Compliance",
+          what_it_is: "Whether a coastal sewage/effluent treatment plant meets CPCB discharge standards.",
+          why_it_matters: "Non-compliant discharge is a direct, local driver of coastal water quality decline — often the real cause behind a biodiversity drop that looks climate-related at first glance.",
+        },
+        stock_forecast: {
+          title: "Stock Forecast",
+          what_it_is: "A simple trend line fit to recent catch tonnage, projected 6 months ahead with a confidence band.",
+          why_it_matters: "It flags direction and rough magnitude early — not a substitute for a full stock assessment, but enough to justify a closer look.",
+        },
+        range_shift: {
+          title: "Range Shift",
+          what_it_is: "A trend line of where a species has actually been observed (latitude) over time, from real occurrence records.",
+          why_it_matters: "Species moving toward the poles over years is one of the clearest fingerprints of ocean warming on marine life.",
+        },
+        species_trajectory: {
+          title: "Species Movement Trajectory",
+          what_it_is: "The year-by-year center point of where a species has been recorded, smoothed, with a short forecast continuation based on its recent direction of travel.",
+          why_it_matters: "A moving centroid over real years of records is a more honest picture of range shift than a single trend line — you see the actual path, not just its slope.",
+        },
+        composite_bleaching_score: {
+          title: "Composite Bleaching Score",
+          what_it_is: "A single 0-100 score combining heat stress buildup (60%), chlorophyll drift (25%), and historical bleaching frequency (15%) — weights shown, not hidden.",
+          why_it_matters: "One number is easier to act on than three separate charts, but only if you can see what it's made of.",
+        },
+        biodiversity_index: {
+          title: "Biodiversity Index",
+          what_it_is: "A simple count of distinct species observed or detected (survey + eDNA) in a region.",
+          why_it_matters: "A rough, comparable stand-in for ecosystem health across regions that otherwise have very different monitoring histories.",
+        },
+      };
+      function toggleTip(e, key) {
+        e.stopPropagation();
+        const span = e.currentTarget.closest(".info-tip");
+        const already = span.querySelector(".info-tip-popover");
+        document.querySelectorAll(".info-tip-popover").forEach((p) => p.remove());
+        if (already) return;
+        const g = GLOSSARY[key];
+        if (!g) return;
+        const pop = document.createElement("div");
+        pop.className = "info-tip-popover";
+        pop.innerHTML = `<div class="info-tip-title">${g.title}</div><p class="info-tip-body">${g.what_it_is}</p><p class="info-tip-why"><b>Why it matters:</b> ${g.why_it_matters}</p>`;
+        span.appendChild(pop);
+      }
+      document.addEventListener("click", () => document.querySelectorAll(".info-tip-popover").forEach((p) => p.remove()));
+
+      function renderGlossaryPanel() {
+        const list = document.getElementById("glossaryList");
+        list.innerHTML = Object.values(GLOSSARY)
+          .map(
+            (g) => `
+          <div class="glossary-entry">
+            <div class="glossary-entry-title">${g.title}</div>
+            <p class="glossary-entry-body">${g.what_it_is}</p>
+            <p class="glossary-entry-why"><b>Why it matters:</b> ${g.why_it_matters}</p>
+          </div>`,
+          )
+          .join("");
+      }
+      renderGlossaryPanel();
+
+      function toggleImpactCard() {
+        const card = document.getElementById("impactCard");
+        const collapsed = card.classList.toggle("collapsed");
+        document.getElementById("impactCardBody").style.display = collapsed ? "none" : "block";
+        card.querySelector(".collapse-btn").textContent = collapsed ? "Impact ›" : "×";
+      }
+
+      /* ---------------- MAP (light basemap) ---------------- */
+      const map = L.map("map", { zoomControl: false, attributionControl: true }).setView([15, 79], 5);
+      L.control.zoom({ position: "bottomleft" }).addTo(map);
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+        attribution: "&copy; OpenStreetMap &copy; CARTO",
+        subdomains: "abcd",
+        maxZoom: 19,
+      }).addTo(map);
+
+      const stations = [
+        {
+          id: "mumbai",
+          name: "Mumbai Buoy",
+          state: "Maharashtra",
+          lat: 19.076,
+          lng: 72.8777,
+          type: "buoy",
+          reading: "SST 28.9°C · Salinity 35.1 psu · Wave height 1.2m",
+          trend: [28.2, 28.4, 28.6, 28.7, 28.9, 28.9, 28.9],
+          sst: [27.9, 28.1, 28.3, 28.5, 28.6, 28.8, 28.9],
+          chl: [0.42, 0.4, 0.39, 0.41, 0.38, 0.37, 0.36],
+        },
+        {
+          id: "goa",
+          name: "Goa eDNA Site",
+          state: "Goa",
+          lat: 15.4909,
+          lng: 73.8278,
+          type: "edna",
+          reading: "214 eDNA samples · 38 species detected · 92% classified",
+          trend: [180, 190, 198, 205, 210, 212, 214],
+          sst: [28.6, 28.7, 28.8, 28.9, 29.0, 29.0, 29.1],
+          chl: [0.55, 0.53, 0.52, 0.5, 0.49, 0.47, 0.46],
+        },
+        {
+          id: "kochi",
+          name: "Kochi Advisory Zone",
+          state: "Kerala",
+          lat: 9.9312,
+          lng: 76.2673,
+          type: "advisory",
+          reading: "Sardine stock declining 23% YoY · advisory active since Jul",
+          trend: [520, 490, 460, 430, 400, 380, 360],
+          sst: [29.2, 29.3, 29.5, 29.6, 29.7, 29.8, 29.9],
+          chl: [0.3, 0.29, 0.27, 0.26, 0.25, 0.24, 0.23],
+        },
+        {
+          id: "chennai",
+          name: "Chennai Buoy",
+          state: "Tamil Nadu",
+          lat: 13.0827,
+          lng: 80.2707,
+          type: "buoy",
+          reading: "SST 29.4°C · Chl-a 0.71 mg/m³",
+          trend: [28.9, 29.0, 29.1, 29.3, 29.4, 29.5, 29.4],
+          sst: [28.8, 28.9, 29.0, 29.2, 29.3, 29.4, 29.4],
+          chl: [0.68, 0.69, 0.7, 0.7, 0.71, 0.71, 0.71],
+        },
+        {
+          id: "vizag",
+          name: "Visakhapatnam eDNA Site",
+          state: "Andhra Pradesh",
+          lat: 17.6868,
+          lng: 83.2185,
+          type: "edna",
+          reading: "156 eDNA samples · 27 species detected",
+          trend: [120, 128, 135, 142, 148, 152, 156],
+          sst: [28.9, 29.0, 29.1, 29.1, 29.2, 29.2, 29.3],
+          chl: [0.44, 0.43, 0.42, 0.42, 0.41, 0.4, 0.4],
+        },
+        {
+          id: "sundarbans",
+          name: "Sundarbans Buoy",
+          state: "West Bengal",
+          lat: 21.9497,
+          lng: 88.9468,
+          type: "buoy",
+          reading: "SST 27.8°C · Salinity 31.4 psu",
+          trend: [27.2, 27.4, 27.5, 27.6, 27.7, 27.8, 27.8],
+          sst: [27.3, 27.4, 27.5, 27.6, 27.7, 27.7, 27.8],
+          chl: [0.6, 0.6, 0.61, 0.61, 0.62, 0.62, 0.63],
+        },
+        {
+          id: "lakshadweep",
+          name: "Lakshadweep Coral Site",
+          state: "Lakshadweep",
+          lat: 10.5593,
+          lng: 72.6358,
+          type: "coral",
+          reading: "Bleaching risk 55% · DHW 4.8 · Alert Level 1",
+          trend: [30, 35, 40, 45, 49, 52, 55],
+          sst: [26.8, 27.3, 27.7, 28.1, 28.6, 29.0, 29.9],
+          chl: [0.27, 0.3, 0.33, 0.35, 0.37, 0.38, 0.38],
+        },
+        {
+          id: "mannar",
+          name: "Gulf of Mannar Advisory",
+          state: "Tamil Nadu",
+          lat: 9.1,
+          lng: 79.3,
+          type: "advisory",
+          reading: "Dugong habitat protection zone · seagrass monitoring",
+          trend: [12, 12, 11, 13, 12, 12, 12],
+          sst: [28.4, 28.5, 28.6, 28.6, 28.7, 28.7, 28.8],
+          chl: [0.33, 0.33, 0.32, 0.32, 0.31, 0.31, 0.3],
+        },
+        {
+          id: "portblair",
+          name: "Port Blair eDNA Site",
+          state: "Andaman & Nicobar",
+          lat: 11.6234,
+          lng: 92.7265,
+          type: "edna",
+          reading: "98 eDNA samples · 19 species detected",
+          trend: [70, 76, 82, 86, 90, 94, 98],
+          sst: [28.9, 29.0, 29.0, 29.1, 29.1, 29.2, 29.2],
+          chl: [0.24, 0.24, 0.23, 0.23, 0.22, 0.22, 0.21],
+        },
+      ];
+      const colors = { buoy: "#128F82", edna: "#2E9E5B", advisory: "#D6512D", coral: "#B9800F" };
+      const layerGroups = {
+        buoy: L.layerGroup().addTo(map),
+        edna: L.layerGroup().addTo(map),
+        advisory: L.layerGroup().addTo(map),
+        coral: L.layerGroup().addTo(map),
+        shift: L.layerGroup().addTo(map),
+        vessels: L.layerGroup().addTo(map),
+        pollution: L.layerGroup().addTo(map),
+      };
+      const movementLayer = L.layerGroup().addTo(map); // selected species trajectory — always visible, not a toggle layer
+
+      const stationMarkers = {};
+      const coralCircles = {};
+      stations.forEach((s) => {
+        const marker = L.circleMarker([s.lat, s.lng], {
+          radius: s.type === "advisory" ? 9 : 7,
+          color: "#FFFFFF",
+          weight: 2,
+          fillColor: colors[s.type],
+          fillOpacity: 0.95,
+        });
+        marker.bindTooltip(`<b>${s.name}</b>`, { direction: "top", offset: [0, -6] });
+        marker.on("click", () => openStation(s.id));
+        marker.addTo(layerGroups[s.type]);
+        stationMarkers[s.id] = marker;
+        if (s.type === "advisory" || s.type === "coral") {
+          const circle = L.circle([s.lat, s.lng], {
+            radius: 70000,
+            color: colors[s.type],
+            weight: 1,
+            fillColor: colors[s.type],
+            fillOpacity: 0.07,
+          }).addTo(layerGroups[s.type]);
+          if (s.type === "coral") coralCircles[s.id] = circle;
+        }
+      });
+
+      const shiftPaths = [
+        [
+          [13.0827, 80.2707],
+          [15.5, 81.0],
+          [18.0, 83.5],
+          [20.5, 86.5],
+        ],
+        [
+          [9.9312, 76.2673],
+          [11.5, 75.8],
+          [13.5, 74.5],
+          [15.5, 73.5],
+        ],
+      ];
+      shiftPaths.forEach((path) => {
+        L.polyline(path, { color: "#0F2620", weight: 1.6, dashArray: "5,6", opacity: 0.5 }).addTo(layerGroups.shift);
+        const end = path[path.length - 1];
+        L.circleMarker(end, { radius: 4, color: "#FFFFFF", weight: 1.5, fillColor: "#0F2620", fillOpacity: 1 }).addTo(layerGroups.shift);
+      });
+
+      /* ---------------- Vessel tracking + MPA violation check ---------------- */
+      const mpaZones = [
+        {
+          id: "mannar",
+          name: "Gulf of Mannar Marine National Park",
+          polygon: [
+            [9.25, 78.9],
+            [9.25, 79.35],
+            [8.85, 79.35],
+            [8.85, 78.9],
+          ],
+        },
+        {
+          id: "lakshadweep",
+          name: "Lakshadweep Coral Reserve",
+          polygon: [
+            [10.68, 72.5],
+            [10.68, 72.82],
+            [10.38, 72.82],
+            [10.38, 72.5],
+          ],
+        },
+      ];
+      mpaZones.forEach((z) => {
+        L.polygon(z.polygon, { color: "#D6512D", weight: 1.5, fillColor: "#D6512D", fillOpacity: 0.08, dashArray: "4,4" })
+          .bindTooltip(`<b>${z.name}</b>`, { direction: "center" })
+          .addTo(layerGroups.vessels);
+      });
+
+      function pointInPolygon(lat, lng, polygon) {
+        let inside = false;
+        for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i++) {
+          const [latI, lngI] = polygon[i];
+          const [latJ, lngJ] = polygon[j];
+          const intersects = lngI > lng !== lngJ > lng && lat < ((latJ - latI) * (lng - lngI)) / (lngJ - lngI + 1e-12) + latI;
+          if (intersects) inside = !inside;
+        }
+        return inside;
+      }
+      function positionOnTrack(track, t) {
+        const n = track.length;
+        const segFloat = t * n;
+        const i = Math.floor(segFloat) % n;
+        const localT = segFloat - Math.floor(segFloat);
+        const a = track[i],
+          b = track[(i + 1) % n];
+        return [a[0] + (b[0] - a[0]) * localT, a[1] + (b[1] - a[1]) * localT];
+      }
+      const fleet = [
+        { id: "IN-TRW-4471", name: "Meenakshi Star", type: "trawler", periodS: 90, track: [[9.0, 78.4], [9.15, 78.7], [9.05, 79.0], [8.85, 79.15], [8.9, 78.7], [9.0, 78.4]] },
+        { id: "IN-TRW-8834", name: "Lakshadweep Tide", type: "trawler", periodS: 75, track: [[10.5, 72.5], [10.6, 72.6], [10.5, 72.75], [10.4, 72.6], [10.5, 72.5]] },
+        { id: "IN-CGO-1123", name: "Konkan Carrier", type: "cargo", periodS: 160, track: [[19.0, 72.7], [17.5, 73.0], [15.4, 73.6], [13.0, 80.1]] },
+        { id: "IN-TNK-3312", name: "Arabian Voyager", type: "tanker", periodS: 200, track: [[19.1, 72.8], [16.0, 73.2], [11.6, 75.5], [9.9, 76.3]] },
+        { id: "IN-FSH-9081", name: "Goa Kadal", type: "fishing", periodS: 70, track: [[15.4, 73.7], [15.55, 73.85], [15.45, 74.0], [15.3, 73.85], [15.4, 73.7]] },
+      ];
+      const vesselMarkers = {};
+      let vesselState = {};
+      let currentVesselId = null;
+      function updateVessels() {
+        const now = Date.now() / 1000;
+        let violationCount = 0;
+        fleet.forEach((v) => {
+          const t = (now % v.periodS) / v.periodS;
+          const [lat, lng] = positionOnTrack(v.track, t);
+          const zone = mpaZones.find((z) => pointInPolygon(lat, lng, z.polygon));
+          const inViolation = !!zone;
+          if (inViolation) violationCount++;
+          vesselState[v.id] = { ...v, lat, lng, inViolation, zoneName: zone ? zone.name : null, speed: (4 + 3 * Math.sin(now / 17 + v.id.length)).toFixed(1) };
+          const color = inViolation ? "#D6512D" : "#5C7370";
+          let marker = vesselMarkers[v.id];
+          if (!marker) {
+            marker = L.circleMarker([lat, lng], { radius: 5, color: "#FFFFFF", weight: 1.5, fillColor: color, fillOpacity: 0.95 });
+            marker.on("click", () => openVessel(v.id));
+            marker.addTo(layerGroups.vessels);
+            vesselMarkers[v.id] = marker;
+          } else {
+            marker.setLatLng([lat, lng]);
+            marker.setStyle({ fillColor: color });
+          }
+          marker.bindTooltip(`<b>${v.name}</b>${inViolation ? " — in protected zone" : ""}`, { direction: "top", offset: [0, -6] });
+        });
+        document.getElementById("kpiViolations").textContent = violationCount;
+        const ticker = document.getElementById("violationTicker");
+        if (violationCount > 0) {
+          ticker.style.display = "flex";
+          ticker.textContent = `${violationCount} vessel${violationCount === 1 ? "" : "s"} in restricted waters`;
+        } else {
+          ticker.style.display = "none";
+        }
+        if (currentVesselId && document.getElementById("pc-vessel").classList.contains("active")) {
+          renderVesselPanel(currentVesselId);
+        }
+      }
+      updateVessels();
+      setInterval(updateVessels, 3000);
+
+      function openVessel(id) {
+        currentVesselId = id;
+        renderVesselPanel(id);
+        openPanel("vessel");
+      }
+      function renderVesselPanel(id) {
+        const v = vesselState[id];
+        if (!v) return;
+        const badge = document.getElementById("vesselBadge");
+        badge.textContent = v.inViolation ? "VIOLATION" : v.type.toUpperCase();
+        badge.classList.toggle("violation", v.inViolation);
+        document.getElementById("vesselName").textContent = v.name;
+        document.getElementById("vesselReadout").innerHTML = `<b>ID ${v.id}</b><br><b>Type ${v.type}</b><br><b>Speed ${v.speed} kn</b>`;
+        document.getElementById("vesselViolationNote").innerHTML = v.inViolation
+          ? `<div class="violation-note">Currently inside <b>${v.zoneName}</b> — a protected zone where fishing/extractive activity is restricted.</div>`
+          : "";
+      }
+
+      /* ---------------- Pollution / treatment plant layer ---------------- */
+      const treatmentPlants = [
+        { name: "Worli STP", city: "Mumbai", lat: 19.01, lng: 72.82, type: "STP", discharge: 500, compliance: "compliant" },
+        { name: "Kodungaiyur ETP", city: "Chennai", lat: 13.15, lng: 80.25, type: "ETP", discharge: 280, compliance: "non-compliant" },
+        { name: "Vyttila STP", city: "Kochi", lat: 9.97, lng: 76.31, type: "STP", discharge: 110, compliance: "compliant" },
+        { name: "Vizag Port ETP", city: "Visakhapatnam", lat: 17.72, lng: 83.28, type: "ETP", discharge: 190, compliance: "non-compliant" },
+        { name: "Dhapa STP", city: "Kolkata", lat: 22.53, lng: 88.42, type: "STP", discharge: 620, compliance: "under-review" },
+        { name: "Bolinjam STP", city: "Mangalore", lat: 12.87, lng: 74.84, type: "STP", discharge: 95, compliance: "compliant" },
+      ];
+      const complianceColors = { compliant: "#2E9E5B", "non-compliant": "#D6512D", "under-review": "#B9800F" };
+      let nonCompliantCount = 0;
+      treatmentPlants.forEach((p) => {
+        if (p.compliance === "non-compliant") nonCompliantCount++;
+        const marker = L.circleMarker([p.lat, p.lng], {
+          radius: 6,
+          color: "#FFFFFF",
+          weight: 1.5,
+          fillColor: complianceColors[p.compliance],
+          fillOpacity: 0.9,
+        });
+        marker.bindTooltip(`<b>${p.name}</b>`, { direction: "top", offset: [0, -6] });
+        marker.bindPopup(`<b>${p.name}</b><br>${p.city} · ${p.type}<br>Discharge: ${p.discharge} MLD<br>Compliance: ${p.compliance}`);
+        marker.addTo(layerGroups.pollution);
+      });
+      document.getElementById("kpiNonCompliant").textContent = nonCompliantCount;
+
+      document.querySelectorAll(".layer-row input").forEach((cb) => {
+        cb.addEventListener("change", () => {
+          const key = cb.dataset.layer;
+          if (cb.checked) map.addLayer(layerGroups[key]);
+          else map.removeLayer(layerGroups[key]);
+        });
+      });
+
+      /* ---------------- Timeline scrubber (recorded vs forecast) ---------------- */
+      const SCRUBBER_MIN_DAY = -6;
+      const SCRUBBER_MAX_DAY = 5;
+      function colorForValue(metric, value) {
+        const scale =
+          metric === "sst"
+            ? { min: 26, max: 31, stops: [[46, 134, 193], [238, 244, 244], [214, 81, 45]] }
+            : { min: 0.1, max: 1.2, stops: [[238, 244, 244], [46, 158, 91], [27, 122, 61]] };
+        const t = Math.max(0, Math.min(1, (value - scale.min) / (scale.max - scale.min)));
+        const segT = t * (scale.stops.length - 1);
+        const i = Math.min(scale.stops.length - 2, Math.floor(segT));
+        const localT = segT - i;
+        const [r1, g1, b1] = scale.stops[i];
+        const [r2, g2, b2] = scale.stops[i + 1];
+        const lerp = (a, b) => Math.round(a + (b - a) * localT);
+        return `rgb(${lerp(r1, r2)}, ${lerp(g1, g2)}, ${lerp(b1, b2)})`;
+      }
+      function seriesValueAtDay(series, day) {
+        // days -6..0 map directly onto the 7 recorded points; days 1..5 extrapolate the recent slope
+        if (day <= 0) return series[day + 6];
+        const slope = (series[6] - series[5]) / 1;
+        return series[6] + slope * day;
+      }
+      let scrubPlaying = false;
+      let scrubTimer = null;
+      function onScrubberInput() {
+        const day = Number(document.getElementById("scrubberRange").value);
+        const metric = document.getElementById("metricSelect").value;
+        const kind = day <= 0 ? "recorded" : "forecast";
+        const label = document.getElementById("dayLabel");
+        label.textContent = `Day ${day - SCRUBBER_MIN_DAY + 1} of 12 — ${kind}`;
+        label.classList.toggle("forecast", kind === "forecast");
+
+        stations.forEach((s) => {
+          const value = seriesValueAtDay(s[metric], day);
+          const marker = stationMarkers[s.id];
+          marker.setStyle({ fillColor: colorForValue(metric, value), fillOpacity: kind === "forecast" ? 0.5 : 0.95 });
+          marker.setRadius(s.type === "advisory" ? 9 : 7);
+
+          if (metric === "sst" && coralCircles[s.id]) {
+            const t = Math.max(0, Math.min(1, (value - 27) / 3.5));
+            coralCircles[s.id].setRadius(70000 + t * 45000);
+            coralCircles[s.id].setStyle({ fillColor: colorForValue("sst", value), fillOpacity: 0.06 + t * 0.22 });
+          }
+        });
+      }
+      function togglePlay() {
+        const btn = document.getElementById("playBtn");
+        if (scrubPlaying) {
+          clearInterval(scrubTimer);
+          scrubPlaying = false;
+          btn.textContent = "Play";
+          return;
+        }
+        scrubPlaying = true;
+        btn.textContent = "Pause";
+        const range = document.getElementById("scrubberRange");
+        range.value = SCRUBBER_MIN_DAY;
+        onScrubberInput();
+        const totalSteps = SCRUBBER_MAX_DAY - SCRUBBER_MIN_DAY + 1;
+        const stepMs = Math.max(150, Math.round(10000 / totalSteps));
+        scrubTimer = setInterval(() => {
+          const day = Number(range.value);
+          if (day >= SCRUBBER_MAX_DAY) {
+            clearInterval(scrubTimer);
+            scrubPlaying = false;
+            btn.textContent = "Play";
+            return;
+          }
+          range.value = day + 1;
+          onScrubberInput();
+        }, stepMs);
+      }
+      onScrubberInput();
+
+      /* ---------------- Search / NLQ ---------------- */
+      const searchInput = document.getElementById("searchInput");
+      const searchResults = document.getElementById("searchResults");
+      const nlqTraces = {
+        "kerala|vulnerable|kochi": "FROM edna_detections JOIN species WHERE region='Kerala' AND conservation_status IN ('VU','EN')",
+        "goa|chennai|sst|temperature": "FROM ocean_readings WHERE parameter='SST' AND station_region IN ('Goa','Chennai')",
+        advisor: "FROM fishing_advisories WHERE status='active' ORDER BY priority DESC",
+        "coral|bleach|lakshadweep": "FROM thermal_stress_readings WHERE region='Lakshadweep' ORDER BY dhw DESC",
+        "vessel|restricted|mpa": "FROM vessel_positions JOIN mpa_zones WHERE point_in_polygon(lat,lng,zone.polygon)",
+      };
+      const suggestedQueries = [
+        "Vulnerable species near Kerala since March",
+        "SST anomalies near Goa and Chennai",
+        "Active fishing advisories",
+        "Coral bleaching risk in Lakshadweep",
+        "Vessels currently in restricted waters",
+      ];
+      function renderSuggestions() {
+        const html = suggestedQueries
+          .map((q) => `<div class="row" onclick="useSuggestion('${q.replace(/'/g, "\\'")}')">${q}<span>suggested</span></div>`)
+          .join("");
+        searchResults.innerHTML = html;
+        searchResults.classList.add("show");
+      }
+      function renderResults(q) {
+        const matches = stations.filter((s) => s.name.toLowerCase().includes(q) || s.type.includes(q) || s.reading.toLowerCase().includes(q));
+        let traceKey = Object.keys(nlqTraces).find((k) => new RegExp(k, "i").test(q));
+        let html = "";
+        if (traceKey) html += `<div class="trace">${nlqTraces[traceKey]}</div>`;
+        if (matches.length) {
+          matches.forEach((s) => {
+            html += `<div class="row" onclick="flyAndOpen('${s.id}')">${s.name}<span>${s.type}</span></div>`;
+          });
+        } else if (traceKey) {
+          html += `<div class="row" style="cursor:default; color:var(--muted);">Query understood — no exact station match, showing nearest region on map</div>`;
+        } else {
+          html += `<div class="row" style="cursor:default; color:var(--muted);">No matches — try a region, species, advisory, or vessel keyword</div>`;
+        }
+        searchResults.innerHTML = html;
+        searchResults.classList.add("show");
+      }
+      searchInput.addEventListener("input", () => {
+        const q = searchInput.value.trim().toLowerCase();
+        if (!q) {
+          renderSuggestions();
+          return;
+        }
+        renderResults(q);
+      });
+      searchInput.addEventListener("focus", () => {
+        const q = searchInput.value.trim().toLowerCase();
+        if (!q) renderSuggestions();
+        else renderResults(q);
+      });
+      searchInput.addEventListener("blur", () => {
+        setTimeout(() => searchResults.classList.remove("show"), 150);
+      });
+      function useSuggestion(q) {
+        searchInput.value = q;
+        renderResults(q.toLowerCase());
+        searchInput.focus();
+      }
+      function flyAndOpen(id) {
+        const s = stations.find((x) => x.id === id);
+        map.flyTo([s.lat, s.lng], 8, { duration: 1.1 });
+        setTimeout(() => openStation(id), 500);
+        searchResults.classList.remove("show");
+        searchInput.value = s.name;
+      }
+
+      /* ---------------- Side panel logic ---------------- */
+      let statChartInst = null;
+      function openPanel(type) {
+        document.querySelectorAll(".fab").forEach((f) => f.classList.remove("active"));
+        document.querySelectorAll(".pcontent").forEach((p) => p.classList.remove("active"));
+        const titles = {
+          ai: "AI Assistant",
+          species: "Movement Trends",
+          predict: "Predictive Analytics",
+          analytics: "Analytics",
+          glossary: "Data Glossary",
+          station: "Station Detail",
+          vessel: "Vessel Detail",
+        };
+        document.getElementById("panelTitle").textContent = titles[type];
+        document.getElementById("pc-" + type).classList.add("active");
+        document.getElementById("sidePanel").classList.add("open");
+        if (type !== "station" && type !== "vessel")
+          [...document.querySelectorAll(".fab")].find((f) => f.getAttribute("onclick") === `openPanel('${type}')`)?.classList.add("active");
+        if (type === "predict") setTimeout(renderPredictCharts, 50);
+        if (type === "analytics") setTimeout(renderAnalyticsCharts, 50);
+      }
+      function closePanel() {
+        document.getElementById("sidePanel").classList.remove("open");
+        document.querySelectorAll(".fab").forEach((f) => f.classList.remove("active"));
+      }
+
+      let currentStation = null;
+      function openStation(id) {
+        const s = stations.find((x) => x.id === id);
+        currentStation = s;
+        document.getElementById("statBadge").textContent = s.type.toUpperCase();
+        document.getElementById("statName").textContent = s.name;
+        document.getElementById("statReadout").innerHTML = s.reading
+          .split(" · ")
+          .map((r) => `<b>${r}</b>`)
+          .join("<br>");
+        openPanel("station");
+        setTimeout(() => {
+          const ctx = document.getElementById("statChart");
+          if (statChartInst) statChartInst.destroy();
+          statChartInst = new Chart(ctx, {
+            type: "line",
+            data: {
+              labels: ["-6d", "-5d", "-4d", "-3d", "-2d", "-1d", "today"],
+              datasets: [
+                {
+                  data: s.trend,
+                  borderColor: colors[s.type],
+                  backgroundColor: colors[s.type] + "1A",
+                  fill: true,
+                  tension: 0.4,
+                  pointRadius: 3,
+                  borderWidth: 2,
+                },
+              ],
+            },
+            options: {
+              plugins: { legend: { display: false } },
+              scales: { x: { grid: { color: "rgba(15,38,32,0.06)" } }, y: { grid: { color: "rgba(15,38,32,0.06)" } } },
+            },
+          });
+        }, 60);
+      }
+      function askAboutStation() {
+        openPanel("ai");
+        document.getElementById("chatInput").value = `Tell me more about ${currentStation.name}`;
+        sendChat();
+      }
+
+      /* ---------------- Chat ---------------- */
+      const presets = [
+        {
+          q: "Why is sardine catch declining off Kerala?",
+          a: "Cross-referencing CMFRI catch logs with INCOIS sea-surface temperature data: sardine landings off Kerala are down 23% year-on-year, correlated with a 0.6°C SST anomaly and an 18% chlorophyll-a drop in the upwelling zone. This matches historical low-recruitment years (2016, 2019).",
+          cite: "Sources: CMFRI catch database · INCOIS ocean state report · OBIS occurrence records",
+        },
+        {
+          q: "Show coral bleaching risk near Lakshadweep",
+          a: "Lakshadweep's composite bleaching score is 55/100 — Alert Level 1. That's 60% from accumulated heat stress (Degree Heating Weeks), 25% from a chlorophyll-a drift, and 15% from historical bleaching-year frequency. Field verification recommended within the next couple of weeks.",
+          cite: "Sources: NOAA Coral Reef Watch methodology · simulated INCOIS thermal feed",
+        },
+        {
+          q: "Which species were newly detected via eDNA this month?",
+          a: "3 new taxa were flagged this month at Lakshadweep, including a moray eel species pending morphological confirmation. Classification confidence ranges 87–98%.",
+          cite: "Sources: eDNA barcoding pipeline · GBIF reference taxonomy",
+        },
+        {
+          q: "Which vessels are currently in restricted waters?",
+          a: "As of the last position poll, vessels are checked against the Gulf of Mannar and Lakshadweep MPA polygons via a point-in-polygon test. Any vessel currently inside shows red on the Vessel Tracking layer — click it for ID, speed, and which zone it's in.",
+          cite: "Source: simulated AIS-like tracks, checked live against MPA polygons",
+        },
+        {
+          q: "Any non-compliant treatment plants near declining reefs?",
+          a: "Kodungaiyur ETP (Chennai) and Vizag Port ETP are currently flagged non-compliant. Neither sits right next to a monitored reef site in this build, but this is exactly the kind of cross-layer question the Analytics panel's compliance trend and biodiversity charts are meant to support side-by-side.",
+          cite: "Source: simulated CPCB-style compliance figures for real coastal cities",
+        },
+      ];
+      function askPreset(i) {
+        document.getElementById("chatInput").value = presets[i].q;
+        sendChat(presets[i]);
+      }
+      function sendChat(presetObj = null) {
+        const input = document.getElementById("chatInput");
+        const text = input.value.trim();
+        if (!text) return;
+        const log = document.getElementById("chatLog");
+        log.innerHTML += `<div class="msg user">${text}</div>`;
+        input.value = "";
+        log.scrollTop = log.scrollHeight;
+        const typingId = "typing-" + Date.now();
+        log.innerHTML += `<div class="msg ai" id="${typingId}">···</div>`;
+        log.scrollTop = log.scrollHeight;
+        setTimeout(() => {
+          const el = document.getElementById(typingId);
+          let match = presetObj || presets.find((p) => p.q.toLowerCase() === text.toLowerCase());
+          if (match) {
+            el.innerHTML = match.a + `<div class="cite">${match.cite}</div>`;
+          } else if (currentStation && text.toLowerCase().includes(currentStation.name.toLowerCase())) {
+            el.innerHTML = `${currentStation.name} currently reports: ${currentStation.reading}. This station feeds into regional models for stock, thermal-stress and biodiversity trend estimates.<div class="cite">Source: live station telemetry (simulated)</div>`;
+          } else {
+            el.innerHTML = `In the full system this would run retrieval across ocean sensor, fisheries, eDNA, vessel and treatment-plant records to synthesize a grounded answer. Try one of the suggested prompts to see full response quality.<div class="cite">Retrieval layer not wired in this static reference build</div>`;
+          }
+          log.scrollTop = log.scrollHeight;
+        }, 800);
+      }
+      document.getElementById("chatInput").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") sendChat();
+      });
+
+      /* ---------------- Species table + Movement Trends ---------------- */
+      const species = [
+        { sci: "Sardinella longiceps", common: "Indian oil sardine", region: "Kerala coast", status: "nt", note: "Backbone of Kerala's pelagic fishery; landings are tracked closely for early stock-decline signals." },
+        { sci: "Chelonia mydas", common: "Green sea turtle", region: "Odisha coast", status: "vu", note: "Nests seasonally along the Odisha coast; tagged individuals feed regional migration models." },
+        { sci: "Gymnothorax sp.", common: "Moray eel (eDNA match)", region: "Lakshadweep", status: "—", note: "Flagged via environmental DNA sampling; morphological confirmation is still pending." },
+        { sci: "Acropora formosa", common: "Staghorn coral", region: "Lakshadweep atolls", status: "vu", note: "Fast-growing reef-builder under active thermal-stress and bleaching monitoring." },
+        { sci: "Hippocampus kuda", common: "Yellow seahorse", region: "Goa coast", status: "vu", note: "Slow-moving and site-faithful, making it especially vulnerable to seagrass habitat loss." },
+        { sci: "Dugong dugon", common: "Dugong", region: "Gulf of Mannar", status: "vu", note: "Seagrass grazer whose population trend is a key indicator of coastal habitat health." },
+        { sci: "Thunnus albacares", common: "Yellowfin tuna", region: "Arabian Sea", status: "lc", note: "Commercially significant pelagic species tracked through fisheries landings data." },
+        { sci: "Rastrelliger kanagurta", common: "Indian mackerel", region: "Tamil Nadu coast", status: "lc", note: "High-volume coastal fishery species with strong, predictable seasonal landing patterns." },
+      ];
+      const statusMap = { lc: ["Least Concern", "lc"], nt: ["Near Threatened", "nt"], vu: ["Vulnerable", "vu"], "—": ["—", ""] };
+      const tbody = document.getElementById("speciesTable");
+      const speciesHoverCard = document.getElementById("speciesHoverCard");
+      species.forEach((s) => {
+        const st = statusMap[s.status];
+        const tr = document.createElement("tr");
+        tr.dataset.sci = s.sci;
+        tr.innerHTML = `<td><i>${s.sci}</i></td><td>${s.region}</td><td>${st[0] === "—" ? "—" : `<span class="tag ${st[1]}">${st[0]}</span>`}</td>`;
+        tr.addEventListener("mouseenter", () => showSpeciesCard(s));
+        tr.addEventListener("mouseleave", hideSpeciesCard);
+        tr.addEventListener("click", () => selectSpeciesForTrajectory(s));
+        tbody.appendChild(tr);
+      });
+      function showSpeciesCard(s) {
+        const st = statusMap[s.status];
+        speciesHoverCard.innerHTML = `
+          <div class="shc-head">
+            <span class="shc-sci">${s.sci}</span>
+            ${st[0] === "—" ? "" : `<span class="tag ${st[1]}">${st[0]}</span>`}
+          </div>
+          <div class="shc-common">${s.common}</div>
+          <div class="shc-region">${s.region}</div>
+          <p class="shc-note">${s.note}</p>
+        `;
+        speciesHoverCard.classList.add("show");
+      }
+      function hideSpeciesCard() {
+        speciesHoverCard.classList.remove("show");
+      }
+
+      // Only species with enough real occurrence-year coverage get a simulated trajectory —
+      // same honesty rule as the live backend (services/trajectory.py): no fabricated paths
+      // for species the underlying data can't actually support.
+      const trajectories = {
+        "Thunnus albacares": {
+          common: "Yellowfin tuna",
+          conclusion: "Yellowfin tuna have shifted about 1,537 km west-southwest over the past ten years and are expected to keep moving that way over the next five years (medium confidence).",
+          drift: "1536.9 km WSW",
+          years: [1999, 2006, 2015, 2019, 2021, 2022, 2023, 2024, 2025, 2026],
+          lat: [13.75, 11.86, 14.42, 15.24, 12.7, 12.91, 11.4, 10.2, 10.4, 9.95],
+          forecastYears: [2027, 2028, 2029, 2030, 2031],
+          forecastLat: [9.3, 8.7, 8.1, 7.5, 6.9],
+          path: [[13.75, 93.75], [11.86, 84.99], [14.42, 83.64], [15.24, 78.55], [12.7, 79.31], [11.4, 79.5], [10.2, 78.9], [9.95, 81.26]],
+          forecastPath: [[9.95, 81.26], [9.3, 81.6], [8.7, 81.9], [8.1, 82.2], [7.5, 82.5], [6.9, 82.8]],
+        },
+        "Rastrelliger kanagurta": {
+          common: "Indian mackerel",
+          conclusion: "Indian mackerel have shifted north by about 640 km over the past decade, tracking warming coastal waters (medium confidence).",
+          drift: "640.2 km N",
+          years: [1991, 2006, 2008, 2009, 2014, 2016, 2019, 2022, 2023, 2024, 2025, 2026],
+          lat: [8.9, 9.6, 10.5, 11.2, 12.9, 14.2, 15.8, 16.6, 17.1, 17.4, 17.6, 17.8],
+          forecastYears: [2027, 2028, 2029, 2030, 2031],
+          forecastLat: [18.0, 18.2, 18.4, 18.6, 18.8],
+          path: [[8.9, 78.1], [9.6, 78.3], [10.5, 78.5], [11.2, 78.6], [12.9, 78.9], [14.2, 79.4], [15.8, 79.9], [17.8, 82.9]],
+          forecastPath: [[17.8, 82.9], [18.0, 83.2], [18.2, 83.5], [18.4, 83.8], [18.6, 84.1], [18.8, 84.4]],
+        },
+      };
+      let movementChart = null;
+      let selectedTrajectorySci = null;
+      function selectSpeciesForTrajectory(s) {
+        selectedTrajectorySci = s.sci;
+        document.querySelectorAll("#speciesTable tr").forEach((tr) => tr.classList.toggle("selected", tr.dataset.sci === s.sci));
+        const block = document.getElementById("movementBlock");
+        const body = document.getElementById("movementBody");
+        document.getElementById("movementTitle").innerHTML = `Movement Trend — ${s.common}<span class="info-tip"><button class="info-tip-icon" onclick="toggleTip(event, 'species_trajectory')">i</button></span>`;
+        block.classList.add("active");
+        const traj = trajectories[s.sci];
+        movementLayer.clearLayers();
+        if (!traj) {
+          body.innerHTML = `<p style="font-size:12px; color:var(--coral); line-height:1.5;">Not enough occurrence-year coverage to plot a movement trend for ${s.common} yet.</p>`;
+          return;
+        }
+        body.innerHTML = `
+          <p class="conclusion">${traj.conclusion}</p>
+          <div class="sub">Drifted <b>${traj.drift}</b> · ${traj.years.length} years of OBIS/GBIF records</div>
+          <canvas id="movementCanvas" height="140"></canvas>
+          <p class="methodology">Per-year mean lat/lng centroid of occurrence records, smoothed with exponential smoothing, then extrapolated forward using the velocity between the last two smoothed points. Binned by year, not month — the source records only carry year-level dates.</p>
+        `;
+        const canvas = document.getElementById("movementCanvas");
+        if (movementChart) movementChart.destroy();
+        const years = [...traj.years, ...traj.forecastYears];
+        const histData = [...traj.lat, ...traj.forecastYears.map(() => null)];
+        const fcData = [...traj.years.map(() => null), ...traj.forecastLat];
+        fcData[traj.years.length - 1] = traj.lat[traj.lat.length - 1];
+        movementChart = new Chart(canvas, {
+          type: "line",
+          data: {
+            labels: years,
+            datasets: [
+              { label: "Observed (smoothed)", data: histData, borderColor: "#128F82", backgroundColor: "#128F82", tension: 0.3, pointRadius: 2, borderWidth: 2.5, spanGaps: true },
+              { label: "Forecast continuation", data: fcData, borderColor: "#B9800F", backgroundColor: "#B9800F", borderDash: [5, 5], tension: 0.3, pointRadius: 2, borderWidth: 2, spanGaps: true },
+            ],
+          },
+          options: {
+            plugins: { legend: { position: "bottom", labels: { boxWidth: 8, font: { size: 9 } } } },
+            scales: { x: { grid: { color: "rgba(15,38,32,0.06)" } }, y: { grid: { color: "rgba(15,38,32,0.06)" }, title: { display: true, text: "centroid latitude" } } },
+          },
+        });
+
+        L.polyline(traj.path, { color: "#128F82", weight: 2.5, opacity: 0.85 }).addTo(movementLayer);
+        traj.path.forEach((p, i) => {
+          L.circleMarker(p, { radius: i === traj.path.length - 1 ? 6 : 3.5, color: "#FFFFFF", weight: 1.5, fillColor: "#128F82", fillOpacity: 0.95 })
+            .bindTooltip(`${traj.years[i]}`, { direction: "top", offset: [0, -4] })
+            .addTo(movementLayer);
+        });
+        L.polyline(traj.forecastPath, { color: "#B9800F", weight: 2, dashArray: "5,6", opacity: 0.8 }).addTo(movementLayer);
+        traj.forecastPath.slice(1).forEach((p, i) => {
+          L.circleMarker(p, { radius: 3.5, color: "#FFFFFF", weight: 1.5, fillColor: "#B9800F", fillOpacity: 0.85 })
+            .bindTooltip(`${traj.forecastYears[i]} (forecast)`, { direction: "top", offset: [0, -4] })
+            .addTo(movementLayer);
+        });
+        map.flyTo(traj.path[traj.path.length - 1], Math.max(map.getZoom(), 5), { duration: 0.8 });
+      }
+
+      /* ---------------- Predictive charts (lazy render) ---------------- */
+      let predictRendered = false;
+      function renderPredictCharts() {
+        if (predictRendered) return;
+        predictRendered = true;
+        Chart.defaults.color = "#5C7370";
+        Chart.defaults.font.family = "'IBM Plex Mono', monospace";
+        Chart.defaults.font.size = 9.5;
+        const grid = "rgba(15,38,32,0.06)";
+        new Chart(document.getElementById("forecastChart"), {
+          type: "line",
+          data: {
+            labels: ["2025-09", "2025-10", "2025-11", "2025-12", "2026-01", "2026-02", "+1", "+2", "+3", "+4", "+5", "+6"],
+            datasets: [
+              { data: [null, null, null, null, null, 428, 415, 402, 388, 375, 362, 348], borderColor: "transparent", backgroundColor: "rgba(18,143,130,0.10)", fill: "+1", pointRadius: 0 },
+              { data: [432, 428, 418, 405, 395, 386, 373, 360, 346, 333, 320, 307], borderColor: "#128F82", tension: 0.3, borderWidth: 2.5, pointRadius: 2 },
+              { data: [null, null, null, null, null, 344, 331, 318, 304, 291, 278, 265], borderColor: "transparent", backgroundColor: "rgba(18,143,130,0.10)", pointRadius: 0 },
+            ],
+          },
+          options: { plugins: { legend: { display: false } }, scales: { x: { grid: { color: grid } }, y: { grid: { color: grid } } } },
+        });
+
+        // DHW cumulative buildup vs alert thresholds
+        const weeks = ["wk 1", "wk 2", "wk 3", "wk 4", "wk 5", "wk 6", "wk 7", "wk 8"];
+        const cumulativeDhw = [0, 0, 0, 0.08, 0.56, 1.52, 2.95, 4.79];
+        new Chart(document.getElementById("dhwChart"), {
+          type: "line",
+          data: {
+            labels: weeks,
+            datasets: [
+              { label: "Cumulative DHW", data: cumulativeDhw, borderColor: "#D6512D", backgroundColor: "rgba(214,81,45,0.12)", tension: 0.3, borderWidth: 2.5, pointRadius: 2, fill: true },
+              { label: "Alert Level 1 (4)", data: weeks.map(() => 4), borderColor: "#B9800F", borderDash: [5, 5], borderWidth: 1.3, pointRadius: 0 },
+              { label: "Alert Level 2 (8)", data: weeks.map(() => 8), borderColor: "#D6512D", borderDash: [5, 5], borderWidth: 1.3, pointRadius: 0 },
+            ],
+          },
+          options: {
+            plugins: { legend: { position: "bottom", labels: { boxWidth: 8, font: { size: 9 } } } },
+            scales: { x: { grid: { color: grid } }, y: { grid: { color: grid }, title: { display: true, text: "DHW" } } },
+          },
+        });
+
+        new Chart(document.getElementById("factorChart"), {
+          type: "bar",
+          data: {
+            labels: ["Heat stress buildup (DHW) (60%)", "Chlorophyll-a drift (25%)", "Historical bleaching frequency (illustrative) (15%)"],
+            datasets: [{ data: [35.9, 4.4, 10.0], backgroundColor: ["#D6512D", "#2E9E5B", "#B9800F"], borderRadius: 4 }],
+          },
+          options: {
+            indexAxis: "y",
+            plugins: { legend: { display: false } },
+            scales: { x: { grid: { color: grid }, title: { display: true, text: "points of 100" } }, y: { grid: { display: false }, ticks: { font: { size: 10 } } } },
+          },
+        });
+
+        new Chart(document.getElementById("rangeChart"), {
+          type: "line",
+          data: {
+            labels: ["1999", "2006", "2015", "2019", "2021", "2022", "2023", "2024", "2025", "2026", "2027", "2028", "2029", "2030", "2031"],
+            datasets: [
+              { label: "Thunnus albacares", data: [13.75, 11.86, 14.42, 15.24, 12.7, 12.91, 11.4, 10.2, 10.4, 9.95, 9.3, 8.7, 8.1, 7.5, 6.9], borderColor: "#128F82", tension: 0.3, pointRadius: 2, borderWidth: 2, spanGaps: true },
+              { label: "Rastrelliger kanagurta", data: [8.9, 9.6, 10.5, 11.2, 12.9, 14.2, 15.8, 16.6, 17.1, 17.8, 18.0, 18.2, 18.4, 18.6, 18.8], borderColor: "#B9800F", tension: 0.3, pointRadius: 2, borderWidth: 2, spanGaps: true },
+            ],
+          },
+          options: {
+            plugins: { legend: { position: "bottom", labels: { boxWidth: 8, font: { size: 9 } } } },
+            scales: { x: { grid: { color: grid } }, y: { grid: { color: grid }, title: { display: true, text: "mean occurrence latitude" } } },
+          },
+        });
+      }
+
+      /* ---------------- Analytics charts (lazy render) ---------------- */
+      let analyticsRendered = false;
+      function renderAnalyticsCharts() {
+        if (analyticsRendered) return;
+        analyticsRendered = true;
+        const grid = "rgba(15,38,32,0.06)";
+        new Chart(document.getElementById("scatterChart"), {
+          type: "scatter",
+          data: {
+            datasets: [
+              { label: "Sardinella longiceps, Kerala (r=-0.82)", data: [[28.9, 520], [29.1, 490], [29.3, 460], [29.5, 430], [29.7, 400], [29.9, 360]], backgroundColor: "#128F82" },
+              { label: "Rastrelliger kanagurta, Tamil Nadu (r=0.61)", data: [[28.6, 210], [28.9, 225], [29.2, 238], [29.4, 245], [29.7, 251], [29.9, 260]], backgroundColor: "#B9800F" },
+            ],
+          },
+          options: {
+            plugins: { legend: { position: "bottom", labels: { boxWidth: 8, font: { size: 9 } } } },
+            scales: { x: { grid: { color: grid }, title: { display: true, text: "SST °C" } }, y: { grid: { color: grid }, title: { display: true, text: "tonnage" } } },
+          },
+        });
+        new Chart(document.getElementById("biodiversityChart"), {
+          type: "bar",
+          data: {
+            labels: ["Kerala coast", "Lakshadweep atolls", "Odisha coast", "Tamil Nadu coast", "Gulf of Mannar", "Goa coast", "Arabian Sea"],
+            datasets: [{ data: [14, 11, 9, 8, 7, 6, 5], backgroundColor: "#128F82", borderRadius: 4 }],
+          },
+          options: { plugins: { legend: { display: false } }, scales: { x: { grid: { display: false }, ticks: { font: { size: 9 } } }, y: { grid: { color: grid } } } },
+        });
+        new Chart(document.getElementById("complianceChart"), {
+          type: "line",
+          data: {
+            labels: ["2026-02", "2026-03", "2026-04", "2026-05", "2026-06", "2026-07"],
+            datasets: [{ data: [82, 79, 76, 74, 71, 67], borderColor: "#128F82", backgroundColor: "rgba(18,143,130,0.10)", fill: true, tension: 0.3, pointRadius: 2, borderWidth: 2 }],
+          },
+          options: { plugins: { legend: { display: false } }, scales: { x: { grid: { color: grid } }, y: { grid: { color: grid }, title: { display: true, text: "% compliant" } } } },
+        });
+      }
+
+      document.addEventListener("click", (e) => {
+        if (!e.target.closest(".searchwrap")) searchResults.classList.remove("show");
+      });
+
+      /* ---------------- Guided intro (one-time spotlight tour) ---------------- */
+      const introSteps = [
+        { selector: "#map", text: "This map tracks real ocean stations, species sightings, and vessels along India's coast." },
+        { selector: ".layer-panel", text: "Toggle layers to see water temperature, coral bleaching risk, vessel tracking, and pollution sources." },
+        { selector: ".fab-stack .fab", text: "Ask the AI assistant anything — it answers from real sensor and fisheries data, not guesses." },
+        { selector: ".scrubber-bar", text: "Scrub through time to see recorded history and short-term forecasts side by side." },
+      ];
+      let introStepIndex = 0;
+      let introTimer = null;
+      function showIntroStep(index) {
+        const step = introSteps[index];
+        const target = document.querySelector(step.selector);
+        if (!target) {
+          if (index < introSteps.length - 1) {
+            introStepIndex = index + 1;
+            showIntroStep(introStepIndex);
+          } else finishIntro();
+          return;
+        }
+        const rect = target.getBoundingClientRect();
+        const spotlight = document.getElementById("introSpotlight");
+        const caption = document.getElementById("introCaption");
+        spotlight.style.left = rect.left - 6 + "px";
+        spotlight.style.top = rect.top - 6 + "px";
+        spotlight.style.width = rect.width + 12 + "px";
+        spotlight.style.height = rect.height + 12 + "px";
+        const CAPTION_HEIGHT = 110;
+        const above = rect.bottom + 14 + CAPTION_HEIGHT > window.innerHeight;
+        const rawTop = above ? rect.top - 14 - CAPTION_HEIGHT : rect.bottom + 14;
+        caption.style.left = Math.min(Math.max(rect.left, 16), window.innerWidth - 336) + "px";
+        caption.style.top = Math.min(Math.max(rawTop, 16), window.innerHeight - CAPTION_HEIGHT - 16) + "px";
+        document.getElementById("introStepLabel").textContent = `${index + 1} / ${introSteps.length}`;
+        document.getElementById("introText").textContent = step.text;
+      }
+      function nextIntroStep() {
+        clearTimeout(introTimer);
+        if (introStepIndex >= introSteps.length - 1) {
+          finishIntro();
+          return;
+        }
+        introStepIndex += 1;
+        showIntroStep(introStepIndex);
+        introTimer = setTimeout(nextIntroStep, 2500);
+      }
+      function finishIntro() {
+        clearTimeout(introTimer);
+        document.getElementById("introRoot").style.display = "none";
+        localStorage.setItem("samudra_intro_seen", "1");
+      }
+      if (!localStorage.getItem("samudra_intro_seen")) {
+        setTimeout(() => {
+          document.getElementById("introRoot").style.display = "block";
+          showIntroStep(0);
+          introTimer = setTimeout(nextIntroStep, 2500);
+        }, 600);
+      }
+    </script>
+  </body>
+</html>
