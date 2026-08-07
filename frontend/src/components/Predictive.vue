@@ -5,18 +5,29 @@ import { getBleachingTrend, getRangeShift, getStockForecast } from "../api";
 import type { BleachingTrend, RangeShift, StockForecast } from "../api/types";
 import InfoTip from "./InfoTip.vue";
 
-const stock = ref<StockForecast | null>(null);
+// One entry per stock forecast shown — add another species/region pair here
+// and it gets its own chart automatically, no other code changes needed.
+const STOCK_CONFIGS = [
+  { species: "Sardinella longiceps", region: "Kerala coast", label: "Sardine Stock Forecast — Kerala" },
+  { species: "Rastrelliger kanagurta", region: "Tamil Nadu coast", label: "Mackerel Stock Forecast — Tamil Nadu" },
+];
+
+const stocks = ref<(StockForecast | null)[]>(STOCK_CONFIGS.map(() => null));
 const bleaching = ref<BleachingTrend | null>(null);
 const rangeA = ref<RangeShift | null>(null);
 const rangeB = ref<RangeShift | null>(null);
 const error = ref<string | null>(null);
 const loading = ref(true);
 
-const forecastCanvas = ref<HTMLCanvasElement | null>(null);
+const stockCanvases: (HTMLCanvasElement | null)[] = [];
+const stockCharts: (Chart | null)[] = [];
+function setStockCanvas(el: Element | null, i: number) {
+  stockCanvases[i] = el as HTMLCanvasElement | null;
+}
+
 const dhwCanvas = ref<HTMLCanvasElement | null>(null);
 const factorCanvas = ref<HTMLCanvasElement | null>(null);
 const rangeCanvas = ref<HTMLCanvasElement | null>(null);
-let forecastChart: Chart | null = null;
 let dhwChart: Chart | null = null;
 let factorChart: Chart | null = null;
 let rangeChartInst: Chart | null = null;
@@ -28,16 +39,18 @@ const factorColors: Record<string, string> = {
   historical_frequency: "#B9800F",
 };
 
-function renderForecastChart() {
-  if (!stock.value || !forecastCanvas.value) return;
-  const historyN = stock.value.history.slice(-6);
-  const labels = [...historyN.map((h) => h.date.slice(0, 7)), ...stock.value.forecast.map((f) => `+${f.month_offset}`)];
-  const lowData = [...historyN.map(() => null), ...stock.value.forecast.map((f) => f.low_80ci)];
-  const highData = [...historyN.map(() => null), ...stock.value.forecast.map((f) => f.high_80ci)];
-  const meanData = [...historyN.map((h) => h.tonnage), ...stock.value.forecast.map((f) => f.tonnage)];
+function renderStockChart(i: number) {
+  const stock = stocks.value[i];
+  const canvas = stockCanvases[i];
+  if (!stock || !canvas) return;
+  const historyN = stock.history.slice(-6);
+  const labels = [...historyN.map((h) => h.date.slice(0, 7)), ...stock.forecast.map((f) => `+${f.month_offset}`)];
+  const lowData = [...historyN.map(() => null), ...stock.forecast.map((f) => f.low_80ci)];
+  const highData = [...historyN.map(() => null), ...stock.forecast.map((f) => f.high_80ci)];
+  const meanData = [...historyN.map((h) => h.tonnage), ...stock.forecast.map((f) => f.tonnage)];
 
-  forecastChart?.destroy();
-  forecastChart = new Chart(forecastCanvas.value, {
+  stockCharts[i]?.destroy();
+  stockCharts[i] = new Chart(canvas, {
     type: "line",
     data: {
       labels,
@@ -170,15 +183,15 @@ function renderRangeChart() {
 
 onMounted(async () => {
   try {
-    [stock.value, bleaching.value, rangeA.value, rangeB.value] = await Promise.all([
-      getStockForecast("Sardinella longiceps", "Kerala coast"),
+    [stocks.value, bleaching.value, rangeA.value, rangeB.value] = await Promise.all([
+      Promise.all(STOCK_CONFIGS.map((c) => getStockForecast(c.species, c.region))),
       getBleachingTrend("lakshadweep"),
       getRangeShift("Thunnus albacares"),
       getRangeShift("Rastrelliger kanagurta"),
     ]);
     loading.value = false;
     await nextTick(); // let the pred-block canvases mount now that loading is false
-    renderForecastChart();
+    stocks.value.forEach((_, i) => renderStockChart(i));
     renderDhwChart();
     renderFactorChart();
     renderRangeChart();
@@ -189,7 +202,7 @@ onMounted(async () => {
 });
 
 onBeforeUnmount(() => {
-  forecastChart?.destroy();
+  stockCharts.forEach((c) => c?.destroy());
   dhwChart?.destroy();
   factorChart?.destroy();
   rangeChartInst?.destroy();
@@ -201,13 +214,15 @@ onBeforeUnmount(() => {
     <p v-if="loading" class="loading">Running forecasts — stock trend, bleaching buildup, range shift (each ends in a gpt-oss conclusion, ~5s)…</p>
     <p v-else-if="error" class="error">{{ error }}</p>
     <template v-else>
-      <div class="pred-block" v-if="stock">
-        <h4>Sardine Stock Forecast — Kerala<InfoTip glossary-key="stock_forecast" /></h4>
-        <p class="conclusion">{{ stock.conclusion }}</p>
-        <div class="sub">{{ stock.forecast.length }}-month projection, 80% CI · trend {{ stock.trend_tonnage_per_month }} t/month</div>
-        <canvas ref="forecastCanvas" height="140"></canvas>
-        <p class="methodology">{{ stock.methodology }}</p>
-      </div>
+      <template v-for="(stock, i) in stocks" :key="STOCK_CONFIGS[i].species">
+        <div class="pred-block" v-if="stock">
+          <h4>{{ STOCK_CONFIGS[i].label }}<InfoTip glossary-key="stock_forecast" /></h4>
+          <p class="conclusion">{{ stock.conclusion }}</p>
+          <div class="sub">{{ stock.forecast.length }}-month projection, 80% CI · trend {{ stock.trend_tonnage_per_month }} t/month</div>
+          <canvas :ref="(el) => setStockCanvas(el, i)" height="140"></canvas>
+          <p class="methodology">{{ stock.methodology }}</p>
+        </div>
+      </template>
 
       <div class="pred-block" v-if="bleaching">
         <h4>Coral Bleaching Buildup — {{ bleaching.station_name }}<InfoTip glossary-key="composite_bleaching_score" /></h4>

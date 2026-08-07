@@ -9,6 +9,10 @@ import numpy as np
 from services import conclusions, data
 
 
+def _common_name(species: str) -> str | None:
+    return next((s["common"] for s in data.species() if s["sci"].lower() == species.lower()), None)
+
+
 def stock_forecast(species: str, region: str, months_ahead: int = 6) -> dict:
     records = [
         r for r in data.catch_records()
@@ -33,8 +37,10 @@ def stock_forecast(species: str, region: str, months_ahead: int = 6) -> dict:
 
     direction = "rising" if slope > 0.5 else "falling" if slope < -0.5 else "roughly flat"
     confidence = "low" if len(records) < 6 else "medium" if len(records) < 12 else "high"
+    common = _common_name(species)
+    species_label = f"{species} ({common})" if common else species
     conclusion = conclusions.conclude(
-        f"Linear trend fit to {len(records)} months of catch data for {species} in {region}: "
+        f"Linear trend fit to {len(records)} months of catch data for {species_label} in {region}: "
         f"{direction} at {abs(round(float(slope), 1))} tonnes/month, projecting {round(float(forecast_mean[0]), 0)} "
         f"tonnes next month (80% CI {round(float(forecast_lo[0]), 0)}-{round(float(forecast_hi[0]), 0)}).",
         confidence,
