@@ -37,7 +37,7 @@ def _format_context_block(hits: list[tuple[dict, float]]) -> str:
     return "\n\n".join(lines)
 
 
-def answer(message: str, station_context: dict | None = None) -> dict:
+def answer(message: str, station_context: dict | None = None, species_context: dict | None = None) -> dict:
     hits = embed.search(message, top_k=4)
     sources: list[str] = [f"doc:{c['id']} {c['title']}" for c, _ in hits]
 
@@ -48,6 +48,13 @@ def answer(message: str, station_context: dict | None = None) -> dict:
             {
                 "role": "system",
                 "content": f"The user currently has this station selected on the map — treat it as directly relevant even if not named in the question:\n{json.dumps(station_context)}",
+            }
+        )
+    if species_context:
+        messages.append(
+            {
+                "role": "system",
+                "content": f"The user currently has this species selected in Movement Trends — treat it as directly relevant even if not named in the question:\n{json.dumps(species_context)}",
             }
         )
     messages.append({"role": "user", "content": message})

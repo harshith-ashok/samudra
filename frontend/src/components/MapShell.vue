@@ -17,9 +17,11 @@ import {
   getStations,
   getVessels,
   postNlq,
+  postSttTranscribe,
 } from '../api';
 import type {
   NlqResponse,
+  Species,
   SpeciesTrajectory,
   StationDetail,
   StationSummary,
@@ -58,6 +60,10 @@ const stations = ref<StationSummary[]>([]);
 const selectedStation = ref<StationDetail | null>(null);
 const vessels = ref<Vessel[]>([]);
 const selectedVessel = ref<Vessel | null>(null);
+const speciesChatContext = ref<{
+  species: Species;
+  trajectory: SpeciesTrajectory | null;
+} | null>(null);
 const violationCount = computed(
   () => vessels.value.filter((v) => v.in_violation).length
 );
@@ -74,6 +80,14 @@ const searchQuery = ref('');
 const searchFocused = ref(false);
 const nlqResult = ref<NlqResponse | null>(null);
 const nlqLoading = ref(false);
+
+type MicState = 'idle' | 'recording' | 'transcribing' | 'error';
+const micState = ref<MicState>('idle');
+const micErrorMsg = ref('');
+let mediaRecorder: MediaRecorder | null = null;
+let audioChunks: Blob[] = [];
+let micAutoStopTimer: number | undefined;
+const MIC_MAX_RECORD_MS = 12000;
 
 const suggestedQueries = [
   'Vulnerable species near Kerala since March',
@@ -583,6 +597,17 @@ function askAiAboutStation(station: StationDetail) {
   nextTick(() => aiChatRef.value?.send(`Tell me more about ${station.name}`));
 }
 
+function askAiAboutSpecies(payload: {
+  species: Species;
+  trajectory: SpeciesTrajectory | null;
+}) {
+  speciesChatContext.value = payload;
+  openPanel('ai');
+  nextTick(() =>
+    aiChatRef.value?.send(`Tell me more about ${payload.species.common}`)
+  );
+}
+
 async function runNlq(query: string) {
   if (!query.trim()) {
     nlqResult.value = null;
@@ -604,6 +629,67 @@ watch(searchQuery, (q) => {
   nlqDebounce = window.setTimeout(() => runNlq(q), 350);
 });
 
+function stopRecording() {
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+}
+
+async function toggleMic() {
+  if (micState.value === 'recording') {
+    stopRecording();
+    return;
+  }
+  if (micState.value === 'transcribing') return;
+
+  micErrorMsg.value = '';
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+    const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
+      ? 'audio/webm;codecs=opus'
+      : '';
+    mediaRecorder = mimeType
+      ? new MediaRecorder(stream, { mimeType })
+      : new MediaRecorder(stream);
+    audioChunks = [];
+
+    mediaRecorder.ondataavailable = (e) => {
+      if (e.data.size > 0) audioChunks.push(e.data);
+    };
+
+    mediaRecorder.onstop = async () => {
+      stream.getTracks().forEach((t) => t.stop());
+      window.clearTimeout(micAutoStopTimer);
+      if (!audioChunks.length) {
+        micState.value = 'idle';
+        return;
+      }
+      micState.value = 'transcribing';
+      try {
+        const blob = new Blob(audioChunks, {
+          type: mediaRecorder?.mimeType || 'audio/webm',
+        });
+        const text = await postSttTranscribe(blob);
+        if (text) {
+          searchQuery.value = text;
+          searchFocused.value = true;
+        }
+        micState.value = 'idle';
+      } catch {
+        micErrorMsg.value = "Couldn't transcribe — is the backend running?";
+        micState.value = 'error';
+        window.setTimeout(() => (micState.value = 'idle'), 2500);
+      }
+    };
+
+    mediaRecorder.start();
+    micState.value = 'recording';
+    micAutoStopTimer = window.setTimeout(stopRecording, MIC_MAX_RECORD_MS);
+  } catch {
+    micErrorMsg.value = 'Microphone access denied or unavailable.';
+    micState.value = 'error';
+    window.setTimeout(() => (micState.value = 'idle'), 2500);
+  }
+}
+
 function useSuggestion(q: string) {
   searchQuery.value = q;
   runNlq(q);
@@ -622,6 +708,11 @@ function flyToStation(id: string) {
 }
 
 const showResults = computed(() => searchFocused.value);
+const searchPlaceholder = computed(() => {
+  if (micState.value === 'recording') return 'Listening… click the mic to stop';
+  if (micState.value === 'transcribing') return 'Transcribing…';
+  return "Ask the map — e.g. 'vulnerable species near Kerala since March'";
+});
 
 onMounted(async () => {
   fmtClock();
@@ -650,6 +741,8 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   window.clearInterval(clockTimer);
   window.clearInterval(vesselPollTimer);
+  window.clearTimeout(micAutoStopTimer);
+  if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
   map?.remove();
 });
 </script>
@@ -685,10 +778,24 @@ onBeforeUnmount(() => {
       </svg>
       <input
         v-model="searchQuery"
-        placeholder="Ask the map — e.g. 'vulnerable species near Kerala since March'"
+        :placeholder="searchPlaceholder"
         @focus="searchFocused = true"
         @blur="blurSearchSoon"
       />
+      <button
+        type="button"
+        class="mic-btn"
+        :class="micState"
+        :disabled="micState === 'transcribing'"
+        :title="micErrorMsg || 'Ask by voice (Whisper speech-to-text)'"
+        @mousedown.prevent="toggleMic"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+          <rect x="9" y="2" width="6" height="12" rx="3" />
+          <path d="M5 11a7 7 0 0 0 14 0" />
+          <path d="M12 18v4M8 22h8" />
+        </svg>
+      </button>
       <span class="hint">NLQ</span>
     </div>
     <div class="search-results" :class="{ show: showResults }">
@@ -761,10 +868,12 @@ onBeforeUnmount(() => {
         v-if="activePanel === 'ai'"
         ref="aiChatRef"
         :station-context="selectedStation"
+        :species-context="speciesChatContext"
       />
       <SpeciesExplorer
         v-if="activePanel === 'species'"
         @trajectory="onSpeciesTrajectory"
+        @ask-ai="askAiAboutSpecies"
       />
       <Predictive v-if="activePanel === 'predict'" />
       <Analytics v-if="activePanel === 'analytics'" />
@@ -893,6 +1002,48 @@ onBeforeUnmount(() => {
   border: 1px solid var(--border);
   border-radius: 5px;
   padding: 2px 6px;
+}
+.mic-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border: none;
+  border-radius: 7px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.mic-btn:hover:not(:disabled) {
+  color: var(--teal);
+  background: var(--surface-2);
+}
+.mic-btn svg {
+  width: 15px;
+  height: 15px;
+}
+.mic-btn.recording {
+  color: var(--coral);
+  background: var(--coral-soft);
+  animation: mic-pulse 1.4s ease-in-out infinite;
+}
+.mic-btn.transcribing {
+  color: var(--teal);
+  cursor: default;
+}
+.mic-btn.error {
+  color: var(--coral);
+}
+@keyframes mic-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(214, 81, 45, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(214, 81, 45, 0);
+  }
 }
 .search-results {
   margin-top: 6px;

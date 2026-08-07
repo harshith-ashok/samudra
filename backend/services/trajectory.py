@@ -6,17 +6,49 @@ binning is by year rather than month — binning to a false monthly precision
 would misrepresent what the underlying data actually supports. The rest of
 the pipeline matches the todo: per-year centroid -> exponential smoothing ->
 forward extrapolation from the recent velocity vector.
+
+A handful of the real GBIF/OBIS pulls in this seed set carry inland
+coordinates — almost all of them within a few km of the real coast (a harbor
+survey point or coastal town pixel the land mask rounds to "land"), which is
+corrected by snapping to the nearest water pixel, same as a GPS-precision fix.
+A few are hundreds of km inland (e.g. central Madhya Pradesh for a "Goa coast"
+seahorse record) — those aren't a rounding error, they're unrelated bad data,
+so past RAW_RECORD_SNAP_MAX_KM they're dropped rather than snapped to an arbitrary
+distant position that wouldn't represent where the record actually is.
+
+Separately, the *smoothed centroid* of several corrected in-water points can
+still land back on a thin strip of coastline (Kerala's backwaters are
+jagged) — that's a property of averaging near a coast, not a bad record, so
+it's always snapped (see _nearest_water) rather than ever dropped, since it's
+math we computed, not a record we're claiming was observed there.
+
+Getting every individual point into water isn't the whole fix, though: a
+straight line between two in-water points on opposite coasts (real records
+this sparse can put one year's centroid off Kerala and the next off Odisha)
+cuts straight across the Indian subcontinent. `route_historical` /
+`route_forecast` give the frontend an actual navigable sea route (via
+searoute, a real maritime routing network) for exactly the segments where a
+straight line would cross land, leaving short/already-clear segments as
+plain lines — no need to route a 5km hop.
 """
 
 import math
 
 import numpy as np
+import searoute as sr
+from global_land_mask import globe
 
 from services import conclusions, data
 
 SMOOTHING_ALPHA = 0.5
 FORECAST_YEARS = 5
 MIN_YEARS = 3
+KM_PER_DEGREE = 111.0
+RAW_RECORD_SNAP_MAX_KM = 165  # ~1.5 degrees — beyond this a raw record's land
+# coordinate is treated as unrelated bad data (wrong region entirely) and
+# dropped, not snapped to a fabricated position
+DERIVED_POINT_SNAP_MAX_DEG = 8.0  # centroid/forecast points are always safe to
+# nudge (they're math we computed, not a record), so this is generous
 
 
 def species_id(scientific_name: str) -> str:
@@ -41,23 +73,110 @@ def _haversine_km(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
     return 2 * r * math.asin(math.sqrt(a))
 
 
+def _nearest_water(lat: float, lng: float, max_radius_deg: float, step_deg: float = 0.02) -> tuple[float, float] | None:
+    """Outward ring search for the nearest non-land pixel. Returns None if
+    nothing is found within max_radius_deg (the point is too far from any
+    coast to plausibly be a precision error).
+
+    Deliberately returns full-precision coordinates, not rounded — rounding a
+    candidate that's only just water (found right at the water/land grid
+    boundary) can shift it back onto a land pixel. Callers round for display
+    after this, once the point no longer needs to survive another is_land check."""
+    if not globe.is_land(lat, lng):
+        return lat, lng
+    r = step_deg
+    while r <= max_radius_deg:
+        n_points = max(8, int(2 * math.pi * r / step_deg))
+        for i in range(n_points):
+            theta = 2 * math.pi * i / n_points
+            cand_lat, cand_lng = lat + r * math.sin(theta), lng + r * math.cos(theta)
+            if not globe.is_land(cand_lat, cand_lng):
+                return cand_lat, cand_lng
+        r += step_deg
+    return None
+
+
+def _round_keeping_water(lat: float, lng: float) -> tuple[float, float]:
+    """round(x, 4) alone can shift a point that's only just water back onto a
+    land pixel (grid resolution is ~0.0083°, well above 4-decimal precision,
+    but a candidate found right at the boundary can still cross it). Backs off
+    to more decimal places until the rounded point survives an is_land check."""
+    if not globe.is_land(lat, lng):
+        for decimals in (4, 5, 6):
+            r_lat, r_lng = round(lat, decimals), round(lng, decimals)
+            if not globe.is_land(r_lat, r_lng):
+                return r_lat, r_lng
+    return lat, lng  # give up rounding rather than risk re-landing it
+
+
+def _segment_crosses_land(lat1: float, lng1: float, lat2: float, lng2: float, samples: int = 15) -> bool:
+    lats = np.linspace(lat1, lat2, samples)
+    lngs = np.linspace(lng1, lng2, samples)
+    return any(globe.is_land(la, lo) for la, lo in zip(lats, lngs))
+
+
+def route_between(p1: dict, p2: dict) -> list[list[float]]:
+    """A straight line if it wouldn't cross land, otherwise a real maritime
+    route (searoute, a navigable sea-route network — not just "not land").
+    Falls back to a straight line if searoute can't find a route (e.g. a
+    landlocked pair after all fallbacks failed) rather than dropping the
+    segment. searoute uses (lng, lat) GeoJSON order; the app uses (lat, lng)
+    throughout, so this is the one place that swaps."""
+    if not _segment_crosses_land(p1["lat"], p1["lng"], p2["lat"], p2["lng"]):
+        return [[p1["lat"], p1["lng"]], [p2["lat"], p2["lng"]]]
+    try:
+        feature = sr.searoute((p1["lng"], p1["lat"]), (p2["lng"], p2["lat"]))
+        return [[lat, lng] for lng, lat in feature["geometry"]["coordinates"]]
+    except Exception:
+        return [[p1["lat"], p1["lng"]], [p2["lat"], p2["lng"]]]
+
+
+def _build_route(points: list[dict]) -> list[list[float]]:
+    """Concatenates route_between() for each consecutive pair into one
+    polyline, without duplicating the joint coordinate between segments."""
+    if len(points) < 2:
+        return [[p["lat"], p["lng"]] for p in points]
+    route: list[list[float]] = []
+    for i in range(len(points) - 1):
+        segment = route_between(points[i], points[i + 1])
+        route.extend(segment if not route else segment[1:])
+    return route
+
+
 def trajectory(query_species_id: str) -> dict:
-    occurrences = [
+    raw_occurrences = [
         o for o in data.biodiversity()["occurrences"]
         if species_id(o["scientific_name"]) == query_species_id.lower()
     ]
-    if not occurrences:
+    if not raw_occurrences:
         return {"error": f"no occurrence records found for species id '{query_species_id}'"}
 
-    sci = occurrences[0]["scientific_name"]
-    common = occurrences[0]["common_name"]
+    sci = raw_occurrences[0]["scientific_name"]
+    common = raw_occurrences[0]["common_name"]
+
+    occurrences = []
+    corrected_count = 0
+    dropped_count = 0
+    for o in raw_occurrences:
+        snapped = _nearest_water(o["lat"], o["lng"], max_radius_deg=RAW_RECORD_SNAP_MAX_KM / KM_PER_DEGREE)
+        if snapped is None:
+            dropped_count += 1
+            continue
+        lat, lng = snapped
+        if (lat, lng) != (o["lat"], o["lng"]):
+            corrected_count += 1
+        occurrences.append({**o, "lat": lat, "lng": lng})
+
+    if not occurrences:
+        return {"error": f"all {len(raw_occurrences)} occurrence record(s) for {sci} were on land, too far from water to correct — none usable"}
 
     by_year: dict[int, list[dict]] = {}
     for o in occurrences:
         by_year.setdefault(o["year"], []).append(o)
     years = sorted(by_year)
     if len(years) < MIN_YEARS:
-        return {"error": f"only {len(years)} distinct year(s) of occurrence data for {sci} — need at least {MIN_YEARS}"}
+        dropped_note = f" ({dropped_count} record(s) too far inland to correct were excluded)" if dropped_count else ""
+        return {"error": f"only {len(years)} distinct usable year(s) of occurrence data for {sci} — need at least {MIN_YEARS}{dropped_note}"}
 
     historical = [
         {
@@ -74,10 +193,22 @@ def trajectory(query_species_id: str) -> dict:
     for pt in historical[1:]:
         smoothed_lat.append(SMOOTHING_ALPHA * pt["lat"] + (1 - SMOOTHING_ALPHA) * smoothed_lat[-1])
         smoothed_lng.append(SMOOTHING_ALPHA * pt["lng"] + (1 - SMOOTHING_ALPHA) * smoothed_lng[-1])
-    smoothed = [
-        {"year": historical[i]["year"], "lat": round(smoothed_lat[i], 4), "lng": round(smoothed_lng[i], 4)}
-        for i in range(len(historical))
+
+    # The smoothed centroid — not any individual input record — is what's actually
+    # drawn on the map/chart, so it's what needs to end up in water. Snap after
+    # smoothing (a wide radius here, since this is always safe to nudge — it's
+    # derived math, not a record), then use the snapped values for velocity/
+    # forecast so the whole path stays continuous.
+    snapped_smoothed = [
+        _nearest_water(smoothed_lat[i], smoothed_lng[i], max_radius_deg=DERIVED_POINT_SNAP_MAX_DEG) or (smoothed_lat[i], smoothed_lng[i])
+        for i in range(len(smoothed_lat))
     ]
+    smoothed_lat = [p[0] for p in snapped_smoothed]
+    smoothed_lng = [p[1] for p in snapped_smoothed]
+    smoothed = []
+    for i in range(len(historical)):
+        r_lat, r_lng = _round_keeping_water(smoothed_lat[i], smoothed_lng[i])
+        smoothed.append({"year": historical[i]["year"], "lat": r_lat, "lng": r_lng})
 
     year_gap = max(1, years[-1] - years[-2])
     lat_velocity = (smoothed_lat[-1] - smoothed_lat[-2]) / year_gap
@@ -85,13 +216,15 @@ def trajectory(query_species_id: str) -> dict:
 
     forecast = []
     for i in range(1, FORECAST_YEARS + 1):
-        forecast.append(
-            {
-                "year": years[-1] + i,
-                "lat": round(smoothed_lat[-1] + lat_velocity * i, 4),
-                "lng": round(smoothed_lng[-1] + lng_velocity * i, 4),
-            }
-        )
+        raw_lat, raw_lng = smoothed_lat[-1] + lat_velocity * i, smoothed_lng[-1] + lng_velocity * i
+        f_lat, f_lng = _nearest_water(raw_lat, raw_lng, max_radius_deg=DERIVED_POINT_SNAP_MAX_DEG) or (raw_lat, raw_lng)
+        r_lat, r_lng = _round_keeping_water(f_lat, f_lng)
+        forecast.append({"year": years[-1] + i, "lat": r_lat, "lng": r_lng})
+
+    # For the map only — the chart plots smoothed/forecast against year directly,
+    # where a land crossing isn't meaningful (it's a value axis, not geography).
+    route_historical = _build_route(smoothed)
+    route_forecast = _build_route([smoothed[-1], *forecast])
 
     drift_km = round(_haversine_km(smoothed[0]["lat"], smoothed[0]["lng"], smoothed[-1]["lat"], smoothed[-1]["lng"]), 1)
     direction = _bearing_label(smoothed[0]["lat"], smoothed[0]["lng"], smoothed[-1]["lat"], smoothed[-1]["lng"])
@@ -104,6 +237,12 @@ def trajectory(query_species_id: str) -> dict:
         confidence,
     )
 
+    correction_note = ""
+    if corrected_count:
+        correction_note += f" {corrected_count} record(s) with a near-coast inland coordinate were snapped to the nearest water pixel."
+    if dropped_count:
+        correction_note += f" {dropped_count} record(s) too far inland to plausibly be a precision error were excluded."
+
     return {
         "species_id": query_species_id.lower(),
         "scientific_name": sci,
@@ -111,6 +250,8 @@ def trajectory(query_species_id: str) -> dict:
         "historical": historical,
         "smoothed": smoothed,
         "forecast": forecast,
+        "route_historical": route_historical,
+        "route_forecast": route_forecast,
         "drift_km": drift_km,
         "direction": direction,
         "conclusion": conclusion,
@@ -119,7 +260,12 @@ def trajectory(query_species_id: str) -> dict:
             f"Per-year mean lat/lng centroid of real OBIS/GBIF occurrence records, smoothed with exponential "
             f"smoothing (alpha={SMOOTHING_ALPHA}) to reduce year-to-year sampling noise, then extrapolated "
             f"{FORECAST_YEARS} years forward using the velocity between the last two smoothed points. Binned by "
-            "year, not month — the source records only carry year-level dates."
+            "year, not month — the source records only carry year-level dates. route_historical/route_forecast "
+            "follow a real maritime route (searoute) instead of a straight line wherever a straight line between "
+            "two sparse yearly centroids would otherwise cut across land."
+            f"{correction_note}"
         ),
         "source": "OBIS/GBIF real occurrence records",
+        "land_coordinates_corrected": corrected_count,
+        "land_coordinates_dropped": dropped_count,
     }

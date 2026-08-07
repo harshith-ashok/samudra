@@ -26,12 +26,21 @@ export interface StationDetail extends StationSummary {
   history: StationHistoryPoint[];
 }
 
+export interface SpeciesMedia {
+  image_url: string;
+  attribution: string;
+  source: string;
+  license: string;
+  is_genus_level: boolean;
+}
+
 export interface Species {
   sci: string;
   common: string;
   region: string;
   status: 'LC' | 'NT' | 'VU' | 'EN' | null;
   note: string;
+  media: SpeciesMedia | null;
 }
 
 export interface Advisory {
@@ -56,6 +65,13 @@ export interface NlqResponse {
   results: Array<Record<string, unknown> & { record_type: string }>;
 }
 
+export interface ScenarioMeta {
+  active: boolean;
+  sst_delta_c?: number;
+  fishing_pressure?: number;
+  chlorophyll_delta_mgm3?: number;
+}
+
 export interface StockForecast {
   species: string;
   region: string;
@@ -71,6 +87,7 @@ export interface StockForecast {
   confidence: string;
   methodology: string;
   source: string;
+  scenario: ScenarioMeta;
 }
 
 export interface BleachingRisk {
@@ -104,6 +121,14 @@ export interface BleachingFactor {
   contribution_pct: number;
 }
 
+export interface ThresholdCountdown {
+  status: 'projected' | 'at_max' | 'not_trending' | 'unreachable';
+  message: string;
+  next_alert_label?: string;
+  days?: number;
+  weekly_dhw_rate?: number;
+}
+
 export interface BleachingTrend {
   station_id: string;
   station_name: string;
@@ -115,8 +140,10 @@ export interface BleachingTrend {
   factors: BleachingFactor[];
   conclusion: string;
   confidence: string;
+  threshold_countdown: ThresholdCountdown;
   methodology: string;
   source: string;
+  scenario: ScenarioMeta;
 }
 
 export interface SpeciesTrajectoryPoint {
@@ -255,4 +282,5 @@ export interface RangeShift {
   confidence: string;
   methodology: string;
   source: string;
+  scenario: ScenarioMeta;
 }

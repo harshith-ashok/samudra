@@ -3,7 +3,10 @@ import { nextTick, ref } from 'vue';
 import { postChat } from '../api';
 import type { StationDetail } from '../api/types';
 
-const props = defineProps<{ stationContext: StationDetail | null }>();
+const props = defineProps<{
+  stationContext: StationDetail | null;
+  speciesContext?: unknown | null;
+}>();
 
 interface LogEntry {
   role: 'user' | 'ai';
@@ -42,7 +45,11 @@ async function send(text?: string) {
   await scrollToBottom();
 
   try {
-    const result = await postChat(message, props.stationContext ?? undefined);
+    const result = await postChat(
+      message,
+      props.stationContext ?? undefined,
+      props.speciesContext ?? undefined
+    );
     log.value[pendingIndex].text = result.answer;
     log.value[pendingIndex].sources = result.sources;
   } catch {

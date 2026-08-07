@@ -13,7 +13,17 @@ def _common_name(species: str) -> str | None:
     return next((s["common"] for s in data.species() if s["sci"].lower() == species.lower()), None)
 
 
-def stock_forecast(species: str, region: str, months_ahead: int = 6) -> dict:
+def stock_forecast(
+    species: str,
+    region: str,
+    months_ahead: int = 6,
+    sst_delta: float = 0.0,
+    fishing_pressure: float = 1.0,
+) -> dict:
+    """sst_delta and fishing_pressure are what-if scenario overrides (Phase 21) —
+    both default to a no-op (0.0 / 1.0) so an un-scenario'd call returns exactly
+    the real forecast. Neither touches the historical fit, only the forward
+    extrapolation, so the fitted trend/CI-width logic stays the real regression."""
     records = [
         r for r in data.catch_records()
         if species.lower() in r["species"].lower() and region.lower() in r["region"].lower()
@@ -28,21 +38,49 @@ def stock_forecast(species: str, region: str, months_ahead: int = 6) -> dict:
     fitted = slope * x + intercept
     residual_std = float(np.std(y - fitted)) or 1.0
 
+    # Fishing pressure: a heuristic multiplier on the fitted rate of change, not a
+    # stock-recruitment model — >1x steepens a decline (or dampens a rise), <1x the
+    # opposite. Only applied to the forward projection, never the historical fit.
+    scenario_slope = slope * fishing_pressure if slope <= 0 else slope / max(fishing_pressure, 1e-3)
+
+    # SST sensitivity: regression of tonnage on this same series' real per-record
+    # sst_c values gives a tonnes-per-degree coefficient, applied as a constant
+    # offset for the assumed anomaly. Falls back to 0 if SST barely varies in the window.
+    sst_effect_per_degree = 0.0
+    sst_vals = np.array([r["sst_c"] for r in records], dtype=float)
+    if sst_delta and float(np.std(sst_vals)) > 1e-6:
+        sst_slope, _ = np.polyfit(sst_vals, y, 1)
+        sst_effect_per_degree = float(sst_slope)
+
     future_x = np.arange(len(y), len(y) + months_ahead, dtype=float)
-    forecast_mean = slope * future_x + intercept
+    forecast_mean = scenario_slope * future_x + intercept + sst_delta * sst_effect_per_degree
     # widening 80% CI band (z ~ 1.28) that grows with distance from the fit
     z = 1.28
     forecast_lo = forecast_mean - z * residual_std * (1 + 0.15 * np.arange(months_ahead))
     forecast_hi = forecast_mean + z * residual_std * (1 + 0.15 * np.arange(months_ahead))
+    # tonnage can't go negative — an aggressive scenario (e.g. high fishing pressure
+    # stacked with a warm anomaly) should floor out at zero catch, not report a
+    # negative number
+    forecast_mean = np.maximum(0.0, forecast_mean)
+    forecast_lo = np.maximum(0.0, forecast_lo)
+    forecast_hi = np.maximum(0.0, forecast_hi)
 
     direction = "rising" if slope > 0.5 else "falling" if slope < -0.5 else "roughly flat"
     confidence = "low" if len(records) < 6 else "medium" if len(records) < 12 else "high"
     common = _common_name(species)
     species_label = f"{species} ({common})" if common else species
+    scenario_active = bool(sst_delta) or fishing_pressure != 1.0
+    scenario_note = (
+        f" Simulated what-if scenario applied: SST anomaly {sst_delta:+.1f}°C, fishing pressure ×{fishing_pressure:.2f} "
+        "— this is a hypothetical, not the live forecast."
+        if scenario_active
+        else ""
+    )
     conclusion = conclusions.conclude(
         f"Linear trend fit to {len(records)} months of catch data for {species_label} in {region}: "
         f"{direction} at {abs(round(float(slope), 1))} tonnes/month, projecting {round(float(forecast_mean[0]), 0)} "
-        f"tonnes next month (80% CI {round(float(forecast_lo[0]), 0)}-{round(float(forecast_hi[0]), 0)}).",
+        f"tonnes next month (80% CI {round(float(forecast_lo[0]), 0)}-{round(float(forecast_hi[0]), 0)})."
+        f"{scenario_note}",
         confidence,
     )
 
@@ -64,6 +102,11 @@ def stock_forecast(species: str, region: str, months_ahead: int = 6) -> dict:
         "confidence": confidence,
         "methodology": "Linear regression (numpy polyfit, degree 1) of monthly catch tonnage vs. time; 80% CI band widens linearly with forecast horizon. Trend-extrapolation only, not a stock assessment.",
         "source": "simulated catch records (CMFRI-shaped)",
+        "scenario": {
+            "active": scenario_active,
+            "sst_delta_c": sst_delta,
+            "fishing_pressure": fishing_pressure,
+        },
     }
 
 
@@ -123,7 +166,16 @@ def bleaching_risk(station_id: str) -> dict:
     }
 
 
-def range_shift(species: str) -> dict:
+# Heuristic only (Phase 21 what-if): +/- this fraction of drift velocity per 1°C of
+# assumed additional SST anomaly, loosely consistent with warming-correlates-with-
+# poleward-shift literature. Illustrative, not a fitted or species-specific coefficient.
+SST_VELOCITY_SCALING = 0.15
+
+
+def range_shift(species: str, sst_delta: float = 0.0) -> dict:
+    """sst_delta is a what-if scenario override (Phase 21) — defaults to 0.0 (no-op),
+    so an un-scenario'd call returns exactly the real projection. Only scales the
+    forward projection's slope, never the observed regression."""
     series_by_species = data.range_shift_series()
     matched_key = next((k for k in series_by_species if species.lower() in k.lower()), None)
     if not matched_key:
@@ -136,16 +188,29 @@ def range_shift(species: str) -> dict:
     years = np.array([p["year"] for p in series], dtype=float)
     lats = np.array([p["mean_lat"] for p in series], dtype=float)
     slope, intercept = np.polyfit(years, lats, 1)
+    scenario_slope = slope * (1 + SST_VELOCITY_SCALING * sst_delta)
 
     last_year = int(years.max())
     future_years = np.arange(last_year + 1, last_year + 6)
-    projected_lats = slope * future_years + intercept
+    # Pivot the projection around the fitted value at the last observed year rather
+    # than reusing the year-0 intercept — years are ~2000+, so a small scenario_slope
+    # perturbation would otherwise blow up hugely by the time it's multiplied through
+    # a ~2000-2030 year value.
+    anchor_lat = slope * last_year + intercept
+    projected_lats = anchor_lat + scenario_slope * (future_years - last_year)
 
     direction = "northward (poleward)" if slope > 0 else "southward (equatorward)" if slope < 0 else "no clear shift"
     confidence = "low" if len(series) < 5 else "medium"
+    scenario_active = bool(sst_delta)
+    scenario_note = (
+        f" Simulated what-if scenario applied: SST anomaly {sst_delta:+.1f}°C scales the projected drift velocity "
+        f"by {SST_VELOCITY_SCALING * sst_delta:+.0%} (illustrative heuristic) — this is a hypothetical, not the live projection."
+        if scenario_active
+        else ""
+    )
     conclusion = conclusions.conclude(
         f"Yearly mean occurrence latitude for {matched_key} across {len(series)} years of OBIS/GBIF records "
-        f"trends {direction} at {abs(round(float(slope), 3))} degrees latitude/year.",
+        f"trends {direction} at {abs(round(float(slope), 3))} degrees latitude/year.{scenario_note}",
         confidence,
     )
 
@@ -162,4 +227,5 @@ def range_shift(species: str) -> dict:
         "confidence": confidence,
         "methodology": "Linear regression (numpy polyfit) of yearly mean occurrence latitude (OBIS/GBIF, Indian EEZ bbox) vs. year, projected 5 years forward. A basic correlation, not a species distribution model.",
         "source": "OBIS/GBIF real occurrence records",
+        "scenario": {"active": scenario_active, "sst_delta_c": sst_delta},
     }

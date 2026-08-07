@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import advisories, analytics, chat, glossary, nlq, pollution, predict, reefs, species, stations, timeline, vessels
+from routers import advisories, analytics, chat, glossary, nlq, pollution, predict, reefs, species, stations, stt, timeline, vessels
 from services import embed
+from services import stt as stt_service  # module, not the router above
 
 app = FastAPI(title="SAMUDRA API")
 
@@ -25,11 +26,13 @@ app.include_router(vessels.router)
 app.include_router(pollution.router)
 app.include_router(analytics.router)
 app.include_router(reefs.router)
+app.include_router(stt.router)
 
 
 @app.on_event("startup")
 def startup():
     embed.build_index()
+    stt_service.warm()
 
 
 @app.get("/api/health")

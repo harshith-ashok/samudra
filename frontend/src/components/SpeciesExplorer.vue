@@ -5,9 +5,11 @@ import { getSpecies, getSpeciesTrajectory } from '../api';
 import type { Species, SpeciesTrajectory } from '../api/types';
 import { speciesSlug } from '../utils/speciesId';
 import InfoTip from './InfoTip.vue';
+import ConfidenceMeter from './ConfidenceMeter.vue';
 
 const emit = defineEmits<{
   (e: 'trajectory', payload: SpeciesTrajectory | null): void;
+  (e: 'ask-ai', payload: { species: Species; trajectory: SpeciesTrajectory | null }): void;
 }>();
 
 const species = ref<Species[]>([]);
@@ -101,6 +103,11 @@ function renderTrajectoryChart() {
   });
 }
 
+function askAiAboutSpecies() {
+  if (!selected.value) return;
+  emit('ask-ai', { species: selected.value, trajectory: trajectory.value });
+}
+
 async function selectSpecies(s: Species) {
   selected.value = s;
   trajectory.value = null;
@@ -173,6 +180,24 @@ onBeforeUnmount(() => {
       </table>
 
       <div class="movement-block" v-if="selected">
+        <div class="species-media">
+          <img
+            v-if="selected.media"
+            :src="selected.media.image_url"
+            :alt="selected.common"
+            class="species-photo"
+          />
+          <div v-else class="species-photo-placeholder">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6z" />
+              <circle cx="15" cy="11" r="1" fill="currentColor" stroke="none" />
+            </svg>
+            <span>No sourced photo yet — placeholder</span>
+          </div>
+          <p v-if="selected.media" class="species-photo-caption">
+            {{ selected.media.attribution }}
+          </p>
+        </div>
         <h4>
           Movement Trend — {{ selected.common
           }}<InfoTip glossary-key="species_trajectory" />
@@ -181,6 +206,7 @@ onBeforeUnmount(() => {
         <p v-else-if="trajectoryError" class="error">{{ trajectoryError }}</p>
         <template v-else-if="trajectory">
           <p class="conclusion">{{ trajectory.conclusion }}</p>
+          <ConfidenceMeter :confidence="trajectory.confidence" />
           <div class="sub">
             Drifted
             <b>{{ trajectory.drift_km }} km {{ trajectory.direction }}</b> ·
@@ -189,6 +215,13 @@ onBeforeUnmount(() => {
           <canvas ref="trajectoryCanvas" height="140"></canvas>
           <p class="methodology">{{ trajectory.methodology }}</p>
         </template>
+        <div
+          v-if="!trajectoryLoading"
+          class="chip"
+          @click="askAiAboutSpecies"
+        >
+          Ask AI assistant about this species →
+        </div>
       </div>
     </template>
 
@@ -278,6 +311,46 @@ tbody tr.selected {
   padding-top: 16px;
   border-top: 1px solid var(--border);
 }
+.species-media {
+  margin-bottom: 12px;
+}
+.species-photo {
+  width: 100%;
+  max-height: 200px;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  display: block;
+}
+.species-photo-placeholder {
+  width: 100%;
+  height: 120px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: var(--surface-2);
+  border: 1px dashed var(--border-strong);
+  border-radius: 10px;
+  color: var(--muted);
+}
+.species-photo-placeholder svg {
+  width: 26px;
+  height: 26px;
+  opacity: 0.5;
+}
+.species-photo-placeholder span {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+}
+.species-photo-caption {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 5px;
+  line-height: 1.4;
+}
 .movement-block h4 {
   font-family: var(--font-display);
   font-size: 14px;
@@ -298,12 +371,30 @@ tbody tr.selected {
   color: var(--muted);
   margin-bottom: 10px;
 }
+.movement-block .confidence-meter {
+  margin-bottom: 8px;
+}
 .methodology {
   font-family: var(--font-mono);
   font-size: 9.5px;
   color: var(--muted);
   margin-top: 8px;
   line-height: 1.5;
+}
+.chip {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 9px 11px;
+  font-size: 11.5px;
+  color: var(--muted);
+  cursor: pointer;
+  font-weight: 500;
+  margin-top: 12px;
+}
+.chip:hover {
+  color: var(--teal);
+  border-color: var(--teal);
 }
 
 .species-hover-card {

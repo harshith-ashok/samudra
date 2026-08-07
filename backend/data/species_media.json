@@ -1,0 +1,58 @@
+{
+  "sardinella_longiceps": {
+    "image_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/628032685/original.jpg",
+    "attribution": "Ashwin A via GBIF/iNaturalist, http://creativecommons.org/licenses/by/4.0/",
+    "source": "GBIF occurrence media (real observation photo)",
+    "license": "http://creativecommons.org/licenses/by/4.0/",
+    "is_genus_level": false
+  },
+  "chelonia_mydas": {
+    "image_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/605112839/original.jpg",
+    "attribution": "staircase_wit via GBIF/iNaturalist, http://creativecommons.org/licenses/by-nc/4.0/",
+    "source": "GBIF occurrence media (real observation photo)",
+    "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+    "is_genus_level": false
+  },
+  "gymnothorax_sp.": {
+    "image_url": "https://observation.org/photos/18567849.jpg",
+    "attribution": "Peter-Paul Schets via GBIF/iNaturalist, http://creativecommons.org/licenses/by-nc-nd/4.0/ — genus-level representative photo (Gymnothorax moringa (Cuvier, 1829)), not this exact species/morph",
+    "source": "GBIF occurrence media (real observation photo)",
+    "license": "http://creativecommons.org/licenses/by-nc-nd/4.0/",
+    "is_genus_level": true
+  },
+  "acropora_formosa": {
+    "image_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/621587300/original.jpg",
+    "attribution": "Jess via GBIF/iNaturalist, http://creativecommons.org/licenses/by-nc/4.0/",
+    "source": "GBIF occurrence media (real observation photo)",
+    "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+    "is_genus_level": false
+  },
+  "hippocampus_kuda": {
+    "image_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/604677055/original.jpg",
+    "attribution": "afguemas via GBIF/iNaturalist, http://creativecommons.org/licenses/by-nc/4.0/",
+    "source": "GBIF occurrence media (real observation photo)",
+    "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+    "is_genus_level": false
+  },
+  "dugong_dugon": {
+    "image_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/609614125/original.jpg",
+    "attribution": "paddyreed via GBIF/iNaturalist, http://creativecommons.org/licenses/by-nc/4.0/",
+    "source": "GBIF occurrence media (real observation photo)",
+    "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+    "is_genus_level": false
+  },
+  "thunnus_albacares": {
+    "image_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/606802869/original.jpg",
+    "attribution": "piotrkz via GBIF/iNaturalist, http://creativecommons.org/licenses/by-nc/4.0/",
+    "source": "GBIF occurrence media (real observation photo)",
+    "license": "http://creativecommons.org/licenses/by-nc/4.0/",
+    "is_genus_level": false
+  },
+  "rastrelliger_kanagurta": {
+    "image_url": "https://inaturalist-open-data.s3.amazonaws.com/photos/610577018/original.jpg",
+    "attribution": "Ashwin A via GBIF/iNaturalist, http://creativecommons.org/licenses/by/4.0/",
+    "source": "GBIF occurrence media (real observation photo)",
+    "license": "http://creativecommons.org/licenses/by/4.0/",
+    "is_genus_level": false
+  }
+}

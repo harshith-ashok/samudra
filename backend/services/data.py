@@ -25,6 +25,10 @@ def species() -> list[dict]:
     return _load("species.json")
 
 
+def species_media() -> dict:
+    return _load("species_media.json")
+
+
 def advisories() -> list[dict]:
     return _load("advisories.json")
 

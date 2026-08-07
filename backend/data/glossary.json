@@ -88,5 +88,11 @@
     "title": "Species Movement Trajectory",
     "what_it_is": "The year-by-year center point of where a species has been recorded, smoothed to reduce noise, with a short forecast continuation based on its recent direction of travel.",
     "why_it_matters": "A moving centroid over real years of records is a more honest picture of range shift than a single trend line — you can see the actual path, not just its slope."
+  },
+  {
+    "key": "whatif_scenario",
+    "title": "What-If Scenario Simulator",
+    "what_it_is": "Sliders for SST anomaly, fishing pressure, and chlorophyll delta that re-run the real stock/bleaching/range-shift models with a hypothetical input instead of the recorded one.",
+    "why_it_matters": "Turns a static chart into something you can operate — see how a warmer season or heavier fishing would change the outlook, clearly separate from the live forecast."
   }
 ]

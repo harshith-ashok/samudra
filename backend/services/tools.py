@@ -5,7 +5,7 @@ going through the vector store — the unstructured/vector path lives in
 services/rag.py. Both feed into the same gpt-oss call in services/chat.py.
 """
 
-from services import data, pollution, vessels
+from services import data, pollution, trajectory, vessels
 
 TOOL_SPECS = [
     {
@@ -55,7 +55,7 @@ TOOL_SPECS = [
         "type": "function",
         "function": {
             "name": "get_species_info",
-            "description": "Get conservation status and region for a species by scientific or common name.",
+            "description": "Get everything known about a species by scientific or common name: conservation status, region, the plain-language note, and — if enough OBIS/GBIF occurrence-year coverage exists — its latest movement/range-shift conclusion.",
             "parameters": {
                 "type": "object",
                 "properties": {
@@ -132,10 +132,26 @@ def get_active_advisories(region: str | None = None) -> dict:
 
 def get_species_info(name: str) -> dict:
     name_lower = name.lower()
-    for s in data.species():
-        if name_lower in s["sci"].lower() or name_lower in s["common"].lower():
-            return s
-    return {"error": f"no species found matching '{name}'"}
+    species_entry = next(
+        (s for s in data.species() if name_lower in s["sci"].lower() or name_lower in s["common"].lower()),
+        None,
+    )
+    if not species_entry:
+        return {"error": f"no species found matching '{name}'"}
+
+    result = dict(species_entry)
+
+    glossary_entry = next((g for g in data.glossary() if g["key"] == "conservation_status"), None)
+    if glossary_entry:
+        result["conservation_status_meaning"] = glossary_entry["what_it_is"]
+
+    traj = trajectory.trajectory(trajectory.species_id(species_entry["sci"]))
+    if "error" not in traj:
+        result["movement_conclusion"] = traj["conclusion"]
+        result["drift_km"] = traj["drift_km"]
+        result["drift_direction"] = traj["direction"]
+
+    return result
 
 
 def get_vessel_status(violations_only: bool = False) -> dict:
