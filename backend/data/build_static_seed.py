@@ -4,9 +4,9 @@ Builds the remaining seed JSON that isn't sourced live from OBIS/GBIF: stations
 
 Ocean sensor values are regionally-plausible approximations (INCOIS/CMEMS access
 requires an account we don't have in this build window) — clearly labeled
-"simulated" in the `source` field per CLAUDE.md. Catch tonnage is likewise
-simulated but shaped to match the real, published CMFRI narrative (Kerala
-sardine landings declining alongside a warm SST anomaly).
+"simulated" in the `source` field so real and synthetic data are never confused.
+Catch tonnage is likewise simulated but shaped to match the real, published
+CMFRI narrative (Kerala sardine landings declining alongside a warm SST anomaly).
 """
 
 import json

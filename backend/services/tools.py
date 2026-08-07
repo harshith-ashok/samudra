@@ -5,7 +5,7 @@ going through the vector store — the unstructured/vector path lives in
 services/rag.py. Both feed into the same gpt-oss call in services/chat.py.
 """
 
-from services import data
+from services import data, pollution, vessels
 
 TOOL_SPECS = [
     {
@@ -65,6 +65,37 @@ TOOL_SPECS = [
             },
         },
     },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_vessel_status",
+            "description": "Get current vessel positions and which ones are right now inside a marine protected area (MPA) — the live illegal-fishing/violation check.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "violations_only": {
+                        "type": "boolean",
+                        "description": "If true, return only vessels currently inside a protected zone. Default false (return the whole fleet).",
+                    },
+                },
+                "required": [],
+            },
+        },
+    },
+    {
+        "type": "function",
+        "function": {
+            "name": "get_pollution_status",
+            "description": "Get coastal sewage/effluent treatment plant locations and CPCB-style compliance status, optionally filtered by city.",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "city": {"type": "string", "description": "Optional city filter, e.g. 'Chennai'"},
+                },
+                "required": [],
+            },
+        },
+    },
 ]
 
 
@@ -107,11 +138,46 @@ def get_species_info(name: str) -> dict:
     return {"error": f"no species found matching '{name}'"}
 
 
+def get_vessel_status(violations_only: bool = False) -> dict:
+    result = vessels.list_vessels()
+    fleet = result["vessels"]
+    if violations_only:
+        fleet = [v for v in fleet if v["in_violation"]]
+    return {
+        "vessels": [
+            {
+                "id": v["id"],
+                "name": v["name"],
+                "type": v["type"],
+                "in_violation": v["in_violation"],
+                "violation_zone": v["violation_zone"],
+            }
+            for v in fleet
+        ],
+        "violation_count": result["violation_count"],
+        "source": result["source"],
+    }
+
+
+def get_pollution_status(city: str | None = None) -> dict:
+    result = pollution.list_plants()
+    plants = result["plants"]
+    if city:
+        plants = [p for p in plants if city.lower() in p["city"].lower()]
+    return {
+        "plants": plants,
+        "non_compliant_count": sum(1 for p in plants if p["compliance"] == "non-compliant"),
+        "source": result["source"],
+    }
+
+
 DISPATCH = {
     "get_catch_trend": get_catch_trend,
     "get_sensor_readings": get_sensor_readings,
     "get_active_advisories": get_active_advisories,
     "get_species_info": get_species_info,
+    "get_vessel_status": get_vessel_status,
+    "get_pollution_status": get_pollution_status,
 }
 
 

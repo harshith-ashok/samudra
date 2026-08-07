@@ -1,4 +1,4 @@
-"""Loads seed JSON once at import time. No hosted DB for this prototype — see CLAUDE.md."""
+"""Loads seed JSON once at import time. No hosted DB for this prototype."""
 
 import json
 from pathlib import Path

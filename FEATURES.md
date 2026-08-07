@@ -1,8 +1,8 @@
 # SAMUDRA — Component Reference
 
 What each piece of the codebase is responsible for. Organized by layer, not by
-build phase — see `todo.md` for the phase-by-phase history and `CLAUDE.md` for
-the architecture rationale.
+build phase — see `todo.md` for the phase-by-phase history and the project
+brief for the architecture rationale.
 
 ## Frontend
 
@@ -81,7 +81,7 @@ call one service function, wrap the result in `{"data": ...}` (or a 404 on
 | `llm.py` | The single choke point for every Ollama call (chat + embeddings). Model names (`gpt-oss:120b-cloud`, `nomic-embed-text`) live here and nowhere else. |
 | `embed.py` | Builds the in-memory numpy embedding index for the RAG text corpus at startup; cosine-similarity search over it. |
 | `rag.py` | Orchestrates one gpt-oss chat call fed by two retrieval paths — structured tool calls (`tools.py`) and unstructured vector search (`embed.py`) — plus optional "what's on screen" station context. |
-| `tools.py` | The structured tool functions the model can call mid-conversation (`get_catch_trend`, `get_sensor_readings`, `get_active_advisories`, `get_species_info`) — deterministic lookups against the seed data, no hallucination risk on numbers. |
+| `tools.py` | The structured tool functions the model can call mid-conversation (`get_catch_trend`, `get_sensor_readings`, `get_active_advisories`, `get_species_info`, `get_vessel_status`, `get_pollution_status`) — deterministic lookups against the seed data, no hallucination risk on numbers. |
 | `nlq.py` | Translates free text into a structured filter via one gpt-oss call, then runs that filter against the seed data directly — the model decides *what* to look up, never fabricates the results. |
 | `predict.py` | The three original trend-extrapolation models (stock, bleaching, range-shift), each honestly labeled with its methodology and now each ending in a `conclusions.conclude()` sentence. |
 | `reefs.py` | Multi-factor bleaching composite: 60% DHW + 25% chlorophyll drift + 15% illustrative historical-frequency, with documented weights and a full weekly accumulation series (not just a final number). |

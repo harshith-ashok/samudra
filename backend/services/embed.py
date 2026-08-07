@@ -1,7 +1,7 @@
 """Embeds the RAG text corpus once at startup and keeps it as an in-memory numpy matrix.
 
-Per CLAUDE.md: no hosted vector DB needed for a 2-day build — in-memory cosine
-similarity over a small corpus is plenty.
+No hosted vector DB needed for a 2-day build — in-memory cosine similarity
+over a small corpus is plenty.
 """
 
 import numpy as np

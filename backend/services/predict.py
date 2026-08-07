@@ -1,7 +1,7 @@
-"""Three simple, honestly-documented prediction methods — see CLAUDE.md's
-"Predictions" section. None of this is a formal stock assessment or climate
-model; each is a straightforward trend extrapolation over the seed data,
-returned with its methodology so the frontend/judges can see exactly what ran.
+"""Three simple, honestly-documented prediction methods. None of this is a
+formal stock assessment or climate model; each is a straightforward trend
+extrapolation over the seed data, returned with its methodology so the
+frontend/judges can see exactly what ran.
 """
 
 import numpy as np

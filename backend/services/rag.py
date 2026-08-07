@@ -1,4 +1,4 @@
-"""Orchestrates one gpt-oss call fed by two retrieval paths, per CLAUDE.md:
+"""Orchestrates one gpt-oss call fed by two retrieval paths:
 
 - structured: model-invoked tools hit the seed "database" directly (services/tools.py)
 - unstructured: cosine-similarity retrieval over embedded text chunks (services/embed.py)

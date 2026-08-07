@@ -9,8 +9,8 @@ shape either way, so switching data sources later doesn't touch the router.
 Fallback path (default, and what actually runs today): a small fleet of
 simulated AIS-like vessels, each moving along a fixed track. Position is
 computed live from wall-clock time so vessels visibly drift on repeated polls
-without needing any persisted server state — consistent with CLAUDE.md's "no
-live sensor ingestion, periodic refresh of mocked data is fine".
+without needing any persisted server state — no live sensor ingestion, a
+periodic refresh of mocked data is fine for this build.
 """
 
 import math

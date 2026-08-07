@@ -122,7 +122,8 @@ def build_biodiversity_records():
 
 
 def build_edna_detections():
-    """Simulated eDNA detections layered on top of the real species list, per CLAUDE.md non-goals."""
+    """Simulated eDNA detections layered on top of the real species list — no real wet-lab eDNA
+    pipeline in this build, per the project's stated non-goals."""
     sim = [
         {
             "id": "edna-0001",
