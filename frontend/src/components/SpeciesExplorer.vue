@@ -6,11 +6,14 @@ import type { Species, SpeciesTrajectory } from '../api/types';
 import { speciesSlug } from '../utils/speciesId';
 import InfoTip from './InfoTip.vue';
 import ConfidenceMeter from './ConfidenceMeter.vue';
+import { useI18n } from '../composables/useI18n';
 
 const emit = defineEmits<{
   (e: 'trajectory', payload: SpeciesTrajectory | null): void;
   (e: 'ask-ai', payload: { species: Species; trajectory: SpeciesTrajectory | null }): void;
 }>();
+
+const { t } = useI18n();
 
 const species = ref<Species[]>([]);
 const hovered = ref<Species | null>(null);
@@ -24,11 +27,11 @@ const trajectoryLoading = ref(false);
 const trajectoryCanvas = ref<HTMLCanvasElement | null>(null);
 let trajectoryChart: Chart | null = null;
 
-const statusLabel: Record<string, string> = {
-  LC: 'Least Concern',
-  NT: 'Near Threatened',
-  VU: 'Vulnerable',
-  EN: 'Endangered',
+const statusLabelKey: Record<string, string> = {
+  LC: 'species.statusLC',
+  NT: 'species.statusNT',
+  VU: 'species.statusVU',
+  EN: 'species.statusEN',
 };
 const statusClass: Record<string, string> = {
   LC: 'lc',
@@ -123,7 +126,7 @@ async function selectSpecies(s: Species) {
     emit('trajectory', trajectory.value);
   } catch {
     trajectoryLoading.value = false;
-    trajectoryError.value = `Not enough occurrence-year coverage to plot a movement trend for ${s.common} yet.`;
+    trajectoryError.value = t('species.notEnoughData', { name: s.common });
   }
 }
 
@@ -143,14 +146,14 @@ onBeforeUnmount(() => {
 
 <template>
   <div>
-    <p v-if="loading" class="loading">Loading species table…</p>
+    <p v-if="loading" class="loading">{{ t('species.loadingTable') }}</p>
     <template v-else>
       <table>
         <thead>
           <tr>
-            <th>Species</th>
-            <th>Region</th>
-            <th>Status</th>
+            <th>{{ t('species.colSpecies') }}</th>
+            <th>{{ t('species.colRegion') }}</th>
+            <th>{{ t('species.colStatus') }}</th>
           </tr>
         </thead>
         <tbody>
@@ -171,7 +174,7 @@ onBeforeUnmount(() => {
                 v-if="s.status"
                 class="tag"
                 :class="statusClass[s.status]"
-                >{{ statusLabel[s.status] }}</span
+                >{{ t(statusLabelKey[s.status]) }}</span
               >
               <span v-else>—</span>
             </td>
@@ -192,25 +195,27 @@ onBeforeUnmount(() => {
               <path d="M2 12s4-6 10-6 10 6 10 6-4 6-10 6-10-6-10-6z" />
               <circle cx="15" cy="11" r="1" fill="currentColor" stroke="none" />
             </svg>
-            <span>No sourced photo yet — placeholder</span>
+            <span>{{ t('species.noPhoto') }}</span>
           </div>
           <p v-if="selected.media" class="species-photo-caption">
             {{ selected.media.attribution }}
           </p>
         </div>
         <h4>
-          Movement Trend — {{ selected.common
+          {{ t('species.movementTrendTitle', { name: selected.common })
           }}<InfoTip glossary-key="species_trajectory" />
         </h4>
-        <p v-if="trajectoryLoading" class="loading">Computing trajectory…</p>
+        <p v-if="trajectoryLoading" class="loading">
+          {{ t('species.computingTrajectory') }}
+        </p>
         <p v-else-if="trajectoryError" class="error">{{ trajectoryError }}</p>
         <template v-else-if="trajectory">
           <p class="conclusion">{{ trajectory.conclusion }}</p>
           <ConfidenceMeter :confidence="trajectory.confidence" />
           <div class="sub">
-            Drifted
+            {{ t('species.drifted') }}
             <b>{{ trajectory.drift_km }} km {{ trajectory.direction }}</b> ·
-            {{ trajectory.historical.length }} years of OBIS/GBIF records
+            {{ trajectory.historical.length }} {{ t('species.yearsOfRecords') }}
           </div>
           <canvas ref="trajectoryCanvas" height="140"></canvas>
           <p class="methodology">{{ trajectory.methodology }}</p>
@@ -220,7 +225,7 @@ onBeforeUnmount(() => {
           class="chip"
           @click="askAiAboutSpecies"
         >
-          Ask AI assistant about this species →
+          {{ t('species.askAi') }}
         </div>
       </div>
     </template>
@@ -233,7 +238,7 @@ onBeforeUnmount(() => {
             v-if="hovered.status"
             class="tag"
             :class="statusClass[hovered.status]"
-            >{{ statusLabel[hovered.status] }}</span
+            >{{ t(statusLabelKey[hovered.status]) }}</span
           >
         </div>
         <div class="shc-common">{{ hovered.common }}</div>

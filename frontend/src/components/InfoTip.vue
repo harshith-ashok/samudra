@@ -1,9 +1,11 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import { useGlossary } from '../composables/useGlossary';
+import { useI18n } from '../composables/useI18n';
 
 const props = defineProps<{ glossaryKey: string }>();
 const { byKey } = useGlossary();
+const { t } = useI18n();
 const entry = computed(() => byKey(props.glossaryKey));
 const open = ref(false);
 
@@ -26,7 +28,7 @@ function close() {
       class="info-tip-icon"
       type="button"
       @click.stop="toggle"
-      :aria-label="`About ${entry.title}`"
+      :aria-label="t('infoTip.about', { title: entry.title })"
     >
       i
     </button>
@@ -34,7 +36,7 @@ function close() {
       <div class="info-tip-title">{{ entry.title }}</div>
       <p class="info-tip-body">{{ entry.what_it_is }}</p>
       <p class="info-tip-why">
-        <b>Why it matters:</b> {{ entry.why_it_matters }}
+        <b>{{ t('glossaryPanel.whyItMatters') }}</b> {{ entry.why_it_matters }}
       </p>
     </div>
   </span>

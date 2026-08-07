@@ -3,6 +3,7 @@ import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
 import { getTimeline } from '../api';
 import type { TimelineResponse } from '../api/types';
 import InfoTip from './InfoTip.vue';
+import { useI18n } from '../composables/useI18n';
 
 export interface TimelineChangePayload {
   metric: string;
@@ -15,9 +16,11 @@ const emit = defineEmits<{
   (e: 'change', payload: TimelineChangePayload): void;
 }>();
 
+const { t } = useI18n();
+
 const METRICS = [
-  { key: 'sst', label: 'How warm the water is' },
-  { key: 'chlorophyll', label: 'How much plankton is in the water' },
+  { key: 'sst', labelKey: 'timeline.sstLabel' },
+  { key: 'chlorophyll', labelKey: 'timeline.chlorophyllLabel' },
 ];
 
 const metric = ref('sst');
@@ -83,7 +86,11 @@ onBeforeUnmount(stopPlay);
 const dayLabel = computed(() => {
   if (!timeline.value) return '';
   const ordinal = day.value - timeline.value.min_day + 1;
-  return `Day ${ordinal} of ${timeline.value.days} — ${currentKind.value}`;
+  return t('timeline.dayOf', {
+    ordinal,
+    total: timeline.value.days,
+    kind: t(`timeline.${currentKind.value}`),
+  });
 });
 </script>
 
@@ -92,12 +99,12 @@ const dayLabel = computed(() => {
     <div class="scrubber-head">
       <select v-model="metric" class="metric-select">
         <option v-for="m in METRICS" :key="m.key" :value="m.key">
-          {{ m.label }}
+          {{ t(m.labelKey) }}
         </option>
       </select>
       <InfoTip :glossary-key="metric" />
       <button class="play-btn" @click="togglePlay">
-        {{ playing ? 'Pause' : 'Play' }}
+        {{ playing ? t('timeline.pause') : t('timeline.play') }}
       </button>
       <span class="day-label" :class="currentKind">{{ dayLabel }}</span>
     </div>
@@ -110,9 +117,9 @@ const dayLabel = computed(() => {
       v-model.number="day"
     />
     <div class="scrubber-scale">
-      <span>{{ timeline.min_day }}d ago</span>
-      <span class="today-mark">today</span>
-      <span>+{{ timeline.max_day }}d forecast</span>
+      <span>{{ t('timeline.daysAgo', { n: timeline.min_day }) }}</span>
+      <span class="today-mark">{{ t('timeline.today') }}</span>
+      <span>{{ t('timeline.daysForecast', { n: timeline.max_day }) }}</span>
     </div>
   </div>
 </template>

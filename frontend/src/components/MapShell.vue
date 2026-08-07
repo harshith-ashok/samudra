@@ -18,6 +18,7 @@ import {
   getVessels,
   postNlq,
   postSttTranscribe,
+  postTranslate,
 } from '../api';
 import type {
   NlqResponse,
@@ -43,6 +44,9 @@ import LayerPanel, { type KpiDef, type LayerDef } from './LayerPanel.vue';
 import TimelineScrubber, {
   type TimelineChangePayload,
 } from './TimelineScrubber.vue';
+import LanguageToggle from './LanguageToggle.vue';
+import { useI18n, tEnglish } from '../composables/useI18n';
+import { useVoiceRecorder } from '../composables/useVoiceRecorder';
 import { colorForMetricValue } from '../utils/colorScale';
 
 const VESSEL_POLL_MS = 4000;
@@ -75,26 +79,21 @@ const stateCount = computed(
 const showIntro = ref(false);
 const activePanel = ref<PanelKey>(null);
 const clock = ref('');
+const { t, currentLanguage } = useI18n();
 
 const searchQuery = ref('');
 const searchFocused = ref(false);
 const nlqResult = ref<NlqResponse | null>(null);
 const nlqLoading = ref(false);
 
-type MicState = 'idle' | 'recording' | 'transcribing' | 'error';
-const micState = ref<MicState>('idle');
-const micErrorMsg = ref('');
-let mediaRecorder: MediaRecorder | null = null;
-let audioChunks: Blob[] = [];
-let micAutoStopTimer: number | undefined;
-const MIC_MAX_RECORD_MS = 12000;
-
-const suggestedQueries = [
-  'Vulnerable species near Kerala since March',
-  'SST anomalies near Goa and Chennai',
-  'Active fishing advisories',
-  'Coral bleaching risk in Lakshadweep',
-  'Newly detected eDNA species this month',
+// Displayed translated, but always submitted to NLQ in English — see
+// useSuggestion() below and tEnglish()'s doc comment.
+const suggestedQueryKeys = [
+  'search.suggested1',
+  'search.suggested2',
+  'search.suggested3',
+  'search.suggested4',
+  'search.suggested5',
 ];
 
 const typeColors: Record<StationType, string> = {
@@ -104,59 +103,58 @@ const typeColors: Record<StationType, string> = {
   coral: '#B9800F',
 };
 
-const modules: ModuleDef[] = [
+const modules = computed<ModuleDef[]>(() => [
   {
     key: 'ai',
-    label: 'AI Assistant',
+    label: t('modules.ai'),
     iconPaths: [
       'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z',
     ],
   },
   {
     key: 'species',
-    label: 'Movement Trends',
+    label: t('modules.species'),
     iconPaths: ['M12 2C7 6 4 10 4 14a8 8 0 0 0 16 0c0-4-3-8-8-12z'],
   },
   {
     key: 'predict',
-    label: 'Predictive Analytics',
+    label: t('modules.predict'),
     iconPaths: ['M3 17l6-6 4 4 8-8', 'M15 7h6v6'],
   },
   {
     key: 'analytics',
-    label: 'Analytics',
+    label: t('modules.analytics'),
     iconPaths: ['M4 19V9', 'M11 19V4', 'M18 19v-7'],
   },
   {
     key: 'glossary',
-    label: 'Data Glossary',
+    label: t('modules.glossary'),
     iconPaths: [
       'M12 2 2 7l10 5 10-5-10-5z',
       'M2 17l10 5 10-5',
       'M2 12l10 5 10-5',
     ],
   },
-];
+]);
 
-const panelTitles: Record<string, string> = {
-  station: 'Station Detail',
-  vessel: 'Vessel Detail',
-  ai: 'AI Assistant',
-  species: 'Movement Trends',
-  predict: 'Predictive Analytics',
-  analytics: 'Analytics',
-  glossary: 'Data Glossary',
-};
+const panelTitles = computed<Record<string, string>>(() => ({
+  station: t('panels.station'),
+  vessel: t('panels.vessel'),
+  ai: t('modules.ai'),
+  species: t('modules.species'),
+  predict: t('modules.predict'),
+  analytics: t('modules.analytics'),
+  glossary: t('modules.glossary'),
+}));
 
-const stationLayerMeta: Record<
-  StationType,
-  { label: string; glossaryKey: string }
-> = {
-  buoy: { label: 'Ocean buoys', glossaryKey: 'sst' },
-  edna: { label: 'eDNA sites', glossaryKey: 'edna_confidence' },
-  advisory: { label: 'Fishing advisories', glossaryKey: 'advisory' },
-  coral: { label: 'Coral bleaching risk', glossaryKey: 'dhw' },
-};
+const stationLayerMeta = computed<
+  Record<StationType, { label: string; glossaryKey: string }>
+>(() => ({
+  buoy: { label: t('layers.buoy'), glossaryKey: 'sst' },
+  edna: { label: t('layers.edna'), glossaryKey: 'edna_confidence' },
+  advisory: { label: t('layers.advisory'), glossaryKey: 'advisory' },
+  coral: { label: t('layers.coral'), glossaryKey: 'dhw' },
+}));
 
 const layerVisible = ref<Record<string, boolean>>({
   buoy: true,
@@ -169,30 +167,30 @@ const layerVisible = ref<Record<string, boolean>>({
 });
 
 const layers = computed<LayerDef[]>(() => [
-  ...(Object.keys(stationLayerMeta) as StationType[]).map((key) => ({
+  ...(Object.keys(stationLayerMeta.value) as StationType[]).map((key) => ({
     key,
-    label: stationLayerMeta[key].label,
+    label: stationLayerMeta.value[key].label,
     color: typeColors[key],
-    glossaryKey: stationLayerMeta[key].glossaryKey,
+    glossaryKey: stationLayerMeta.value[key].glossaryKey,
     visible: layerVisible.value[key],
   })),
   {
     key: 'shift',
-    label: 'Predicted range shift',
+    label: t('layers.shift'),
     color: '#0F2620',
     glossaryKey: 'range_shift',
     visible: layerVisible.value.shift,
   },
   {
     key: 'vessels',
-    label: 'Vessel tracking',
+    label: t('layers.vessels'),
     color: '#5C7370',
     glossaryKey: 'vessel_tracking',
     visible: layerVisible.value.vessels,
   },
   {
     key: 'pollution',
-    label: 'Pollution sources',
+    label: t('layers.pollution'),
     color: '#B9800F',
     glossaryKey: 'treatment_compliance',
     visible: layerVisible.value.pollution,
@@ -200,14 +198,14 @@ const layers = computed<LayerDef[]>(() => [
 ]);
 
 const kpis = computed<KpiDef[]>(() => [
-  { label: 'Stations tracked', value: stations.value.length },
+  { label: t('kpis.stationsTracked'), value: stations.value.length },
   {
-    label: 'Vessels in restricted waters',
+    label: t('kpis.vesselsRestricted'),
     value: violationCount.value,
     glossaryKey: 'mpa',
   },
   {
-    label: 'Non-compliant plants',
+    label: t('kpis.nonCompliantPlants'),
     value: nonCompliantCount.value,
     glossaryKey: 'treatment_compliance',
   },
@@ -629,70 +627,39 @@ watch(searchQuery, (q) => {
   nlqDebounce = window.setTimeout(() => runNlq(q), 350);
 });
 
-function stopRecording() {
-  if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+// NLQ parses free text into a structured filter via gpt-oss, which reasons
+// over English seed data — translate non-English speech to English before
+// it hits that pipeline, same as the AI Assistant does.
+async function transcribeForSearch(blob: Blob): Promise<string> {
+  const text = await postSttTranscribe(blob, currentLanguage.value);
+  if (text && currentLanguage.value !== 'en') {
+    return postTranslate(text, 'en', currentLanguage.value);
+  }
+  return text;
 }
 
-async function toggleMic() {
-  if (micState.value === 'recording') {
-    stopRecording();
-    return;
+const {
+  state: micState,
+  errorMsg: micErrorMsg,
+  toggle: toggleMic,
+  dispose: disposeMic,
+} = useVoiceRecorder(
+  transcribeForSearch,
+  (text) => {
+    searchQuery.value = text;
+    searchFocused.value = true;
+  },
+  {
+    transcribeError: () => t('chat.micError'),
+    micDenied: () => t('chat.micDenied'),
   }
-  if (micState.value === 'transcribing') return;
+);
 
-  micErrorMsg.value = '';
-  try {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-    const mimeType = MediaRecorder.isTypeSupported('audio/webm;codecs=opus')
-      ? 'audio/webm;codecs=opus'
-      : '';
-    mediaRecorder = mimeType
-      ? new MediaRecorder(stream, { mimeType })
-      : new MediaRecorder(stream);
-    audioChunks = [];
-
-    mediaRecorder.ondataavailable = (e) => {
-      if (e.data.size > 0) audioChunks.push(e.data);
-    };
-
-    mediaRecorder.onstop = async () => {
-      stream.getTracks().forEach((t) => t.stop());
-      window.clearTimeout(micAutoStopTimer);
-      if (!audioChunks.length) {
-        micState.value = 'idle';
-        return;
-      }
-      micState.value = 'transcribing';
-      try {
-        const blob = new Blob(audioChunks, {
-          type: mediaRecorder?.mimeType || 'audio/webm',
-        });
-        const text = await postSttTranscribe(blob);
-        if (text) {
-          searchQuery.value = text;
-          searchFocused.value = true;
-        }
-        micState.value = 'idle';
-      } catch {
-        micErrorMsg.value = "Couldn't transcribe — is the backend running?";
-        micState.value = 'error';
-        window.setTimeout(() => (micState.value = 'idle'), 2500);
-      }
-    };
-
-    mediaRecorder.start();
-    micState.value = 'recording';
-    micAutoStopTimer = window.setTimeout(stopRecording, MIC_MAX_RECORD_MS);
-  } catch {
-    micErrorMsg.value = 'Microphone access denied or unavailable.';
-    micState.value = 'error';
-    window.setTimeout(() => (micState.value = 'idle'), 2500);
-  }
-}
-
-function useSuggestion(q: string) {
-  searchQuery.value = q;
-  runNlq(q);
+function useSuggestion(key: string) {
+  // Displayed in whatever language is active, but always run against NLQ in
+  // English — the query box just shows the same text the chip showed.
+  searchQuery.value = t(key);
+  runNlq(tEnglish(key));
 }
 
 function blurSearchSoon() {
@@ -709,9 +676,9 @@ function flyToStation(id: string) {
 
 const showResults = computed(() => searchFocused.value);
 const searchPlaceholder = computed(() => {
-  if (micState.value === 'recording') return 'Listening… click the mic to stop';
-  if (micState.value === 'transcribing') return 'Transcribing…';
-  return "Ask the map — e.g. 'vulnerable species near Kerala since March'";
+  if (micState.value === 'recording') return t('search.placeholderListening');
+  if (micState.value === 'transcribing') return t('search.placeholderTranscribing');
+  return t('search.placeholder');
 });
 
 onMounted(async () => {
@@ -741,8 +708,7 @@ onMounted(async () => {
 onBeforeUnmount(() => {
   window.clearInterval(clockTimer);
   window.clearInterval(vesselPollTimer);
-  window.clearTimeout(micAutoStopTimer);
-  if (mediaRecorder && mediaRecorder.state !== 'inactive') mediaRecorder.stop();
+  disposeMic();
   map?.remove();
 });
 </script>
@@ -752,16 +718,24 @@ onBeforeUnmount(() => {
 
   <div class="topbar">
     <div class="brand">
-      SAMUDRA
-      <small>Unified Ocean Intelligence</small>
+      {{ t('app.brand') }}
+      <small>{{ t('app.tagline') }}</small>
     </div>
     <div class="ticker">
-      <span><span class="dot"></span>{{ stations.length }} stations live</span>
-      <span v-if="violationCount > 0" class="alert"
-        >{{ violationCount }} vessel{{ violationCount === 1 ? '' : 's' }} in
-        restricted waters</span
+      <span
+        ><span class="dot"></span
+        >{{ t('topbar.stationsLive', { count: stations.length }) }}</span
       >
+      <span v-if="violationCount > 0" class="alert">{{
+        t(
+          violationCount === 1
+            ? 'topbar.vesselRestrictedSingular'
+            : 'topbar.vesselsRestrictedPlural',
+          { count: violationCount }
+        )
+      }}</span>
       <span id="clock">{{ clock }}</span>
+      <LanguageToggle v-model="currentLanguage" />
     </div>
   </div>
 
@@ -787,7 +761,7 @@ onBeforeUnmount(() => {
         class="mic-btn"
         :class="micState"
         :disabled="micState === 'transcribing'"
-        :title="micErrorMsg || 'Ask by voice (Whisper speech-to-text)'"
+        :title="micErrorMsg || t('search.micTitle')"
         @mousedown.prevent="toggleMic"
       >
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
@@ -796,21 +770,21 @@ onBeforeUnmount(() => {
           <path d="M12 18v4M8 22h8" />
         </svg>
       </button>
-      <span class="hint">NLQ</span>
+      <span class="hint">{{ t('search.hint') }}</span>
     </div>
     <div class="search-results" :class="{ show: showResults }">
       <template v-if="!searchQuery">
         <div
           class="row"
-          v-for="q in suggestedQueries"
-          :key="q"
-          @mousedown="useSuggestion(q)"
+          v-for="key in suggestedQueryKeys"
+          :key="key"
+          @mousedown="useSuggestion(key)"
         >
-          {{ q }}<span>suggested</span>
+          {{ t(key) }}<span>{{ t('search.suggested') }}</span>
         </div>
       </template>
       <template v-else-if="nlqLoading">
-        <div class="row loading-row">translating query…</div>
+        <div class="row loading-row">{{ t('search.translating') }}</div>
       </template>
       <template v-else-if="nlqResult">
         <div class="trace">{{ nlqResult.trace }}</div>
@@ -828,7 +802,7 @@ onBeforeUnmount(() => {
           <span>{{ r.record_type }}</span>
         </div>
         <div v-if="!nlqResult.results.length" class="row no-match">
-          No matches — try a region, species, or advisory keyword
+          {{ t('search.noMatches') }}
         </div>
       </template>
     </div>

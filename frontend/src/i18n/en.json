@@ -1,0 +1,182 @@
+{
+  "app": {
+    "brand": "SAMUDRA",
+    "tagline": "Unified Ocean Intelligence"
+  },
+  "topbar": {
+    "stationsLive": "{count} stations live",
+    "vesselRestrictedSingular": "{count} vessel in restricted waters",
+    "vesselsRestrictedPlural": "{count} vessels in restricted waters"
+  },
+  "search": {
+    "placeholder": "Ask the map — e.g. 'vulnerable species near Kerala since March'",
+    "placeholderListening": "Listening… click the mic to stop",
+    "placeholderTranscribing": "Transcribing…",
+    "hint": "NLQ",
+    "micTitle": "Ask by voice (Whisper speech-to-text)",
+    "suggested": "suggested",
+    "translating": "translating query…",
+    "noMatches": "No matches — try a region, species, or advisory keyword",
+    "suggested1": "Vulnerable species near Kerala since March",
+    "suggested2": "SST anomalies near Goa and Chennai",
+    "suggested3": "Active fishing advisories",
+    "suggested4": "Coral bleaching risk in Lakshadweep",
+    "suggested5": "Newly detected eDNA species this month"
+  },
+  "modules": {
+    "ai": "AI Assistant",
+    "species": "Movement Trends",
+    "predict": "Predictive Analytics",
+    "analytics": "Analytics",
+    "glossary": "Data Glossary"
+  },
+  "panels": {
+    "station": "Station Detail",
+    "vessel": "Vessel Detail"
+  },
+  "layers": {
+    "buoy": "Ocean buoys",
+    "edna": "eDNA sites",
+    "advisory": "Fishing advisories",
+    "coral": "Coral bleaching risk",
+    "shift": "Predicted range shift",
+    "vessels": "Vessel tracking",
+    "pollution": "Pollution sources"
+  },
+  "layerPanel": {
+    "title": "Map Layers"
+  },
+  "kpis": {
+    "stationsTracked": "Stations tracked",
+    "vesselsRestricted": "Vessels in restricted waters",
+    "nonCompliantPlants": "Non-compliant plants"
+  },
+  "impact": {
+    "expandLabel": "Impact ›",
+    "collapseLabel": "×",
+    "title": "Coverage snapshot",
+    "coastline": "Coastline represented",
+    "coastlineValue": "~7,500 km",
+    "stationsTracked": "Stations tracked",
+    "statesCovered": "States / UTs covered",
+    "speciesIndexed": "Species indexed",
+    "note": "India's coastline length is a public figure; the rest updates live from this demo's own data."
+  },
+  "guidedIntro": {
+    "step1": "This map tracks real ocean stations, species sightings, and vessels along India's coast.",
+    "step2": "Toggle layers to see water temperature, coral bleaching risk, vessel tracking, and pollution sources.",
+    "step3": "Ask the AI assistant anything — it answers from real sensor and fisheries data, not guesses.",
+    "step4": "Scrub through time to see recorded history and short-term forecasts side by side.",
+    "skipTour": "Skip tour"
+  },
+  "glossaryPanel": {
+    "intro": "Plain-language notes on every metric and layer used in SAMUDRA — for a quick skim instead of hunting for the (i) icons.",
+    "whyItMatters": "Why it matters:"
+  },
+  "infoTip": {
+    "about": "About {title}"
+  },
+  "confidence": {
+    "low": "Low confidence",
+    "medium": "Medium confidence",
+    "high": "High confidence"
+  },
+  "station": {
+    "waterTemperature": "Water temperature: {value}°C",
+    "sstNote": "(SST)",
+    "saltiness": "Saltiness: {value} psu",
+    "salinityNote": "(salinity)",
+    "planktonLevel": "Plankton level: {value} mg/m³",
+    "chlorophyllNote": "(chlorophyll-a)",
+    "source": "Source: {source}",
+    "askAi": "Ask AI assistant about this site →"
+  },
+  "vessel": {
+    "violation": "VIOLATION",
+    "id": "ID {id}",
+    "type": "Type {type}",
+    "speed": "Speed {speed} kn",
+    "heading": "Heading {heading}°",
+    "violationNotePrefix": "Currently inside",
+    "violationNoteSuffix": "— a protected zone where fishing/extractive activity is restricted.",
+    "sourceNote": "Position updates from a simulated AIS-like track (see /api/vessels) — real tracking would come from Global Fishing Watch once an API key is configured."
+  },
+  "species": {
+    "colSpecies": "Species",
+    "colRegion": "Region",
+    "colStatus": "Status",
+    "statusLC": "Least Concern",
+    "statusNT": "Near Threatened",
+    "statusVU": "Vulnerable",
+    "statusEN": "Endangered",
+    "loadingTable": "Loading species table…",
+    "noPhoto": "No sourced photo yet — placeholder",
+    "movementTrendTitle": "Movement Trend — {name}",
+    "computingTrajectory": "Computing trajectory…",
+    "notEnoughData": "Not enough occurrence-year coverage to plot a movement trend for {name} yet.",
+    "drifted": "Drifted",
+    "yearsOfRecords": "years of OBIS/GBIF records",
+    "askAi": "Ask AI assistant about this species →"
+  },
+  "predictive": {
+    "sardineForecast": "Sardine Stock Forecast — Kerala",
+    "mackerelForecast": "Mackerel Stock Forecast — Tamil Nadu",
+    "loading": "Running forecasts — stock trend, bleaching buildup, range shift (each ends in a gpt-oss conclusion, ~5s)…",
+    "error": "Couldn't reach the SAMUDRA backend for predictions. Is it running on :8000?",
+    "whatIfTitle": "What-If Scenario Simulator",
+    "reset": "Reset",
+    "whatIfHint": "Drag a slider to re-run the real models below with a hypothetical input — every chart updates live, it never replaces the actual forecast shown at 0/×1.",
+    "sstAnomaly": "SST anomaly",
+    "fishingPressure": "Fishing pressure",
+    "chlorophyllDelta": "Chlorophyll-a delta",
+    "scenarioPill": "Simulated scenario — not a live forecast",
+    "updating": " · updating…",
+    "monthProjection": "{months}-month projection, 80% CI · trend {trend} t/month",
+    "compositeScore": "Composite score",
+    "countdownUntil": "until {label} at the current heat-stress trend",
+    "unitDay": "day",
+    "unitDays": "days",
+    "whatsDriving": "What's driving the score",
+    "rangeShiftTitle": "Range Shift Projection",
+    "observedProjection": "Observed + 5yr projection, mean occurrence latitude",
+    "coralBleachingTitle": "Coral Bleaching Buildup — {station}"
+  },
+  "analytics": {
+    "error": "Couldn't reach the SAMUDRA backend for analytics. Is it running on :8000?",
+    "sstVsCatchTitle": "SST vs. Catch Tonnage",
+    "monthlyPairs": "Monthly pairs per species/region, with Pearson's r",
+    "biodiversityTitle": "Biodiversity Index by Region",
+    "distinctSpecies": "Distinct species observed (survey + eDNA)",
+    "complianceTitle": "Treatment Plant Compliance Trend",
+    "pctCompliant": "% of monitored plants compliant, current snapshot {pct}%",
+    "vesselActivityTitle": "Vessel Activity Near MPAs",
+    "shareOfSampled": "Share of {n} sampled loop positions per vessel found inside each zone"
+  },
+  "timeline": {
+    "sstLabel": "How warm the water is",
+    "chlorophyllLabel": "How much plankton is in the water",
+    "play": "Play",
+    "pause": "Pause",
+    "dayOf": "Day {ordinal} of {total} — {kind}",
+    "recorded": "recorded",
+    "forecast": "forecast",
+    "daysAgo": "{n}d ago",
+    "today": "today",
+    "daysForecast": "+{n}d forecast"
+  },
+  "chat": {
+    "welcome": "Hi, I'm the SAMUDRA research assistant. Ask about a region, species, or advisory — I query ocean sensor, fisheries and eDNA records together.",
+    "preset1": "Why is sardine catch declining off Kerala?",
+    "preset2": "Show coral bleaching risk near Lakshadweep",
+    "preset3": "Which species were newly detected via eDNA this month?",
+    "placeholderTyping": "Type a question...",
+    "placeholderListening": "Listening… click the mic to stop",
+    "placeholderTranscribing": "Transcribing…",
+    "ask": "Ask",
+    "micTitle": "Ask by voice (Whisper speech-to-text)",
+    "sources": "Sources: {sources}",
+    "unreachable": "Couldn't reach the SAMUDRA backend / gpt-oss model. Make sure the backend is running (uv run main.py) and Ollama has gpt-oss:120b-cloud available.",
+    "micError": "Couldn't transcribe — is the backend running?",
+    "micDenied": "Microphone access denied or unavailable."
+  }
+}

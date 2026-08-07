@@ -1,20 +1,26 @@
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useI18n } from '../composables/useI18n';
 
 const props = defineProps<{ confidence: string }>();
+const { t } = useI18n();
 
 // Any confidence string the backend hasn't standardized to low/medium/high yet
 // (a few services still emit ad-hoc labels) degrades to the lowest fill rather
 // than guessing, so the meter never overstates certainty it can't back up.
-const LEVELS: Record<string, { fill: number; label: string }> = {
-  low: { fill: 1, label: 'Low confidence' },
-  medium: { fill: 2, label: 'Medium confidence' },
-  high: { fill: 3, label: 'High confidence' },
+const LEVELS: Record<string, { fill: number; labelKey: string }> = {
+  low: { fill: 1, labelKey: 'confidence.low' },
+  medium: { fill: 2, labelKey: 'confidence.medium' },
+  high: { fill: 3, labelKey: 'confidence.high' },
 };
 
-const level = computed(
-  () => LEVELS[props.confidence.toLowerCase()] ?? { fill: 1, label: props.confidence }
-);
+const level = computed(() => {
+  const found = LEVELS[props.confidence.toLowerCase()];
+  return {
+    fill: found?.fill ?? 1,
+    label: found ? t(found.labelKey) : props.confidence,
+  };
+});
 </script>
 
 <template>

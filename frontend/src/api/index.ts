@@ -60,14 +60,28 @@ export const postChat = (
 export const postNlq = (query: string) =>
   postJSON<NlqResponse>('/api/nlq', { query });
 
-export async function postSttTranscribe(audioBlob: Blob): Promise<string> {
+export async function postSttTranscribe(
+  audioBlob: Blob,
+  language = 'en'
+): Promise<string> {
   const form = new FormData();
   form.append('audio', audioBlob, 'query.webm');
+  form.append('language', language);
   const res = await fetch(`${API_BASE}/api/stt`, { method: 'POST', body: form });
   if (!res.ok) throw new Error(`POST /api/stt failed: ${res.status}`);
   const body = await res.json();
   return (body.data as { text: string }).text;
 }
+
+export const postTranslate = (
+  text: string,
+  targetLang: string,
+  sourceLang = 'auto'
+) =>
+  postJSON<{ translated_text: string; target_lang: string }>(
+    '/api/translate',
+    { text, target_lang: targetLang, source_lang: sourceLang }
+  ).then((r) => r.translated_text);
 
 // sstDelta/fishingPressure/chlorophyllDelta are the Phase 21 what-if scenario
 // overrides — omit (or pass the defaults) to get the real, non-hypothetical result.

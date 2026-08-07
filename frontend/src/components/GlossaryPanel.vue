@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { useGlossary } from '../composables/useGlossary';
+import { useI18n } from '../composables/useI18n';
 
 const { entries } = useGlossary();
+const { t } = useI18n();
 </script>
 
 <template>
   <div class="glossary-list">
-    <p class="intro">
-      Plain-language notes on every metric and layer used in SAMUDRA — for a
-      quick skim instead of hunting for the (i) icons.
-    </p>
+    <p class="intro">{{ t('glossaryPanel.intro') }}</p>
     <div class="entry" v-for="e in entries" :key="e.key">
       <div class="entry-title">{{ e.title }}</div>
       <p class="entry-body">{{ e.what_it_is }}</p>
-      <p class="entry-why"><b>Why it matters:</b> {{ e.why_it_matters }}</p>
+      <p class="entry-why">
+        <b>{{ t('glossaryPanel.whyItMatters') }}</b> {{ e.why_it_matters }}
+      </p>
     </div>
   </div>
 </template>

@@ -1,31 +1,21 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue';
 import gsap from 'gsap';
+import { useI18n } from '../composables/useI18n';
 
 const emit = defineEmits<{ (e: 'done'): void }>();
+const { t } = useI18n();
 
 interface Step {
   selector: string;
-  text: string;
+  textKey: string;
 }
 
 const STEPS: Step[] = [
-  {
-    selector: '#map',
-    text: "This map tracks real ocean stations, species sightings, and vessels along India's coast.",
-  },
-  {
-    selector: '.layer-panel',
-    text: 'Toggle layers to see water temperature, coral bleaching risk, vessel tracking, and pollution sources.',
-  },
-  {
-    selector: '.fab-stack .fab',
-    text: 'Ask the AI assistant anything — it answers from real sensor and fisheries data, not guesses.',
-  },
-  {
-    selector: '.scrubber-bar',
-    text: 'Scrub through time to see recorded history and short-term forecasts side by side.',
-  },
+  { selector: '#map', textKey: 'guidedIntro.step1' },
+  { selector: '.layer-panel', textKey: 'guidedIntro.step2' },
+  { selector: '.fab-stack .fab', textKey: 'guidedIntro.step3' },
+  { selector: '.scrubber-bar', textKey: 'guidedIntro.step4' },
 ];
 const STEP_DURATION_MS = 2500;
 
@@ -121,8 +111,8 @@ onBeforeUnmount(() => window.clearTimeout(advanceTimer));
     <div ref="spotlightEl" class="spotlight"></div>
     <div ref="captionEl" class="caption">
       <div class="caption-step">{{ stepIndex + 1 }} / {{ STEPS.length }}</div>
-      <p>{{ STEPS[stepIndex].text }}</p>
-      <button class="skip-btn" @click="finish">Skip tour</button>
+      <p>{{ t(STEPS[stepIndex].textKey) }}</p>
+      <button class="skip-btn" @click="finish">{{ t('guidedIntro.skipTour') }}</button>
     </div>
   </div>
 </template>

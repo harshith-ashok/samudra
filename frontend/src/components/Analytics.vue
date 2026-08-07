@@ -14,6 +14,9 @@ import type {
   VesselActivityResponse,
 } from '../api/types';
 import InfoTip from './InfoTip.vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 const catchVsSst = ref<CatchVsSstResponse | null>(null);
 const biodiversity = ref<BiodiversityIndexResponse | null>(null);
@@ -170,8 +173,7 @@ onMounted(async () => {
     renderCompliance();
     renderVesselActivity();
   } catch {
-    error.value =
-      "Couldn't reach the SAMUDRA backend for analytics. Is it running on :8000?";
+    error.value = t('analytics.error');
   }
 });
 
@@ -183,21 +185,21 @@ onBeforeUnmount(() => charts.forEach((c) => c.destroy()));
     <p v-if="error" class="error">{{ error }}</p>
     <template v-else>
       <div class="a-block" v-if="catchVsSst">
-        <h4>SST vs. Catch Tonnage<InfoTip glossary-key="stock_forecast" /></h4>
-        <div class="sub">
-          Monthly pairs per species/region, with Pearson's r
-        </div>
+        <h4>
+          {{ t('analytics.sstVsCatchTitle') }}<InfoTip glossary-key="stock_forecast" />
+        </h4>
+        <div class="sub">{{ t('analytics.monthlyPairs') }}</div>
         <canvas ref="scatterCanvas" height="160"></canvas>
         <p class="methodology">{{ catchVsSst.methodology }}</p>
       </div>
 
       <div class="a-block" v-if="biodiversity">
         <h4>
-          Biodiversity Index by Region<InfoTip
+          {{ t('analytics.biodiversityTitle') }}<InfoTip
             glossary-key="biodiversity_index"
           />
         </h4>
-        <div class="sub">Distinct species observed (survey + eDNA)</div>
+        <div class="sub">{{ t('analytics.distinctSpecies') }}</div>
         <canvas
           ref="biodiversityCanvas"
           :height="40 + biodiversity.regions.length * 22"
@@ -207,23 +209,29 @@ onBeforeUnmount(() => charts.forEach((c) => c.destroy()));
 
       <div class="a-block" v-if="compliance">
         <h4>
-          Treatment Plant Compliance Trend<InfoTip
+          {{ t('analytics.complianceTitle') }}<InfoTip
             glossary-key="treatment_compliance"
           />
         </h4>
         <div class="sub">
-          % of monitored plants compliant, current snapshot
-          {{ compliance.current_snapshot_pct }}%
+          {{
+            t('analytics.pctCompliant', { pct: compliance.current_snapshot_pct })
+          }}
         </div>
         <canvas ref="complianceCanvas" height="140"></canvas>
         <p class="methodology">{{ compliance.methodology }}</p>
       </div>
 
       <div class="a-block" v-if="vesselActivity">
-        <h4>Vessel Activity Near MPAs<InfoTip glossary-key="mpa" /></h4>
+        <h4>
+          {{ t('analytics.vesselActivityTitle') }}<InfoTip glossary-key="mpa" />
+        </h4>
         <div class="sub">
-          Share of {{ vesselActivity.samples_per_vessel_loop }} sampled loop
-          positions per vessel found inside each zone
+          {{
+            t('analytics.shareOfSampled', {
+              n: vesselActivity.samples_per_vessel_loop,
+            })
+          }}
         </div>
         <canvas ref="vesselCanvas" height="140"></canvas>
         <p class="methodology">{{ vesselActivity.methodology }}</p>

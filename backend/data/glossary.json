@@ -3,96 +3,112 @@
     "key": "sst",
     "title": "Sea Surface Temperature",
     "what_it_is": "How warm the top few meters of ocean water are, in °C. Measured by buoys and satellites.",
-    "why_it_matters": "Small rises (even 0.5–1°C) can drive coral bleaching, shift fish habitats, and hurt spawning."
+    "why_it_matters": "Small rises (even 0.5–1°C) can drive coral bleaching, shift fish habitats, and hurt spawning.",
+    "details": "SST = Sea Surface Temperature. Unit: °C. Stations in this build typically read 24–31°C along the Indian coast. No fixed alert threshold on its own — see DHW for how sustained SST above the local baseline turns into a bleaching-risk number."
   },
   {
     "key": "salinity",
     "title": "Salinity",
     "what_it_is": "How much salt is dissolved in the water, in practical salinity units (psu).",
-    "why_it_matters": "Freshwater runoff and evaporation change salinity, which affects which species can live where."
+    "why_it_matters": "Freshwater runoff and evaporation change salinity, which affects which species can live where.",
+    "details": "Unit: psu (practical salinity units), roughly grams of salt per kilogram of seawater. Open Indian Ocean water is typically 33–37 psu; readings drop near river mouths and during monsoon runoff, rise in enclosed, high-evaporation areas like parts of the Gulf of Kutch."
   },
   {
     "key": "chlorophyll",
     "title": "Chlorophyll-a",
     "what_it_is": "A proxy for how much microscopic plant life (phytoplankton) is in the water, in mg/m³.",
-    "why_it_matters": "Phytoplankton is the base of the marine food chain — a drop here often shows up as a fish-catch decline months later."
+    "why_it_matters": "Phytoplankton is the base of the marine food chain — a drop here often shows up as a fish-catch decline months later.",
+    "details": "Unit: mg/m³ (milligrams of chlorophyll pigment per cubic meter of water). Stations in this build typically read 0.3–1.1 mg/m³ — open-ocean-like, not a nutrient-rich bloom zone. Used two ways in this app: as a direct reading (station detail) and as a trend/drift over time (composite bleaching score's chlorophyll factor)."
   },
   {
     "key": "dhw",
     "title": "Degree Heating Weeks (DHW)",
     "what_it_is": "A running total of how far above normal, and for how long, sea temperature has been at a reef site.",
-    "why_it_matters": "It's the standard early-warning number for coral bleaching risk — the higher it climbs, the more likely bleaching becomes."
+    "why_it_matters": "It's the standard early-warning number for coral bleaching risk — the higher it climbs, the more likely bleaching becomes.",
+    "details": "DHW = Degree Heating Weeks. Unit: °C-weeks. Computed as the sum of weekly-mean SST exceeding (baseline + 1°C), over a trailing 12-week window — the same NOAA Coral Reef Watch convention. Thresholds used in this app: below 1 = No Stress, 1–3.9 = Bleaching Watch, 4–7.9 = Alert Level 1, 8+ = Alert Level 2 (significant bleaching and mortality risk)."
   },
   {
     "key": "edna_confidence",
     "title": "eDNA Confidence",
     "what_it_is": "How sure the lab's classification pipeline is that a genetic fragment found in a water sample belongs to a given species.",
-    "why_it_matters": "eDNA can detect species without ever seeing or catching them — useful for rare or shy species — but confidence tells you how much to trust a given match."
+    "why_it_matters": "eDNA can detect species without ever seeing or catching them — useful for rare or shy species — but confidence tells you how much to trust a given match.",
+    "details": "eDNA = environmental DNA. Scale: 0–1 (shown as a percentage, e.g. 0.91 = 91%), a per-detection match probability from the classification pipeline, not a measurement with physical units. Generally, below ~70% is treated as tentative and above ~90% as a strong match, though this build doesn't gate detections on a hard cutoff."
   },
   {
     "key": "conservation_status",
     "title": "Conservation Status",
     "what_it_is": "IUCN Red List category — Least Concern, Near Threatened, Vulnerable, Endangered.",
-    "why_it_matters": "It's the standard, internationally recognized measure of a species' extinction risk."
+    "why_it_matters": "It's the standard, internationally recognized measure of a species' extinction risk.",
+    "details": "IUCN = International Union for Conservation of Nature. Acronyms used in this app: LC = Least Concern, NT = Near Threatened, VU = Vulnerable, EN = Endangered — an ascending scale of extinction risk (there are two more severe IUCN categories, Critically Endangered and Extinct, not currently present in this build's species list)."
   },
   {
     "key": "advisory",
     "title": "Fishing / Conservation Advisory",
     "what_it_is": "An active recommendation to reduce fishing pressure or protect habitat in a specific region, issued when catch or sensor data crosses a concerning threshold.",
-    "why_it_matters": "Advisories are the actionable output of all this monitoring — the point where data turns into a recommendation someone can act on."
+    "why_it_matters": "Advisories are the actionable output of all this monitoring — the point where data turns into a recommendation someone can act on.",
+    "details": "Each advisory carries a severity of low, medium, or high, and a status of active or resolved. Severity here reflects this build's own read of the underlying trend, not a formal government classification."
   },
   {
     "key": "vessel_tracking",
     "title": "Vessel Tracking",
     "what_it_is": "Ship positions broadcast via AIS (Automatic Identification System) and cross-checked against protected-area boundaries.",
-    "why_it_matters": "It's how illegal fishing inside marine protected areas gets caught — a boat with no business being there, sitting still or trawling."
+    "why_it_matters": "It's how illegal fishing inside marine protected areas gets caught — a boat with no business being there, sitting still or trawling.",
+    "details": "AIS = Automatic Identification System, the real maritime transponder standard vessels broadcast position/speed/heading on. Speed is in knots (kn, nautical miles per hour), heading in compass degrees (0–360°, 0 = north). This build's fleet is simulated, not live AIS — see the vessel panel's source note."
   },
   {
     "key": "mpa",
     "title": "Marine Protected Area (MPA)",
     "what_it_is": "A defined ocean zone where fishing, dredging, or other extractive activity is restricted or banned by law.",
-    "why_it_matters": "MPAs only work if violations are actually detected — most rely on patrol boats or self-reporting, which is why vessel tracking matters."
+    "why_it_matters": "MPAs only work if violations are actually detected — most rely on patrol boats or self-reporting, which is why vessel tracking matters.",
+    "details": "MPA = Marine Protected Area. This build includes two real, named MPAs with hand-traced approximate boundaries: Gulf of Mannar Marine National Park and the Lakshadweep Coral Reef Protected Zone — see each zone's source note for why the polygons are approximate rather than official WDPA (World Database on Protected Areas) data."
   },
   {
     "key": "treatment_compliance",
     "title": "Treatment Plant Compliance",
     "what_it_is": "Whether a coastal sewage/effluent treatment plant meets discharge standards set by the Central Pollution Control Board (CPCB).",
-    "why_it_matters": "Non-compliant discharge is a direct, local driver of coastal water quality decline — often the real cause behind a biodiversity drop that looks climate-related at first glance."
+    "why_it_matters": "Non-compliant discharge is a direct, local driver of coastal water quality decline — often the real cause behind a biodiversity drop that looks climate-related at first glance.",
+    "details": "CPCB = Central Pollution Control Board (India's national regulator for this). Discharge volume is in MLD (million liters per day). Compliance is one of three states: compliant, non-compliant, or under-review."
   },
   {
     "key": "stock_forecast",
     "title": "Stock Forecast",
     "what_it_is": "A simple trend line fit to recent catch tonnage, projected 6 months ahead with a confidence band.",
-    "why_it_matters": "It flags direction and rough magnitude early — not a substitute for a full scientific stock assessment, but enough to justify a closer look."
+    "why_it_matters": "It flags direction and rough magnitude early — not a substitute for a full scientific stock assessment, but enough to justify a closer look.",
+    "details": "Catch is in tonnes. The shaded band is an 80% confidence interval (CI) — the model's honest range, not a guarantee; it widens the further out the forecast reaches. Trend is reported in tonnes/month."
   },
   {
     "key": "range_shift",
     "title": "Range Shift",
     "what_it_is": "A trend line of where a species has actually been observed (latitude) over time, from real occurrence records.",
-    "why_it_matters": "Species moving toward the poles over years is one of the clearest fingerprints of ocean warming on marine life."
+    "why_it_matters": "Species moving toward the poles over years is one of the clearest fingerprints of ocean warming on marine life.",
+    "details": "Unit: degrees latitude per year (positive = shifting north/poleward, negative = south/equatorward). 1 degree of latitude is about 111 km. Built from real OBIS/GBIF occurrence records within the Indian EEZ (Exclusive Economic Zone) bounding box."
   },
   {
     "key": "biodiversity_index",
     "title": "Biodiversity Index",
     "what_it_is": "A simple count of distinct species observed or detected (survey + eDNA) in a region.",
-    "why_it_matters": "A rough, comparable stand-in for ecosystem health across regions that otherwise have very different monitoring histories."
+    "why_it_matters": "A rough, comparable stand-in for ecosystem health across regions that otherwise have very different monitoring histories.",
+    "details": "Unit: a plain count of distinct scientific names, not normalized. This is deliberately simpler than a formal diversity index (e.g. Shannon-Wiener or Simpson's) — those need abundance data per species, which this build doesn't have."
   },
   {
     "key": "composite_bleaching_score",
     "title": "Composite Bleaching Score",
     "what_it_is": "A single 0-100 score combining heat stress buildup (60%), chlorophyll drift (25%), and historical bleaching frequency (15%) — weights are fixed and shown alongside the score, not hidden.",
-    "why_it_matters": "One number is easier to act on than three separate charts, but only if you can see what it's made of — the factor breakdown is what keeps it from being a black box."
+    "why_it_matters": "One number is easier to act on than three separate charts, but only if you can see what it's made of — the factor breakdown is what keeps it from being a black box.",
+    "details": "Scale: 0–100. Alert bands: below 15 = No Stress, 15–39 = Bleaching Watch, 40–64 = Alert Level 1, 65+ = Alert Level 2. Fixed weights: DHW 60%, chlorophyll-a drift 25%, historical bleaching frequency 15% (the last is illustrative, keyed to known global mass-bleaching years, not a measured per-reef log — see the factor breakdown's own note)."
   },
   {
     "key": "species_trajectory",
     "title": "Species Movement Trajectory",
     "what_it_is": "The year-by-year center point of where a species has been recorded, smoothed to reduce noise, with a short forecast continuation based on its recent direction of travel.",
-    "why_it_matters": "A moving centroid over real years of records is a more honest picture of range shift than a single trend line — you can see the actual path, not just its slope."
+    "why_it_matters": "A moving centroid over real years of records is a more honest picture of range shift than a single trend line — you can see the actual path, not just its slope.",
+    "details": "Drift distance is in km (kilometers), direction as a 16-point compass bearing (e.g. NNE, SSW). Forecast years are dashed on the map/chart to distinguish them from the solid, recorded-history path."
   },
   {
     "key": "whatif_scenario",
     "title": "What-If Scenario Simulator",
     "what_it_is": "Sliders for SST anomaly, fishing pressure, and chlorophyll delta that re-run the real stock/bleaching/range-shift models with a hypothetical input instead of the recorded one.",
-    "why_it_matters": "Turns a static chart into something you can operate — see how a warmer season or heavier fishing would change the outlook, clearly separate from the live forecast."
+    "why_it_matters": "Turns a static chart into something you can operate — see how a warmer season or heavier fishing would change the outlook, clearly separate from the live forecast.",
+    "details": "SST anomaly is in °C added on top of the recorded reading (range −2 to +3). Fishing pressure is a multiplier on the fitted trend's rate of change (range 0.5×–2×, 1× = no change). Chlorophyll-a delta is in mg/m³ (range −0.4 to +0.4)."
   }
 ]

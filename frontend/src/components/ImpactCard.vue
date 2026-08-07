@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from 'vue';
+import { useI18n } from '../composables/useI18n';
 
 defineProps<{
   stationCount: number;
@@ -7,29 +8,30 @@ defineProps<{
   speciesCount: number;
 }>();
 const collapsed = ref(false);
+const { t } = useI18n();
 </script>
 
 <template>
   <div class="impact-card" :class="{ collapsed }">
     <button class="collapse-btn" @click="collapsed = !collapsed">
-      {{ collapsed ? 'Impact ›' : '×' }}
+      {{ collapsed ? t('impact.expandLabel') : t('impact.collapseLabel') }}
     </button>
     <template v-if="!collapsed">
-      <h4>Coverage snapshot</h4>
-      <div class="row"><span>Coastline represented</span><b>~7,500 km</b></div>
+      <h4>{{ t('impact.title') }}</h4>
       <div class="row">
-        <span>Stations tracked</span><b>{{ stationCount }}</b>
+        <span>{{ t('impact.coastline') }}</span
+        ><b>{{ t('impact.coastlineValue') }}</b>
       </div>
       <div class="row">
-        <span>States / UTs covered</span><b>{{ stateCount }}</b>
+        <span>{{ t('impact.stationsTracked') }}</span><b>{{ stationCount }}</b>
       </div>
       <div class="row">
-        <span>Species indexed</span><b>{{ speciesCount }}</b>
+        <span>{{ t('impact.statesCovered') }}</span><b>{{ stateCount }}</b>
       </div>
-      <p class="note">
-        India's coastline length is a public figure; the rest updates live from
-        this demo's own data.
-      </p>
+      <div class="row">
+        <span>{{ t('impact.speciesIndexed') }}</span><b>{{ speciesCount }}</b>
+      </div>
+      <p class="note">{{ t('impact.note') }}</p>
     </template>
   </div>
 </template>

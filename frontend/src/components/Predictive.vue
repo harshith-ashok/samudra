@@ -5,19 +5,24 @@ import { getBleachingTrend, getRangeShift, getStockForecast } from '../api';
 import type { BleachingTrend, RangeShift, StockForecast } from '../api/types';
 import InfoTip from './InfoTip.vue';
 import ConfidenceMeter from './ConfidenceMeter.vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 // One entry per stock forecast shown — add another species/region pair here
 // and it gets its own chart automatically, no other code changes needed.
+// species/region are real query params sent to the API, not UI text — they
+// stay as-is regardless of display language; only labelKey is translated.
 const STOCK_CONFIGS = [
   {
     species: 'Sardinella longiceps',
     region: 'Kerala coast',
-    label: 'Sardine Stock Forecast — Kerala',
+    labelKey: 'predictive.sardineForecast',
   },
   {
     species: 'Rastrelliger kanagurta',
     region: 'Tamil Nadu coast',
-    label: 'Mackerel Stock Forecast — Tamil Nadu',
+    labelKey: 'predictive.mackerelForecast',
   },
 ];
 
@@ -314,8 +319,7 @@ async function loadAll(isInitial: boolean) {
   } catch (e) {
     if (isInitial) {
       loading.value = false;
-      error.value =
-        "Couldn't reach the SAMUDRA backend for predictions. Is it running on :8000?";
+      error.value = t('predictive.error');
     }
   }
 }
@@ -344,32 +348,28 @@ onBeforeUnmount(() => {
 
 <template>
   <div>
-    <p v-if="loading" class="loading">
-      Running forecasts — stock trend, bleaching buildup, range shift (each ends
-      in a gpt-oss conclusion, ~5s)…
-    </p>
+    <p v-if="loading" class="loading">{{ t('predictive.loading') }}</p>
     <p v-else-if="error" class="error">{{ error }}</p>
     <template v-else>
       <div class="whatif-block">
         <div class="whatif-head">
-          <h4>What-If Scenario Simulator<InfoTip glossary-key="whatif_scenario" /></h4>
+          <h4>
+            {{ t('predictive.whatIfTitle')
+            }}<InfoTip glossary-key="whatif_scenario" />
+          </h4>
           <button
             v-if="scenarioActive"
             class="reset-btn"
             type="button"
             @click="resetScenario"
           >
-            Reset
+            {{ t('predictive.reset') }}
           </button>
         </div>
-        <p class="whatif-hint">
-          Drag a slider to re-run the real models below with a hypothetical
-          input — every chart updates live, it never replaces the actual
-          forecast shown at 0/×1.
-        </p>
+        <p class="whatif-hint">{{ t('predictive.whatIfHint') }}</p>
         <div class="slider-row">
           <label
-            >SST anomaly
+            >{{ t('predictive.sstAnomaly') }}
             <b>{{ sstDelta > 0 ? '+' : '' }}{{ sstDelta.toFixed(1) }}°C</b></label
           >
           <input
@@ -382,7 +382,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="slider-row">
           <label
-            >Fishing pressure
+            >{{ t('predictive.fishingPressure') }}
             <b>×{{ fishingPressure.toFixed(1) }}</b></label
           >
           <input
@@ -395,7 +395,7 @@ onBeforeUnmount(() => {
         </div>
         <div class="slider-row">
           <label
-            >Chlorophyll-a delta
+            >{{ t('predictive.chlorophyllDelta') }}
             <b
               >{{ chlorophyllDelta > 0 ? '+' : ''
               }}{{ chlorophyllDelta.toFixed(2) }} mg/m³</b
@@ -414,19 +414,22 @@ onBeforeUnmount(() => {
       <template v-for="(stock, i) in stocks" :key="STOCK_CONFIGS[i].species">
         <div class="pred-block" v-if="stock">
           <h4>
-            {{ STOCK_CONFIGS[i].label
+            {{ t(STOCK_CONFIGS[i].labelKey)
             }}<InfoTip glossary-key="stock_forecast" />
           </h4>
           <div v-if="stock.scenario.active" class="scenario-pill">
-            Simulated scenario — not a live forecast{{
-              scenarioUpdating ? ' · updating…' : ''
-            }}
+            {{ t('predictive.scenarioPill')
+            }}{{ scenarioUpdating ? t('predictive.updating') : '' }}
           </div>
           <p class="conclusion">{{ stock.conclusion }}</p>
           <ConfidenceMeter :confidence="stock.confidence" />
           <div class="sub">
-            {{ stock.forecast.length }}-month projection, 80% CI · trend
-            {{ stock.trend_tonnage_per_month }} t/month
+            {{
+              t('predictive.monthProjection', {
+                months: stock.forecast.length,
+                trend: stock.trend_tonnage_per_month,
+              })
+            }}
           </div>
           <canvas
             :ref="(el) => setStockCanvas(el as Element | null, i)"
@@ -438,18 +441,17 @@ onBeforeUnmount(() => {
 
       <div class="pred-block" v-if="bleaching">
         <h4>
-          Coral Bleaching Buildup — {{ bleaching.station_name
+          {{ t('predictive.coralBleachingTitle', { station: bleaching.station_name })
           }}<InfoTip glossary-key="composite_bleaching_score" />
         </h4>
         <div v-if="bleaching.scenario.active" class="scenario-pill">
-          Simulated scenario — not a live forecast{{
-            scenarioUpdating ? ' · updating…' : ''
-          }}
+          {{ t('predictive.scenarioPill')
+          }}{{ scenarioUpdating ? t('predictive.updating') : '' }}
         </div>
         <p class="conclusion">{{ bleaching.conclusion }}</p>
         <ConfidenceMeter :confidence="bleaching.confidence" />
         <div class="sub">
-          Composite score
+          {{ t('predictive.compositeScore') }}
           <b class="coral-text">{{ bleaching.composite_score }}/100</b> ·
           {{ bleaching.alert_level }}
         </div>
@@ -458,13 +460,16 @@ onBeforeUnmount(() => {
             <span class="countdown-num">{{
               Math.round(bleaching.threshold_countdown.days!)
             }}</span>
-            <span class="countdown-unit">day{{
-              Math.round(bleaching.threshold_countdown.days!) === 1 ? '' : 's'
+            <span class="countdown-unit">{{
+              Math.round(bleaching.threshold_countdown.days!) === 1
+                ? t('predictive.unitDay')
+                : t('predictive.unitDays')
             }}</span>
-            <span class="countdown-caption"
-              >until {{ bleaching.threshold_countdown.next_alert_label }} at
-              the current heat-stress trend</span
-            >
+            <span class="countdown-caption">{{
+              t('predictive.countdownUntil', {
+                label: bleaching.threshold_countdown.next_alert_label ?? '',
+              })
+            }}</span>
           </template>
           <template v-else>
             <span class="countdown-caption">{{
@@ -474,24 +479,23 @@ onBeforeUnmount(() => {
         </div>
         <canvas ref="dhwCanvas" height="130"></canvas>
         <div class="sub factor-heading">
-          What's driving the score<InfoTip glossary-key="dhw" />
+          {{ t('predictive.whatsDriving') }}<InfoTip glossary-key="dhw" />
         </div>
         <canvas ref="factorCanvas" height="100"></canvas>
         <p class="methodology">{{ bleaching.methodology }}</p>
       </div>
 
       <div class="pred-block" v-if="rangeA && rangeB">
-        <h4>Range Shift Projection<InfoTip glossary-key="range_shift" /></h4>
+        <h4>
+          {{ t('predictive.rangeShiftTitle') }}<InfoTip glossary-key="range_shift" />
+        </h4>
         <div v-if="rangeA.scenario.active" class="scenario-pill">
-          Simulated scenario — not a live forecast{{
-            scenarioUpdating ? ' · updating…' : ''
-          }}
+          {{ t('predictive.scenarioPill')
+          }}{{ scenarioUpdating ? t('predictive.updating') : '' }}
         </div>
         <p class="conclusion">{{ rangeA.conclusion }}</p>
         <ConfidenceMeter :confidence="rangeA.confidence" />
-        <div class="sub">
-          Observed + 5yr projection, mean occurrence latitude
-        </div>
+        <div class="sub">{{ t('predictive.observedProjection') }}</div>
         <canvas ref="rangeCanvas" height="140"></canvas>
         <p class="methodology">{{ rangeA.methodology }}</p>
       </div>

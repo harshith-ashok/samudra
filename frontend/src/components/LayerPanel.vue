@@ -1,5 +1,8 @@
 <script setup lang="ts">
 import InfoTip from './InfoTip.vue';
+import { useI18n } from '../composables/useI18n';
+
+const { t } = useI18n();
 
 export interface LayerDef {
   key: string;
@@ -20,7 +23,7 @@ const emit = defineEmits<{ (e: 'toggle', key: string): void }>();
 
 <template>
   <div class="layer-panel">
-    <h4>Map Layers</h4>
+    <h4>{{ t('layerPanel.title') }}</h4>
     <label class="layer-row" v-for="layer in layers" :key="layer.key">
       <input
         type="checkbox"
