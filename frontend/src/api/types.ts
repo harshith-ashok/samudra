@@ -160,6 +160,11 @@ export interface SpeciesTrajectory {
   historical: SpeciesTrajectoryPoint[];
   smoothed: SpeciesTrajectoryPoint[];
   forecast: SpeciesTrajectoryPoint[];
+  // Each entry is one independently land-avoiding segment ([lat, lng][]),
+  // not one flat polyline — draw each segment as its own line. See
+  // services/trajectory.py's module docstring for why they're kept separate.
+  route_historical: [number, number][][];
+  route_forecast: [number, number][][];
   drift_km: number;
   direction: string;
   conclusion: string;

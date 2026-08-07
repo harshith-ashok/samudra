@@ -26,10 +26,29 @@ Getting every individual point into water isn't the whole fix, though: a
 straight line between two in-water points on opposite coasts (real records
 this sparse can put one year's centroid off Kerala and the next off Odisha)
 cuts straight across the Indian subcontinent. `route_historical` /
-`route_forecast` give the frontend an actual navigable sea route (via
-searoute, a real maritime routing network) for exactly the segments where a
-straight line would cross land, leaving short/already-clear segments as
-plain lines — no need to route a 5km hop.
+`route_forecast` give the frontend a real maritime route (searoute) for
+exactly the segments where a straight line would cross land, leaving short/
+already-clear segments as plain lines.
+
+Two things this got wrong before landing on the current shape, worth noting
+so they don't get "fixed" back in:
+  1. A hand-rolled alternative (recursively nudge a land-crossing segment's
+     midpoint to the nearest water pixel) was tried instead of searoute. It
+     doesn't respect line direction — the nearest water to an inland midpoint
+     is often not on any sensible path between the endpoints — so it neither
+     converged reliably nor ran fast (multi-second recursion blowup on the
+     harder segments). searoute, built for exactly this problem, just works.
+  2. searoute snaps its start/end to the nearest node in its own routing
+     network, not the exact query point — sometimes 100+km off near a sparse
+     part of the network (the India/Bangladesh maritime border, in
+     particular). Forcing continuity between consecutive per-year segments
+     (pinning searoute's output back onto the query point, or chaining from
+     wherever it actually ended) just relocated the land-crossing problem to
+     the seam between segments instead of fixing it. Each segment is
+     therefore returned independently rather than concatenated into one
+     polyline — see route_segments_between() — so the frontend draws each
+     hop as its own line; a small gap between two hops is just a gap, never
+     a fresh, unchecked line across land.
 """
 
 import math
@@ -116,11 +135,11 @@ def _segment_crosses_land(lat1: float, lng1: float, lat2: float, lng2: float, sa
 
 
 def route_between(p1: dict, p2: dict) -> list[list[float]]:
-    """A straight line if it wouldn't cross land, otherwise a real maritime
-    route (searoute, a navigable sea-route network — not just "not land").
-    Falls back to a straight line if searoute can't find a route (e.g. a
-    landlocked pair after all fallbacks failed) rather than dropping the
-    segment. searoute uses (lng, lat) GeoJSON order; the app uses (lat, lng)
+    """One independently-computed hop between two points: a straight line if
+    that's already clear of land, otherwise a real maritime route (searoute
+    — a navigable sea-route network, not just "technically not land"). Falls
+    back to a straight line if searoute raises rather than dropping the hop.
+    searoute uses (lng, lat) GeoJSON order; the app uses (lat, lng)
     throughout, so this is the one place that swaps."""
     if not _segment_crosses_land(p1["lat"], p1["lng"], p2["lat"], p2["lng"]):
         return [[p1["lat"], p1["lng"]], [p2["lat"], p2["lng"]]]
@@ -131,16 +150,14 @@ def route_between(p1: dict, p2: dict) -> list[list[float]]:
         return [[p1["lat"], p1["lng"]], [p2["lat"], p2["lng"]]]
 
 
-def _build_route(points: list[dict]) -> list[list[float]]:
-    """Concatenates route_between() for each consecutive pair into one
-    polyline, without duplicating the joint coordinate between segments."""
+def route_segments_between(points: list[dict]) -> list[list[list[float]]]:
+    """One route_between() result per consecutive pair, kept as separate
+    segments rather than concatenated into a single polyline — see the
+    module docstring for why forcing them to share an exact joint
+    reintroduces the exact problem this is meant to fix."""
     if len(points) < 2:
-        return [[p["lat"], p["lng"]] for p in points]
-    route: list[list[float]] = []
-    for i in range(len(points) - 1):
-        segment = route_between(points[i], points[i + 1])
-        route.extend(segment if not route else segment[1:])
-    return route
+        return []
+    return [route_between(points[i], points[i + 1]) for i in range(len(points) - 1)]
 
 
 def trajectory(query_species_id: str) -> dict:
@@ -223,8 +240,10 @@ def trajectory(query_species_id: str) -> dict:
 
     # For the map only — the chart plots smoothed/forecast against year directly,
     # where a land crossing isn't meaningful (it's a value axis, not geography).
-    route_historical = _build_route(smoothed)
-    route_forecast = _build_route([smoothed[-1], *forecast])
+    # Each is a list of independently-routed segments, not one flat polyline
+    # — see route_segments_between().
+    route_historical = route_segments_between(smoothed)
+    route_forecast = route_segments_between([smoothed[-1], *forecast])
 
     drift_km = round(_haversine_km(smoothed[0]["lat"], smoothed[0]["lng"], smoothed[-1]["lat"], smoothed[-1]["lng"]), 1)
     direction = _bearing_label(smoothed[0]["lat"], smoothed[0]["lng"], smoothed[-1]["lat"], smoothed[-1]["lng"])
@@ -261,8 +280,8 @@ def trajectory(query_species_id: str) -> dict:
             f"smoothing (alpha={SMOOTHING_ALPHA}) to reduce year-to-year sampling noise, then extrapolated "
             f"{FORECAST_YEARS} years forward using the velocity between the last two smoothed points. Binned by "
             "year, not month — the source records only carry year-level dates. route_historical/route_forecast "
-            "follow a real maritime route (searoute) instead of a straight line wherever a straight line between "
-            "two sparse yearly centroids would otherwise cut across land."
+            "bend around land wherever a straight line between two sparse yearly centroids would otherwise cut "
+            "across it, rather than drawing the direct line."
             f"{correction_note}"
         ),
         "source": "OBIS/GBIF real occurrence records",

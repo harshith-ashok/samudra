@@ -482,15 +482,17 @@ function onSpeciesTrajectory(t: SpeciesTrajectory | null) {
   trajectoryLayer.clearLayers();
   if (!t) return;
 
-  const historicalPath: [number, number][] = t.smoothed.map((p) => [
-    p.lat,
-    p.lng,
-  ]);
-  L.polyline(historicalPath, {
-    color: '#128F82',
-    weight: 2.5,
-    opacity: 0.85,
-  }).addTo(trajectoryLayer);
+  // Each route segment is independently land-avoiding and drawn on its own
+  // (see api/types.ts SpeciesTrajectory) — concatenating them into one
+  // polyline would draw an unchecked straight line across any gap between
+  // two segments' endpoints, which is exactly what this was built to avoid.
+  t.route_historical.forEach((segment) => {
+    L.polyline(segment, {
+      color: '#128F82',
+      weight: 2.5,
+      opacity: 0.85,
+    }).addTo(trajectoryLayer!);
+  });
   t.smoothed.forEach((p, i) => {
     const isLatest = i === t.smoothed.length - 1;
     L.circleMarker([p.lat, p.lng], {
@@ -504,17 +506,14 @@ function onSpeciesTrajectory(t: SpeciesTrajectory | null) {
       .addTo(trajectoryLayer!);
   });
 
-  const last = t.smoothed[t.smoothed.length - 1];
-  const forecastPath: [number, number][] = [
-    [last.lat, last.lng],
-    ...t.forecast.map((p): [number, number] => [p.lat, p.lng]),
-  ];
-  L.polyline(forecastPath, {
-    color: '#B9800F',
-    weight: 2,
-    dashArray: '5,6',
-    opacity: 0.8,
-  }).addTo(trajectoryLayer);
+  t.route_forecast.forEach((segment) => {
+    L.polyline(segment, {
+      color: '#B9800F',
+      weight: 2,
+      dashArray: '5,6',
+      opacity: 0.8,
+    }).addTo(trajectoryLayer!);
+  });
   t.forecast.forEach((p) => {
     L.circleMarker([p.lat, p.lng], {
       radius: 3.5,
@@ -530,6 +529,7 @@ function onSpeciesTrajectory(t: SpeciesTrajectory | null) {
       .addTo(trajectoryLayer!);
   });
 
+  const last = t.smoothed[t.smoothed.length - 1];
   map.flyTo([last.lat, last.lng], Math.max(map.getZoom(), 6), {
     duration: 0.8,
   });
