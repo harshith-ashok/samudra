@@ -1,12 +1,15 @@
 <script setup lang="ts">
-import { useGlossary } from "../composables/useGlossary";
+import { useGlossary } from '../composables/useGlossary';
 
 const { entries } = useGlossary();
 </script>
 
 <template>
   <div class="glossary-list">
-    <p class="intro">Plain-language notes on every metric and layer used in SAMUDRA — for a quick skim instead of hunting for the (i) icons.</p>
+    <p class="intro">
+      Plain-language notes on every metric and layer used in SAMUDRA — for a
+      quick skim instead of hunting for the (i) icons.
+    </p>
     <div class="entry" v-for="e in entries" :key="e.key">
       <div class="entry-title">{{ e.title }}</div>
       <p class="entry-body">{{ e.what_it_is }}</p>

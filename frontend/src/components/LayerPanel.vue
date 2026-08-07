@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import InfoTip from "./InfoTip.vue";
+import InfoTip from './InfoTip.vue';
 
 export interface LayerDef {
   key: string;
@@ -15,21 +15,28 @@ export interface KpiDef {
 }
 
 defineProps<{ layers: LayerDef[]; kpis: KpiDef[] }>();
-const emit = defineEmits<{ (e: "toggle", key: string): void }>();
+const emit = defineEmits<{ (e: 'toggle', key: string): void }>();
 </script>
 
 <template>
   <div class="layer-panel">
     <h4>Map Layers</h4>
     <label class="layer-row" v-for="layer in layers" :key="layer.key">
-      <input type="checkbox" :checked="layer.visible" @change="emit('toggle', layer.key)" />
+      <input
+        type="checkbox"
+        :checked="layer.visible"
+        @change="emit('toggle', layer.key)"
+      />
       <i :style="{ background: layer.color }"></i>
       {{ layer.label }}
       <InfoTip v-if="layer.glossaryKey" :glossary-key="layer.glossaryKey" />
     </label>
     <div class="divider"></div>
     <div class="kpi-mini" v-for="kpi in kpis" :key="kpi.label">
-      <span>{{ kpi.label }}<InfoTip v-if="kpi.glossaryKey" :glossary-key="kpi.glossaryKey" /></span>
+      <span
+        >{{ kpi.label
+        }}<InfoTip v-if="kpi.glossaryKey" :glossary-key="kpi.glossaryKey"
+      /></span>
       <b>{{ kpi.value }}</b>
     </div>
   </div>

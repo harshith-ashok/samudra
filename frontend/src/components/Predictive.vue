@@ -1,15 +1,23 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
-import Chart from "chart.js/auto";
-import { getBleachingTrend, getRangeShift, getStockForecast } from "../api";
-import type { BleachingTrend, RangeShift, StockForecast } from "../api/types";
-import InfoTip from "./InfoTip.vue";
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+import Chart from 'chart.js/auto';
+import { getBleachingTrend, getRangeShift, getStockForecast } from '../api';
+import type { BleachingTrend, RangeShift, StockForecast } from '../api/types';
+import InfoTip from './InfoTip.vue';
 
 // One entry per stock forecast shown — add another species/region pair here
 // and it gets its own chart automatically, no other code changes needed.
 const STOCK_CONFIGS = [
-  { species: "Sardinella longiceps", region: "Kerala coast", label: "Sardine Stock Forecast — Kerala" },
-  { species: "Rastrelliger kanagurta", region: "Tamil Nadu coast", label: "Mackerel Stock Forecast — Tamil Nadu" },
+  {
+    species: 'Sardinella longiceps',
+    region: 'Kerala coast',
+    label: 'Sardine Stock Forecast — Kerala',
+  },
+  {
+    species: 'Rastrelliger kanagurta',
+    region: 'Tamil Nadu coast',
+    label: 'Mackerel Stock Forecast — Tamil Nadu',
+  },
 ];
 
 const stocks = ref<(StockForecast | null)[]>(STOCK_CONFIGS.map(() => null));
@@ -32,11 +40,11 @@ let dhwChart: Chart | null = null;
 let factorChart: Chart | null = null;
 let rangeChartInst: Chart | null = null;
 
-const grid = "rgba(15,38,32,0.06)";
+const grid = 'rgba(15,38,32,0.06)';
 const factorColors: Record<string, string> = {
-  dhw: "#D6512D",
-  chlorophyll_trend: "#2E9E5B",
-  historical_frequency: "#B9800F",
+  dhw: '#D6512D',
+  chlorophyll_trend: '#2E9E5B',
+  historical_frequency: '#B9800F',
 };
 
 function renderStockChart(i: number) {
@@ -44,27 +52,52 @@ function renderStockChart(i: number) {
   const canvas = stockCanvases[i];
   if (!stock || !canvas) return;
   const historyN = stock.history.slice(-6);
-  const labels = [...historyN.map((h) => h.date.slice(0, 7)), ...stock.forecast.map((f) => `+${f.month_offset}`)];
-  const lowData = [...historyN.map(() => null), ...stock.forecast.map((f) => f.low_80ci)];
-  const highData = [...historyN.map(() => null), ...stock.forecast.map((f) => f.high_80ci)];
-  const meanData = [...historyN.map((h) => h.tonnage), ...stock.forecast.map((f) => f.tonnage)];
+  const labels = [
+    ...historyN.map((h) => h.date.slice(0, 7)),
+    ...stock.forecast.map((f) => `+${f.month_offset}`),
+  ];
+  const lowData = [
+    ...historyN.map(() => null),
+    ...stock.forecast.map((f) => f.low_80ci),
+  ];
+  const highData = [
+    ...historyN.map(() => null),
+    ...stock.forecast.map((f) => f.high_80ci),
+  ];
+  const meanData = [
+    ...historyN.map((h) => h.tonnage),
+    ...stock.forecast.map((f) => f.tonnage),
+  ];
 
   stockCharts[i]?.destroy();
   stockCharts[i] = new Chart(canvas, {
-    type: "line",
+    type: 'line',
     data: {
       labels,
       datasets: [
-        { label: "Low 80% CI", data: lowData, borderColor: "transparent", pointRadius: 0, fill: false },
         {
-          label: "High 80% CI",
-          data: highData,
-          borderColor: "transparent",
-          backgroundColor: "rgba(18,143,130,0.12)",
+          label: 'Low 80% CI',
+          data: lowData,
+          borderColor: 'transparent',
           pointRadius: 0,
-          fill: "-1",
+          fill: false,
         },
-        { label: "Tonnage", data: meanData, borderColor: "#128F82", tension: 0.4, borderWidth: 2.5, pointRadius: 2 },
+        {
+          label: 'High 80% CI',
+          data: highData,
+          borderColor: 'transparent',
+          backgroundColor: 'rgba(18,143,130,0.12)',
+          pointRadius: 0,
+          fill: '-1',
+        },
+        {
+          label: 'Tonnage',
+          data: meanData,
+          borderColor: '#128F82',
+          tension: 0.4,
+          borderWidth: 2.5,
+          pointRadius: 2,
+        },
       ],
     },
     options: {
@@ -79,32 +112,32 @@ function renderDhwChart() {
   const weeks = bleaching.value.weekly_series;
   dhwChart?.destroy();
   dhwChart = new Chart(dhwCanvas.value, {
-    type: "line",
+    type: 'line',
     data: {
       labels: weeks.map((w) => `wk ${w.week}`),
       datasets: [
         {
-          label: "Cumulative DHW",
+          label: 'Cumulative DHW',
           data: weeks.map((w) => w.cumulative_dhw),
-          borderColor: "#D6512D",
-          backgroundColor: "rgba(214,81,45,0.12)",
+          borderColor: '#D6512D',
+          backgroundColor: 'rgba(214,81,45,0.12)',
           tension: 0.3,
           borderWidth: 2.5,
           pointRadius: 2,
           fill: true,
         },
         {
-          label: "Alert Level 1 (4)",
+          label: 'Alert Level 1 (4)',
           data: weeks.map(() => 4),
-          borderColor: "#B9800F",
+          borderColor: '#B9800F',
           borderDash: [5, 5],
           borderWidth: 1.3,
           pointRadius: 0,
         },
         {
-          label: "Alert Level 2 (8)",
+          label: 'Alert Level 2 (8)',
           data: weeks.map(() => 8),
-          borderColor: "#D6512D",
+          borderColor: '#D6512D',
           borderDash: [5, 5],
           borderWidth: 1.3,
           pointRadius: 0,
@@ -112,8 +145,16 @@ function renderDhwChart() {
       ],
     },
     options: {
-      plugins: { legend: { position: "bottom", labels: { boxWidth: 8, font: { size: 9 } } } },
-      scales: { x: { grid: { color: grid } }, y: { grid: { color: grid }, title: { display: true, text: "DHW" } } },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { boxWidth: 8, font: { size: 9 } },
+        },
+      },
+      scales: {
+        x: { grid: { color: grid } },
+        y: { grid: { color: grid }, title: { display: true, text: 'DHW' } },
+      },
     },
   });
 }
@@ -123,23 +164,28 @@ function renderFactorChart() {
   const factors = bleaching.value.factors;
   factorChart?.destroy();
   factorChart = new Chart(factorCanvas.value, {
-    type: "bar",
+    type: 'bar',
     data: {
       labels: factors.map((f) => `${f.label} (${Math.round(f.weight * 100)}%)`),
       datasets: [
         {
-          label: "Contribution to composite score",
+          label: 'Contribution to composite score',
           data: factors.map((f) => f.contribution_pct),
-          backgroundColor: factors.map((f) => factorColors[f.factor] ?? "#128F82"),
+          backgroundColor: factors.map(
+            (f) => factorColors[f.factor] ?? '#128F82'
+          ),
           borderRadius: 4,
         },
       ],
     },
     options: {
-      indexAxis: "y",
+      indexAxis: 'y',
       plugins: { legend: { display: false } },
       scales: {
-        x: { grid: { color: grid }, title: { display: true, text: "points of 100" } },
+        x: {
+          grid: { color: grid },
+          title: { display: true, text: 'points of 100' },
+        },
         y: { grid: { display: false }, ticks: { font: { size: 10 } } },
       },
     },
@@ -152,30 +198,60 @@ function renderRangeChart() {
     new Set([
       ...rangeA.value.observed.map((p) => p.year),
       ...rangeA.value.projection.map((p) => p.year),
-    ]),
+    ])
   ).sort();
 
   function seriesFor(rs: RangeShift) {
-    const observedByYear = new Map(rs.observed.map((p) => [p.year, p.mean_lat]));
-    const projectedByYear = new Map(rs.projection.map((p) => [p.year, p.projected_mean_lat]));
-    return years.map((y) => observedByYear.get(y) ?? projectedByYear.get(y) ?? null);
+    const observedByYear = new Map(
+      rs.observed.map((p) => [p.year, p.mean_lat])
+    );
+    const projectedByYear = new Map(
+      rs.projection.map((p) => [p.year, p.projected_mean_lat])
+    );
+    return years.map(
+      (y) => observedByYear.get(y) ?? projectedByYear.get(y) ?? null
+    );
   }
 
   rangeChartInst?.destroy();
   rangeChartInst = new Chart(rangeCanvas.value, {
-    type: "line",
+    type: 'line',
     data: {
       labels: years,
       datasets: [
-        { label: rangeA.value.species, data: seriesFor(rangeA.value), borderColor: "#128F82", tension: 0.3, pointRadius: 2, borderWidth: 2, spanGaps: true },
-        { label: rangeB.value.species, data: seriesFor(rangeB.value), borderColor: "#B9800F", tension: 0.3, pointRadius: 2, borderWidth: 2, spanGaps: true },
+        {
+          label: rangeA.value.species,
+          data: seriesFor(rangeA.value),
+          borderColor: '#128F82',
+          tension: 0.3,
+          pointRadius: 2,
+          borderWidth: 2,
+          spanGaps: true,
+        },
+        {
+          label: rangeB.value.species,
+          data: seriesFor(rangeB.value),
+          borderColor: '#B9800F',
+          tension: 0.3,
+          pointRadius: 2,
+          borderWidth: 2,
+          spanGaps: true,
+        },
       ],
     },
     options: {
-      plugins: { legend: { position: "bottom", labels: { boxWidth: 8, font: { size: 9 } } } },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { boxWidth: 8, font: { size: 9 } },
+        },
+      },
       scales: {
         x: { grid: { color: grid } },
-        y: { grid: { color: grid }, title: { display: true, text: "mean occurrence latitude" } },
+        y: {
+          grid: { color: grid },
+          title: { display: true, text: 'mean occurrence latitude' },
+        },
       },
     },
   });
@@ -183,12 +259,15 @@ function renderRangeChart() {
 
 onMounted(async () => {
   try {
-    [stocks.value, bleaching.value, rangeA.value, rangeB.value] = await Promise.all([
-      Promise.all(STOCK_CONFIGS.map((c) => getStockForecast(c.species, c.region))),
-      getBleachingTrend("lakshadweep"),
-      getRangeShift("Thunnus albacares"),
-      getRangeShift("Rastrelliger kanagurta"),
-    ]);
+    [stocks.value, bleaching.value, rangeA.value, rangeB.value] =
+      await Promise.all([
+        Promise.all(
+          STOCK_CONFIGS.map((c) => getStockForecast(c.species, c.region))
+        ),
+        getBleachingTrend('lakshadweep'),
+        getRangeShift('Thunnus albacares'),
+        getRangeShift('Rastrelliger kanagurta'),
+      ]);
     loading.value = false;
     await nextTick(); // let the pred-block canvases mount now that loading is false
     stocks.value.forEach((_, i) => renderStockChart(i));
@@ -197,7 +276,8 @@ onMounted(async () => {
     renderRangeChart();
   } catch (e) {
     loading.value = false;
-    error.value = "Couldn't reach the SAMUDRA backend for predictions. Is it running on :8000?";
+    error.value =
+      "Couldn't reach the SAMUDRA backend for predictions. Is it running on :8000?";
   }
 });
 
@@ -211,27 +291,43 @@ onBeforeUnmount(() => {
 
 <template>
   <div>
-    <p v-if="loading" class="loading">Running forecasts — stock trend, bleaching buildup, range shift (each ends in a gpt-oss conclusion, ~5s)…</p>
+    <p v-if="loading" class="loading">
+      Running forecasts — stock trend, bleaching buildup, range shift (each ends
+      in a gpt-oss conclusion, ~5s)…
+    </p>
     <p v-else-if="error" class="error">{{ error }}</p>
     <template v-else>
       <template v-for="(stock, i) in stocks" :key="STOCK_CONFIGS[i].species">
         <div class="pred-block" v-if="stock">
-          <h4>{{ STOCK_CONFIGS[i].label }}<InfoTip glossary-key="stock_forecast" /></h4>
+          <h4>
+            {{ STOCK_CONFIGS[i].label
+            }}<InfoTip glossary-key="stock_forecast" />
+          </h4>
           <p class="conclusion">{{ stock.conclusion }}</p>
-          <div class="sub">{{ stock.forecast.length }}-month projection, 80% CI · trend {{ stock.trend_tonnage_per_month }} t/month</div>
+          <div class="sub">
+            {{ stock.forecast.length }}-month projection, 80% CI · trend
+            {{ stock.trend_tonnage_per_month }} t/month
+          </div>
           <canvas :ref="(el) => setStockCanvas(el, i)" height="140"></canvas>
           <p class="methodology">{{ stock.methodology }}</p>
         </div>
       </template>
 
       <div class="pred-block" v-if="bleaching">
-        <h4>Coral Bleaching Buildup — {{ bleaching.station_name }}<InfoTip glossary-key="composite_bleaching_score" /></h4>
+        <h4>
+          Coral Bleaching Buildup — {{ bleaching.station_name
+          }}<InfoTip glossary-key="composite_bleaching_score" />
+        </h4>
         <p class="conclusion">{{ bleaching.conclusion }}</p>
         <div class="sub">
-          Composite score <b class="coral-text">{{ bleaching.composite_score }}/100</b> · {{ bleaching.alert_level }}
+          Composite score
+          <b class="coral-text">{{ bleaching.composite_score }}/100</b> ·
+          {{ bleaching.alert_level }}
         </div>
         <canvas ref="dhwCanvas" height="130"></canvas>
-        <div class="sub factor-heading">What's driving the score<InfoTip glossary-key="dhw" /></div>
+        <div class="sub factor-heading">
+          What's driving the score<InfoTip glossary-key="dhw" />
+        </div>
         <canvas ref="factorCanvas" height="100"></canvas>
         <p class="methodology">{{ bleaching.methodology }}</p>
       </div>
@@ -239,7 +335,9 @@ onBeforeUnmount(() => {
       <div class="pred-block" v-if="rangeA && rangeB">
         <h4>Range Shift Projection<InfoTip glossary-key="range_shift" /></h4>
         <p class="conclusion">{{ rangeA.conclusion }}</p>
-        <div class="sub">Observed + 5yr projection, mean occurrence latitude</div>
+        <div class="sub">
+          Observed + 5yr projection, mean occurrence latitude
+        </div>
         <canvas ref="rangeCanvas" height="140"></canvas>
         <p class="methodology">{{ rangeA.methodology }}</p>
       </div>

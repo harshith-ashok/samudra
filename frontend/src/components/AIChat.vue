@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { nextTick, ref } from "vue";
-import { postChat } from "../api";
-import type { StationDetail } from "../api/types";
+import { nextTick, ref } from 'vue';
+import { postChat } from '../api';
+import type { StationDetail } from '../api/types';
 
 const props = defineProps<{ stationContext: StationDetail | null }>();
 
 interface LogEntry {
-  role: "user" | "ai";
+  role: 'user' | 'ai';
   text: string;
   sources?: string[];
   pending?: boolean;
@@ -14,17 +14,17 @@ interface LogEntry {
 
 const log = ref<LogEntry[]>([
   {
-    role: "ai",
+    role: 'ai',
     text: "Hi, I'm the SAMUDRA research assistant. Ask about a region, species, or advisory — I query ocean sensor, fisheries and eDNA records together.",
   },
 ]);
-const input = ref("");
+const input = ref('');
 const logEl = ref<HTMLDivElement | null>(null);
 
 const presets = [
-  "Why is sardine catch declining off Kerala?",
-  "Show coral bleaching risk near Lakshadweep",
-  "Which species were newly detected via eDNA this month?",
+  'Why is sardine catch declining off Kerala?',
+  'Show coral bleaching risk near Lakshadweep',
+  'Which species were newly detected via eDNA this month?',
 ];
 
 async function scrollToBottom() {
@@ -35,9 +35,9 @@ async function scrollToBottom() {
 async function send(text?: string) {
   const message = (text ?? input.value).trim();
   if (!message) return;
-  log.value.push({ role: "user", text: message });
-  input.value = "";
-  log.value.push({ role: "ai", text: "···", pending: true });
+  log.value.push({ role: 'user', text: message });
+  input.value = '';
+  log.value.push({ role: 'ai', text: '···', pending: true });
   const pendingIndex = log.value.length - 1;
   await scrollToBottom();
 
@@ -68,13 +68,21 @@ defineExpose({ send });
         <span v-if="entry.pending">···</span>
         <template v-else>
           {{ entry.text }}
-          <div v-if="entry.sources?.length" class="cite">Sources: {{ entry.sources.join(" · ") }}</div>
+          <div v-if="entry.sources?.length" class="cite">
+            Sources: {{ entry.sources.join(' · ') }}
+          </div>
         </template>
       </div>
     </div>
-    <div class="chip" v-for="q in presets" :key="q" @click="askPreset(q)">{{ q }}</div>
+    <div class="chip" v-for="q in presets" :key="q" @click="askPreset(q)">
+      {{ q }}
+    </div>
     <div class="chat-input-row">
-      <input v-model="input" placeholder="Type a question..." @keydown.enter="send()" />
+      <input
+        v-model="input"
+        placeholder="Type a question..."
+        @keydown.enter="send()"
+      />
       <button @click="send()">Ask</button>
     </div>
   </div>

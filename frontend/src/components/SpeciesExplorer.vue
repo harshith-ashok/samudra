@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref } from "vue";
-import Chart from "chart.js/auto";
-import { getSpecies, getSpeciesTrajectory } from "../api";
-import type { Species, SpeciesTrajectory } from "../api/types";
-import { speciesSlug } from "../utils/speciesId";
-import InfoTip from "./InfoTip.vue";
+import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue';
+import Chart from 'chart.js/auto';
+import { getSpecies, getSpeciesTrajectory } from '../api';
+import type { Species, SpeciesTrajectory } from '../api/types';
+import { speciesSlug } from '../utils/speciesId';
+import InfoTip from './InfoTip.vue';
 
-const emit = defineEmits<{ (e: "trajectory", payload: SpeciesTrajectory | null): void }>();
+const emit = defineEmits<{
+  (e: 'trajectory', payload: SpeciesTrajectory | null): void;
+}>();
 
 const species = ref<Species[]>([]);
 const hovered = ref<Species | null>(null);
@@ -20,33 +22,80 @@ const trajectoryLoading = ref(false);
 const trajectoryCanvas = ref<HTMLCanvasElement | null>(null);
 let trajectoryChart: Chart | null = null;
 
-const statusLabel: Record<string, string> = { LC: "Least Concern", NT: "Near Threatened", VU: "Vulnerable", EN: "Endangered" };
-const statusClass: Record<string, string> = { LC: "lc", NT: "nt", VU: "vu", EN: "vu" };
+const statusLabel: Record<string, string> = {
+  LC: 'Least Concern',
+  NT: 'Near Threatened',
+  VU: 'Vulnerable',
+  EN: 'Endangered',
+};
+const statusClass: Record<string, string> = {
+  LC: 'lc',
+  NT: 'nt',
+  VU: 'vu',
+  EN: 'vu',
+};
 
 function renderTrajectoryChart() {
   if (!trajectory.value || !trajectoryCanvas.value) return;
   const t = trajectory.value;
-  const years = [...t.smoothed.map((p) => p.year), ...t.forecast.map((p) => p.year)];
-  const historicalLat = [...t.smoothed.map((p) => p.lat), ...t.forecast.map(() => null)];
-  const forecastLat = [...t.smoothed.map(() => null), ...t.forecast.map((p) => p.lat)];
+  const years = [
+    ...t.smoothed.map((p) => p.year),
+    ...t.forecast.map((p) => p.year),
+  ];
+  const historicalLat = [
+    ...t.smoothed.map((p) => p.lat),
+    ...t.forecast.map(() => null),
+  ];
+  const forecastLat = [
+    ...t.smoothed.map(() => null),
+    ...t.forecast.map((p) => p.lat),
+  ];
   // bridge the gap so the dashed forecast segment visually connects to the last solid point
-  if (forecastLat.length > t.smoothed.length) forecastLat[t.smoothed.length - 1] = t.smoothed[t.smoothed.length - 1].lat;
+  if (forecastLat.length > t.smoothed.length)
+    forecastLat[t.smoothed.length - 1] = t.smoothed[t.smoothed.length - 1].lat;
 
   trajectoryChart?.destroy();
   trajectoryChart = new Chart(trajectoryCanvas.value, {
-    type: "line",
+    type: 'line',
     data: {
       labels: years,
       datasets: [
-        { label: "Observed (smoothed)", data: historicalLat, borderColor: "#128F82", backgroundColor: "#128F82", tension: 0.3, pointRadius: 2, borderWidth: 2.5, spanGaps: true },
-        { label: "Forecast continuation", data: forecastLat, borderColor: "#B9800F", backgroundColor: "#B9800F", borderDash: [5, 5], tension: 0.3, pointRadius: 2, borderWidth: 2, spanGaps: true },
+        {
+          label: 'Observed (smoothed)',
+          data: historicalLat,
+          borderColor: '#128F82',
+          backgroundColor: '#128F82',
+          tension: 0.3,
+          pointRadius: 2,
+          borderWidth: 2.5,
+          spanGaps: true,
+        },
+        {
+          label: 'Forecast continuation',
+          data: forecastLat,
+          borderColor: '#B9800F',
+          backgroundColor: '#B9800F',
+          borderDash: [5, 5],
+          tension: 0.3,
+          pointRadius: 2,
+          borderWidth: 2,
+          spanGaps: true,
+        },
       ],
     },
     options: {
-      plugins: { legend: { position: "bottom", labels: { boxWidth: 8, font: { size: 9 } } } },
+      plugins: {
+        legend: {
+          position: 'bottom',
+          labels: { boxWidth: 8, font: { size: 9 } },
+        },
+      },
       scales: {
-        x: { grid: { color: "rgba(15,38,32,0.06)" } },
-        y: { grid: { color: "rgba(15,38,32,0.06)" }, title: { display: true, text: "centroid latitude" } },
+        x: { grid: { color: 'rgba(15,38,32,0.06)' } },
+        y: {
+          grid: { color: 'rgba(15,38,32,0.06)' },
+          title: { display: true, text: 'centroid latitude' },
+        },
       },
     },
   });
@@ -57,14 +106,14 @@ async function selectSpecies(s: Species) {
   trajectory.value = null;
   trajectoryError.value = null;
   trajectoryChart?.destroy();
-  emit("trajectory", null);
+  emit('trajectory', null);
   trajectoryLoading.value = true;
   try {
     trajectory.value = await getSpeciesTrajectory(speciesSlug(s.sci));
     trajectoryLoading.value = false;
     await nextTick(); // let the canvas mount now that trajectoryLoading is false
     renderTrajectoryChart();
-    emit("trajectory", trajectory.value);
+    emit('trajectory', trajectory.value);
   } catch {
     trajectoryLoading.value = false;
     trajectoryError.value = `Not enough occurrence-year coverage to plot a movement trend for ${s.common} yet.`;
@@ -81,7 +130,7 @@ onMounted(async () => {
 
 onBeforeUnmount(() => {
   trajectoryChart?.destroy();
-  emit("trajectory", null);
+  emit('trajectory', null);
 });
 </script>
 
@@ -106,10 +155,17 @@ onBeforeUnmount(() => {
             @mouseleave="hovered = null"
             @click="selectSpecies(s)"
           >
-            <td><i>{{ s.sci }}</i></td>
+            <td>
+              <i>{{ s.sci }}</i>
+            </td>
             <td>{{ s.region }}</td>
             <td>
-              <span v-if="s.status" class="tag" :class="statusClass[s.status]">{{ statusLabel[s.status] }}</span>
+              <span
+                v-if="s.status"
+                class="tag"
+                :class="statusClass[s.status]"
+                >{{ statusLabel[s.status] }}</span
+              >
               <span v-else>—</span>
             </td>
           </tr>
@@ -117,13 +173,17 @@ onBeforeUnmount(() => {
       </table>
 
       <div class="movement-block" v-if="selected">
-        <h4>Movement Trend — {{ selected.common }}<InfoTip glossary-key="species_trajectory" /></h4>
+        <h4>
+          Movement Trend — {{ selected.common
+          }}<InfoTip glossary-key="species_trajectory" />
+        </h4>
         <p v-if="trajectoryLoading" class="loading">Computing trajectory…</p>
         <p v-else-if="trajectoryError" class="error">{{ trajectoryError }}</p>
         <template v-else-if="trajectory">
           <p class="conclusion">{{ trajectory.conclusion }}</p>
           <div class="sub">
-            Drifted <b>{{ trajectory.drift_km }} km {{ trajectory.direction }}</b> ·
+            Drifted
+            <b>{{ trajectory.drift_km }} km {{ trajectory.direction }}</b> ·
             {{ trajectory.historical.length }} years of OBIS/GBIF records
           </div>
           <canvas ref="trajectoryCanvas" height="140"></canvas>
@@ -136,7 +196,12 @@ onBeforeUnmount(() => {
       <template v-if="hovered">
         <div class="shc-head">
           <span class="shc-sci">{{ hovered.sci }}</span>
-          <span v-if="hovered.status" class="tag" :class="statusClass[hovered.status]">{{ statusLabel[hovered.status] }}</span>
+          <span
+            v-if="hovered.status"
+            class="tag"
+            :class="statusClass[hovered.status]"
+            >{{ statusLabel[hovered.status] }}</span
+          >
         </div>
         <div class="shc-common">{{ hovered.common }}</div>
         <div class="shc-region">{{ hovered.region }}</div>
@@ -254,7 +319,9 @@ tbody tr.selected {
   z-index: 40;
   opacity: 0;
   transform: translate(-18px, 18px) scale(0.97);
-  transition: opacity 0.22s ease, transform 0.22s ease;
+  transition:
+    opacity 0.22s ease,
+    transform 0.22s ease;
   pointer-events: none;
 }
 .species-hover-card.show {

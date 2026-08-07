@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
-import { useGlossary } from "../composables/useGlossary";
+import { computed, ref } from 'vue';
+import { useGlossary } from '../composables/useGlossary';
 
 const props = defineProps<{ glossaryKey: string }>();
 const { byKey } = useGlossary();
@@ -16,12 +16,26 @@ function close() {
 </script>
 
 <template>
-  <span class="info-tip" v-if="entry" @mouseenter="open = true" @mouseleave="close">
-    <button class="info-tip-icon" type="button" @click.stop="toggle" :aria-label="`About ${entry.title}`">i</button>
+  <span
+    class="info-tip"
+    v-if="entry"
+    @mouseenter="open = true"
+    @mouseleave="close"
+  >
+    <button
+      class="info-tip-icon"
+      type="button"
+      @click.stop="toggle"
+      :aria-label="`About ${entry.title}`"
+    >
+      i
+    </button>
     <div class="info-tip-popover" v-if="open" @click.stop>
       <div class="info-tip-title">{{ entry.title }}</div>
       <p class="info-tip-body">{{ entry.what_it_is }}</p>
-      <p class="info-tip-why"><b>Why it matters:</b> {{ entry.why_it_matters }}</p>
+      <p class="info-tip-why">
+        <b>Why it matters:</b> {{ entry.why_it_matters }}
+      </p>
     </div>
   </span>
 </template>

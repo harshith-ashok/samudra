@@ -1,30 +1,30 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, ref, watch } from "vue";
-import Chart from "chart.js/auto";
-import type { StationDetail } from "../api/types";
+import { nextTick, onBeforeUnmount, ref, watch } from 'vue';
+import Chart from 'chart.js/auto';
+import type { StationDetail } from '../api/types';
 
 const props = defineProps<{ station: StationDetail | null }>();
-const emit = defineEmits<{ (e: "ask-ai", station: StationDetail): void }>();
+const emit = defineEmits<{ (e: 'ask-ai', station: StationDetail): void }>();
 
 const canvasEl = ref<HTMLCanvasElement | null>(null);
 let chartInst: Chart | null = null;
 
 const typeColors: Record<string, string> = {
-  buoy: "#128F82",
-  edna: "#2E9E5B",
-  advisory: "#D6512D",
-  coral: "#B9800F",
+  buoy: '#128F82',
+  edna: '#2E9E5B',
+  advisory: '#D6512D',
+  coral: '#B9800F',
 };
 
 function renderChart() {
   if (!props.station || !canvasEl.value) return;
   chartInst?.destroy();
   const history = props.station.history.slice(-14);
-  const color = typeColors[props.station.type] ?? "#128F82";
+  const color = typeColors[props.station.type] ?? '#128F82';
   chartInst = new Chart(canvasEl.value, {
-    type: "line",
+    type: 'line',
     data: {
-      labels: history.map((h) => (h.day === 0 ? "today" : `${h.day}d`)),
+      labels: history.map((h) => (h.day === 0 ? 'today' : `${h.day}d`)),
       datasets: [
         {
           data: history.map((h) => h.sst),
@@ -40,8 +40,8 @@ function renderChart() {
     options: {
       plugins: { legend: { display: false } },
       scales: {
-        x: { grid: { color: "rgba(15,38,32,0.06)" } },
-        y: { grid: { color: "rgba(15,38,32,0.06)" } },
+        x: { grid: { color: 'rgba(15,38,32,0.06)' } },
+        y: { grid: { color: 'rgba(15,38,32,0.06)' } },
       },
     },
   });
@@ -53,7 +53,7 @@ watch(
     await nextTick();
     renderChart();
   },
-  { immediate: true },
+  { immediate: true }
 );
 
 onBeforeUnmount(() => chartInst?.destroy());
@@ -64,9 +64,12 @@ onBeforeUnmount(() => chartInst?.destroy());
     <span class="stat-badge">{{ station.type.toUpperCase() }}</span>
     <h3 class="stat-name">{{ station.name }}</h3>
     <div class="stat-readout">
-      <b>Water temperature: {{ station.latest.sst_c }}°C</b> <span class="unit-note">(SST)</span><br />
-      <b>Saltiness: {{ station.latest.salinity_psu }} psu</b> <span class="unit-note">(salinity)</span><br />
-      <b>Plankton level: {{ station.latest.chlorophyll_mg_m3 }} mg/m³</b> <span class="unit-note">(chlorophyll-a)</span>
+      <b>Water temperature: {{ station.latest.sst_c }}°C</b>
+      <span class="unit-note">(SST)</span><br />
+      <b>Saltiness: {{ station.latest.salinity_psu }} psu</b>
+      <span class="unit-note">(salinity)</span><br />
+      <b>Plankton level: {{ station.latest.chlorophyll_mg_m3 }} mg/m³</b>
+      <span class="unit-note">(chlorophyll-a)</span>
     </div>
     <canvas ref="canvasEl" height="120"></canvas>
     <p class="source-note">Source: {{ station.source }}</p>

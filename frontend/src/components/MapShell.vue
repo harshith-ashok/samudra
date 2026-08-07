@@ -1,23 +1,47 @@
 <script setup lang="ts">
-import { computed, nextTick, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import L from "leaflet";
-import "leaflet.markercluster";
-import gsap from "gsap";
-import { getPollution, getSpecies, getStation, getStations, getVessels, postNlq } from "../api";
-import type { NlqResponse, SpeciesTrajectory, StationDetail, StationSummary, StationType, Vessel, VesselsResponse } from "../api/types";
-import StationDetailPanel from "./StationDetail.vue";
-import AIChat from "./AIChat.vue";
-import SpeciesExplorer from "./SpeciesExplorer.vue";
-import Predictive from "./Predictive.vue";
-import Analytics from "./Analytics.vue";
-import GlossaryPanel from "./GlossaryPanel.vue";
-import VesselDetail from "./VesselDetail.vue";
-import ImpactCard from "./ImpactCard.vue";
-import GuidedIntro from "./GuidedIntro.vue";
-import ModuleRail, { type ModuleDef } from "./ModuleRail.vue";
-import LayerPanel, { type KpiDef, type LayerDef } from "./LayerPanel.vue";
-import TimelineScrubber, { type TimelineChangePayload } from "./TimelineScrubber.vue";
-import { colorForMetricValue } from "../utils/colorScale";
+import {
+  computed,
+  nextTick,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  watch,
+} from 'vue';
+import L from 'leaflet';
+import 'leaflet.markercluster';
+import gsap from 'gsap';
+import {
+  getPollution,
+  getSpecies,
+  getStation,
+  getStations,
+  getVessels,
+  postNlq,
+} from '../api';
+import type {
+  NlqResponse,
+  SpeciesTrajectory,
+  StationDetail,
+  StationSummary,
+  StationType,
+  Vessel,
+  VesselsResponse,
+} from '../api/types';
+import StationDetailPanel from './StationDetail.vue';
+import AIChat from './AIChat.vue';
+import SpeciesExplorer from './SpeciesExplorer.vue';
+import Predictive from './Predictive.vue';
+import Analytics from './Analytics.vue';
+import GlossaryPanel from './GlossaryPanel.vue';
+import VesselDetail from './VesselDetail.vue';
+import ImpactCard from './ImpactCard.vue';
+import GuidedIntro from './GuidedIntro.vue';
+import ModuleRail, { type ModuleDef } from './ModuleRail.vue';
+import LayerPanel, { type KpiDef, type LayerDef } from './LayerPanel.vue';
+import TimelineScrubber, {
+  type TimelineChangePayload,
+} from './TimelineScrubber.vue';
+import { colorForMetricValue } from '../utils/colorScale';
 
 const VESSEL_POLL_MS = 4000;
 
@@ -34,57 +58,90 @@ const stations = ref<StationSummary[]>([]);
 const selectedStation = ref<StationDetail | null>(null);
 const vessels = ref<Vessel[]>([]);
 const selectedVessel = ref<Vessel | null>(null);
-const violationCount = computed(() => vessels.value.filter((v) => v.in_violation).length);
+const violationCount = computed(
+  () => vessels.value.filter((v) => v.in_violation).length
+);
 const nonCompliantCount = ref(0);
 const speciesCount = ref(0);
-const stateCount = computed(() => new Set(stations.value.map((s) => s.state)).size);
+const stateCount = computed(
+  () => new Set(stations.value.map((s) => s.state)).size
+);
 const showIntro = ref(false);
 const activePanel = ref<PanelKey>(null);
-const clock = ref("");
+const clock = ref('');
 
-const searchQuery = ref("");
+const searchQuery = ref('');
 const searchFocused = ref(false);
 const nlqResult = ref<NlqResponse | null>(null);
 const nlqLoading = ref(false);
 
 const suggestedQueries = [
-  "Vulnerable species near Kerala since March",
-  "SST anomalies near Goa and Chennai",
-  "Active fishing advisories",
-  "Coral bleaching risk in Lakshadweep",
-  "Newly detected eDNA species this month",
+  'Vulnerable species near Kerala since March',
+  'SST anomalies near Goa and Chennai',
+  'Active fishing advisories',
+  'Coral bleaching risk in Lakshadweep',
+  'Newly detected eDNA species this month',
 ];
 
 const typeColors: Record<StationType, string> = {
-  buoy: "#128F82",
-  edna: "#2E9E5B",
-  advisory: "#D6512D",
-  coral: "#B9800F",
+  buoy: '#128F82',
+  edna: '#2E9E5B',
+  advisory: '#D6512D',
+  coral: '#B9800F',
 };
 
 const modules: ModuleDef[] = [
-  { key: "ai", label: "AI Assistant", iconPaths: ["M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"] },
-  { key: "species", label: "Movement Trends", iconPaths: ["M12 2C7 6 4 10 4 14a8 8 0 0 0 16 0c0-4-3-8-8-12z"] },
-  { key: "predict", label: "Predictive Analytics", iconPaths: ["M3 17l6-6 4 4 8-8", "M15 7h6v6"] },
-  { key: "analytics", label: "Analytics", iconPaths: ["M4 19V9", "M11 19V4", "M18 19v-7"] },
-  { key: "glossary", label: "Data Glossary", iconPaths: ["M12 2 2 7l10 5 10-5-10-5z", "M2 17l10 5 10-5", "M2 12l10 5 10-5"] },
+  {
+    key: 'ai',
+    label: 'AI Assistant',
+    iconPaths: [
+      'M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z',
+    ],
+  },
+  {
+    key: 'species',
+    label: 'Movement Trends',
+    iconPaths: ['M12 2C7 6 4 10 4 14a8 8 0 0 0 16 0c0-4-3-8-8-12z'],
+  },
+  {
+    key: 'predict',
+    label: 'Predictive Analytics',
+    iconPaths: ['M3 17l6-6 4 4 8-8', 'M15 7h6v6'],
+  },
+  {
+    key: 'analytics',
+    label: 'Analytics',
+    iconPaths: ['M4 19V9', 'M11 19V4', 'M18 19v-7'],
+  },
+  {
+    key: 'glossary',
+    label: 'Data Glossary',
+    iconPaths: [
+      'M12 2 2 7l10 5 10-5-10-5z',
+      'M2 17l10 5 10-5',
+      'M2 12l10 5 10-5',
+    ],
+  },
 ];
 
 const panelTitles: Record<string, string> = {
-  station: "Station Detail",
-  vessel: "Vessel Detail",
-  ai: "AI Assistant",
-  species: "Movement Trends",
-  predict: "Predictive Analytics",
-  analytics: "Analytics",
-  glossary: "Data Glossary",
+  station: 'Station Detail',
+  vessel: 'Vessel Detail',
+  ai: 'AI Assistant',
+  species: 'Movement Trends',
+  predict: 'Predictive Analytics',
+  analytics: 'Analytics',
+  glossary: 'Data Glossary',
 };
 
-const stationLayerMeta: Record<StationType, { label: string; glossaryKey: string }> = {
-  buoy: { label: "Ocean buoys", glossaryKey: "sst" },
-  edna: { label: "eDNA sites", glossaryKey: "edna_confidence" },
-  advisory: { label: "Fishing advisories", glossaryKey: "advisory" },
-  coral: { label: "Coral bleaching risk", glossaryKey: "dhw" },
+const stationLayerMeta: Record<
+  StationType,
+  { label: string; glossaryKey: string }
+> = {
+  buoy: { label: 'Ocean buoys', glossaryKey: 'sst' },
+  edna: { label: 'eDNA sites', glossaryKey: 'edna_confidence' },
+  advisory: { label: 'Fishing advisories', glossaryKey: 'advisory' },
+  coral: { label: 'Coral bleaching risk', glossaryKey: 'dhw' },
 };
 
 const layerVisible = ref<Record<string, boolean>>({
@@ -105,15 +162,41 @@ const layers = computed<LayerDef[]>(() => [
     glossaryKey: stationLayerMeta[key].glossaryKey,
     visible: layerVisible.value[key],
   })),
-  { key: "shift", label: "Predicted range shift", color: "#0F2620", glossaryKey: "range_shift", visible: layerVisible.value.shift },
-  { key: "vessels", label: "Vessel tracking", color: "#5C7370", glossaryKey: "vessel_tracking", visible: layerVisible.value.vessels },
-  { key: "pollution", label: "Pollution sources", color: "#B9800F", glossaryKey: "treatment_compliance", visible: layerVisible.value.pollution },
+  {
+    key: 'shift',
+    label: 'Predicted range shift',
+    color: '#0F2620',
+    glossaryKey: 'range_shift',
+    visible: layerVisible.value.shift,
+  },
+  {
+    key: 'vessels',
+    label: 'Vessel tracking',
+    color: '#5C7370',
+    glossaryKey: 'vessel_tracking',
+    visible: layerVisible.value.vessels,
+  },
+  {
+    key: 'pollution',
+    label: 'Pollution sources',
+    color: '#B9800F',
+    glossaryKey: 'treatment_compliance',
+    visible: layerVisible.value.pollution,
+  },
 ]);
 
 const kpis = computed<KpiDef[]>(() => [
-  { label: "Stations tracked", value: stations.value.length },
-  { label: "Vessels in restricted waters", value: violationCount.value, glossaryKey: "mpa" },
-  { label: "Non-compliant plants", value: nonCompliantCount.value, glossaryKey: "treatment_compliance" },
+  { label: 'Stations tracked', value: stations.value.length },
+  {
+    label: 'Vessels in restricted waters',
+    value: violationCount.value,
+    glossaryKey: 'mpa',
+  },
+  {
+    label: 'Non-compliant plants',
+    value: nonCompliantCount.value,
+    glossaryKey: 'treatment_compliance',
+  },
 ]);
 
 let map: L.Map | null = null;
@@ -134,7 +217,7 @@ function isStationType(key: string): key is StationType {
 }
 
 function fmtClock() {
-  clock.value = new Date().toLocaleTimeString("en-IN");
+  clock.value = new Date().toLocaleTimeString('en-IN');
 }
 
 function pulseMarker(marker: L.CircleMarker, targetRadius: number) {
@@ -142,25 +225,31 @@ function pulseMarker(marker: L.CircleMarker, targetRadius: number) {
   gsap.to(proxy, {
     r: targetRadius,
     duration: 0.28,
-    ease: "back.out(2)",
+    ease: 'back.out(2)',
     onUpdate: () => marker.setRadius(proxy.r),
   });
 }
 
 async function initMap() {
   if (!mapEl.value) return;
-  map = L.map(mapEl.value, { zoomControl: false, attributionControl: true }).setView([15, 79], 5);
-  L.control.zoom({ position: "bottomleft" }).addTo(map);
-  L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-    attribution: "&copy; OpenStreetMap &copy; CARTO",
-    subdomains: "abcd",
-    maxZoom: 19,
-  }).addTo(map);
+  map = L.map(mapEl.value, {
+    zoomControl: false,
+    attributionControl: true,
+  }).setView([15, 79], 5);
+  L.control.zoom({ position: 'bottomleft' }).addTo(map);
+  L.tileLayer(
+    'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png',
+    {
+      attribution: '&copy; OpenStreetMap &copy; CARTO',
+      subdomains: 'abcd',
+      maxZoom: 19,
+    }
+  ).addTo(map);
 
-  (["shift", "vessels", "pollution"] as const).forEach((key) => {
+  (['shift', 'vessels', 'pollution'] as const).forEach((key) => {
     layerGroups[key] = L.layerGroup().addTo(map!);
   });
-  (["advisory", "coral"] as const).forEach((key) => {
+  (['advisory', 'coral'] as const).forEach((key) => {
     radiusLayers[key] = L.layerGroup().addTo(map!);
   });
   trajectoryLayer = L.layerGroup().addTo(map);
@@ -168,26 +257,33 @@ async function initMap() {
   // One shared cluster group across all station types — with 20+ stations,
   // per-type layer groups left dense clumps (Lakshadweep, Gujarat, Kerala) that
   // overlapped and were hard to click at country-level zoom.
-  stationCluster = L.markerClusterGroup({ maxClusterRadius: 45, spiderfyOnMaxZoom: true, showCoverageOnHover: false });
+  stationCluster = L.markerClusterGroup({
+    maxClusterRadius: 45,
+    spiderfyOnMaxZoom: true,
+    showCoverageOnHover: false,
+  });
   stationCluster.addTo(map);
 
   stations.value.forEach((s) => {
     const marker = L.circleMarker([s.lat, s.lng], {
       radius: 0,
-      color: "#FFFFFF",
+      color: '#FFFFFF',
       weight: 2,
       fillColor: typeColors[s.type],
       fillOpacity: 0.95,
     });
-    marker.bindTooltip(`<b>${s.name}</b>`, { direction: "top", offset: [0, -6] });
-    marker.on("click", () => openStation(s.id));
+    marker.bindTooltip(`<b>${s.name}</b>`, {
+      direction: 'top',
+      offset: [0, -6],
+    });
+    marker.on('click', () => openStation(s.id));
     stationCluster!.addLayer(marker);
-    const baseRadius = s.type === "advisory" ? 9 : 7;
+    const baseRadius = s.type === 'advisory' ? 9 : 7;
     stationMarkers[s.id] = marker;
     stationBaseRadius[s.id] = baseRadius;
     pulseMarker(marker, baseRadius);
 
-    if (s.type === "advisory" || s.type === "coral") {
+    if (s.type === 'advisory' || s.type === 'coral') {
       const circle = L.circle([s.lat, s.lng], {
         radius: 70000,
         color: typeColors[s.type],
@@ -195,7 +291,7 @@ async function initMap() {
         fillColor: typeColors[s.type],
         fillOpacity: 0.07,
       }).addTo(radiusLayers[s.type]!);
-      if (s.type === "coral") coralCircles[s.id] = circle;
+      if (s.type === 'coral') coralCircles[s.id] = circle;
     }
   });
 
@@ -218,11 +314,20 @@ async function initMap() {
     ],
   ];
   shiftPaths.forEach((path) => {
-    L.polyline(path, { color: "#0F2620", weight: 1.6, dashArray: "5,6", opacity: 0.5 }).addTo(layerGroups.shift!);
+    L.polyline(path, {
+      color: '#0F2620',
+      weight: 1.6,
+      dashArray: '5,6',
+      opacity: 0.5,
+    }).addTo(layerGroups.shift!);
     const end = path[path.length - 1];
-    L.circleMarker(end, { radius: 4, color: "#FFFFFF", weight: 1.5, fillColor: "#0F2620", fillOpacity: 1 }).addTo(
-      layerGroups.shift!,
-    );
+    L.circleMarker(end, {
+      radius: 4,
+      color: '#FFFFFF',
+      weight: 1.5,
+      fillColor: '#0F2620',
+      fillOpacity: 1,
+    }).addTo(layerGroups.shift!);
   });
 }
 
@@ -230,36 +335,53 @@ function openVessel(id: string) {
   const v = vessels.value.find((x) => x.id === id);
   if (!v) return;
   selectedVessel.value = v;
-  openPanel("vessel");
+  openPanel('vessel');
 }
 
 function renderVessels(payload: VesselsResponse) {
   if (!map) return;
   if (!mpaPolygonsDrawn) {
     payload.mpa_zones.forEach((zone) => {
-      L.polygon(zone.polygon, { color: "#D6512D", weight: 1.5, fillColor: "#D6512D", fillOpacity: 0.08, dashArray: "4,4" })
-        .bindTooltip(`<b>${zone.name}</b>`, { direction: "center" })
+      L.polygon(zone.polygon, {
+        color: '#D6512D',
+        weight: 1.5,
+        fillColor: '#D6512D',
+        fillOpacity: 0.08,
+        dashArray: '4,4',
+      })
+        .bindTooltip(`<b>${zone.name}</b>`, { direction: 'center' })
         .addTo(layerGroups.vessels!);
     });
     mpaPolygonsDrawn = true;
   }
   payload.vessels.forEach((v) => {
-    const color = v.in_violation ? "#D6512D" : "#5C7370";
+    const color = v.in_violation ? '#D6512D' : '#5C7370';
     let marker = vesselMarkers[v.id];
     if (!marker) {
-      marker = L.circleMarker([v.lat, v.lng], { radius: 5, color: "#FFFFFF", weight: 1.5, fillColor: color, fillOpacity: 0.95 });
-      marker.on("click", () => openVessel(v.id));
+      marker = L.circleMarker([v.lat, v.lng], {
+        radius: 5,
+        color: '#FFFFFF',
+        weight: 1.5,
+        fillColor: color,
+        fillOpacity: 0.95,
+      });
+      marker.on('click', () => openVessel(v.id));
       marker.addTo(layerGroups.vessels!);
       vesselMarkers[v.id] = marker;
     } else {
       marker.setLatLng([v.lat, v.lng]);
       marker.setStyle({ fillColor: color });
     }
-    marker.bindTooltip(`<b>${v.name}</b>${v.in_violation ? " — in protected zone" : ""}`, { direction: "top", offset: [0, -6] });
+    marker.bindTooltip(
+      `<b>${v.name}</b>${v.in_violation ? ' — in protected zone' : ''}`,
+      { direction: 'top', offset: [0, -6] }
+    );
   });
   vessels.value = payload.vessels;
-  if (activePanel.value === "vessel" && selectedVessel.value) {
-    selectedVessel.value = payload.vessels.find((v) => v.id === selectedVessel.value!.id) ?? selectedVessel.value;
+  if (activePanel.value === 'vessel' && selectedVessel.value) {
+    selectedVessel.value =
+      payload.vessels.find((v) => v.id === selectedVessel.value!.id) ??
+      selectedVessel.value;
   }
 }
 
@@ -272,9 +394,9 @@ async function loadVessels() {
 }
 
 const complianceColors: Record<string, string> = {
-  compliant: "#2E9E5B",
-  "non-compliant": "#D6512D",
-  "under-review": "#B9800F",
+  compliant: '#2E9E5B',
+  'non-compliant': '#D6512D',
+  'under-review': '#B9800F',
 };
 
 async function loadPollution() {
@@ -283,17 +405,20 @@ async function loadPollution() {
     const payload = await getPollution();
     nonCompliantCount.value = payload.non_compliant_count;
     payload.plants.forEach((p) => {
-      const color = complianceColors[p.compliance] ?? "#5C7370";
+      const color = complianceColors[p.compliance] ?? '#5C7370';
       const marker = L.circleMarker([p.lat, p.lng], {
         radius: 6,
-        color: "#FFFFFF",
+        color: '#FFFFFF',
         weight: 1.5,
         fillColor: color,
         fillOpacity: 0.9,
       });
-      marker.bindTooltip(`<b>${p.name}</b>`, { direction: "top", offset: [0, -6] });
+      marker.bindTooltip(`<b>${p.name}</b>`, {
+        direction: 'top',
+        offset: [0, -6],
+      });
       marker.bindPopup(
-        `<b>${p.name}</b><br>${p.city} · ${p.type}<br>Discharge: ${p.discharge_mld} MLD<br>Compliance: ${p.compliance}<br>Last inspected: ${p.last_inspected}`,
+        `<b>${p.name}</b><br>${p.city} · ${p.type}<br>Discharge: ${p.discharge_mld} MLD<br>Compliance: ${p.compliance}<br>Last inspected: ${p.last_inspected}`
       );
       marker.addTo(layerGroups.pollution!);
     });
@@ -311,20 +436,29 @@ function onTimelineChange(payload: TimelineChangePayload) {
     if (marker) {
       marker.setStyle({
         fillColor: colorForMetricValue(payload.metric, value),
-        fillOpacity: payload.kind === "forecast" ? 0.5 : 0.95,
-        dashArray: payload.kind === "forecast" ? "2,3" : undefined,
+        fillOpacity: payload.kind === 'forecast' ? 0.5 : 0.95,
+        dashArray: payload.kind === 'forecast' ? '2,3' : undefined,
       });
       marker.setRadius(stationBaseRadius[stationId] ?? 7);
     }
 
     // Reef zones visibly darken/expand as thermal stress builds while scrubbing SST —
     // driven by the same recorded/forecast SST values as the marker color (Phase 16/18).
-    if (payload.metric === "sst") {
+    if (payload.metric === 'sst') {
       const circle = coralCircles[stationId];
       if (!circle) continue;
-      const t = Math.max(0, Math.min(1, (value - SST_STRESS_MIN) / (SST_STRESS_MAX - SST_STRESS_MIN)));
+      const t = Math.max(
+        0,
+        Math.min(
+          1,
+          (value - SST_STRESS_MIN) / (SST_STRESS_MAX - SST_STRESS_MIN)
+        )
+      );
       circle.setRadius(70000 + t * 45000);
-      circle.setStyle({ fillColor: colorForMetricValue("sst", value), fillOpacity: 0.06 + t * 0.22 });
+      circle.setStyle({
+        fillColor: colorForMetricValue('sst', value),
+        fillOpacity: 0.06 + t * 0.22,
+      });
     }
   }
 }
@@ -334,31 +468,57 @@ function onSpeciesTrajectory(t: SpeciesTrajectory | null) {
   trajectoryLayer.clearLayers();
   if (!t) return;
 
-  const historicalPath: [number, number][] = t.smoothed.map((p) => [p.lat, p.lng]);
-  L.polyline(historicalPath, { color: "#128F82", weight: 2.5, opacity: 0.85 }).addTo(trajectoryLayer);
+  const historicalPath: [number, number][] = t.smoothed.map((p) => [
+    p.lat,
+    p.lng,
+  ]);
+  L.polyline(historicalPath, {
+    color: '#128F82',
+    weight: 2.5,
+    opacity: 0.85,
+  }).addTo(trajectoryLayer);
   t.smoothed.forEach((p, i) => {
     const isLatest = i === t.smoothed.length - 1;
     L.circleMarker([p.lat, p.lng], {
       radius: isLatest ? 6 : 3.5,
-      color: "#FFFFFF",
+      color: '#FFFFFF',
       weight: 1.5,
-      fillColor: "#128F82",
+      fillColor: '#128F82',
       fillOpacity: 0.95,
     })
-      .bindTooltip(`${p.year}`, { direction: "top", offset: [0, -4] })
+      .bindTooltip(`${p.year}`, { direction: 'top', offset: [0, -4] })
       .addTo(trajectoryLayer!);
   });
 
   const last = t.smoothed[t.smoothed.length - 1];
-  const forecastPath: [number, number][] = [[last.lat, last.lng], ...t.forecast.map((p): [number, number] => [p.lat, p.lng])];
-  L.polyline(forecastPath, { color: "#B9800F", weight: 2, dashArray: "5,6", opacity: 0.8 }).addTo(trajectoryLayer);
+  const forecastPath: [number, number][] = [
+    [last.lat, last.lng],
+    ...t.forecast.map((p): [number, number] => [p.lat, p.lng]),
+  ];
+  L.polyline(forecastPath, {
+    color: '#B9800F',
+    weight: 2,
+    dashArray: '5,6',
+    opacity: 0.8,
+  }).addTo(trajectoryLayer);
   t.forecast.forEach((p) => {
-    L.circleMarker([p.lat, p.lng], { radius: 3.5, color: "#FFFFFF", weight: 1.5, fillColor: "#B9800F", fillOpacity: 0.85 })
-      .bindTooltip(`${p.year} (forecast)`, { direction: "top", offset: [0, -4] })
+    L.circleMarker([p.lat, p.lng], {
+      radius: 3.5,
+      color: '#FFFFFF',
+      weight: 1.5,
+      fillColor: '#B9800F',
+      fillOpacity: 0.85,
+    })
+      .bindTooltip(`${p.year} (forecast)`, {
+        direction: 'top',
+        offset: [0, -4],
+      })
       .addTo(trajectoryLayer!);
   });
 
-  map.flyTo([last.lat, last.lng], Math.max(map.getZoom(), 6), { duration: 0.8 });
+  map.flyTo([last.lat, last.lng], Math.max(map.getZoom(), 6), {
+    duration: 0.8,
+  });
 }
 
 function toggleLayer(key: string) {
@@ -393,7 +553,7 @@ function toggleLayer(key: string) {
 async function openStation(id: string) {
   try {
     selectedStation.value = await getStation(id);
-    openPanel("station");
+    openPanel('station');
   } catch {
     // backend unreachable — silently ignore, panel just won't open
   }
@@ -414,12 +574,12 @@ watch(activePanel, async (panel) => {
   gsap.to(panelEl.value, {
     x: panel ? 0 : closedX,
     duration: 0.25,
-    ease: "power2.out",
+    ease: 'power2.out',
   });
 });
 
 function askAiAboutStation(station: StationDetail) {
-  openPanel("ai");
+  openPanel('ai');
   nextTick(() => aiChatRef.value?.send(`Tell me more about ${station.name}`));
 }
 
@@ -482,7 +642,7 @@ onMounted(async () => {
     speciesCount.value = 0;
   }
 
-  if (!localStorage.getItem("samudra_intro_seen")) {
+  if (!localStorage.getItem('samudra_intro_seen')) {
     window.setTimeout(() => (showIntro.value = true), 600);
   }
 });
@@ -499,13 +659,14 @@ onBeforeUnmount(() => {
 
   <div class="topbar">
     <div class="brand">
-      <span class="mark"></span>SAMUDRA
+      SAMUDRA
       <small>Unified Ocean Intelligence</small>
     </div>
     <div class="ticker">
       <span><span class="dot"></span>{{ stations.length }} stations live</span>
       <span v-if="violationCount > 0" class="alert"
-        >{{ violationCount }} vessel{{ violationCount === 1 ? "" : "s" }} in restricted waters</span
+        >{{ violationCount }} vessel{{ violationCount === 1 ? '' : 's' }} in
+        restricted waters</span
       >
       <span id="clock">{{ clock }}</span>
     </div>
@@ -513,7 +674,12 @@ onBeforeUnmount(() => {
 
   <div class="searchwrap">
     <div class="searchbar">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.8"
+      >
         <circle cx="11" cy="11" r="7" />
         <path d="M21 21l-4.35-4.35" />
       </svg>
@@ -527,7 +693,12 @@ onBeforeUnmount(() => {
     </div>
     <div class="search-results" :class="{ show: showResults }">
       <template v-if="!searchQuery">
-        <div class="row" v-for="q in suggestedQueries" :key="q" @mousedown="useSuggestion(q)">
+        <div
+          class="row"
+          v-for="q in suggestedQueries"
+          :key="q"
+          @mousedown="useSuggestion(q)"
+        >
           {{ q }}<span>suggested</span>
         </div>
       </template>
@@ -540,21 +711,35 @@ onBeforeUnmount(() => {
           v-for="(r, i) in nlqResult.results"
           :key="i"
           class="row"
-          @mousedown="r.record_type === 'station' ? flyToStation(r.id as string) : undefined"
+          @mousedown="
+            r.record_type === 'station'
+              ? flyToStation(r.id as string)
+              : undefined
+          "
         >
           {{ (r.name ?? r.common ?? r.sci ?? r.summary) as string }}
           <span>{{ r.record_type }}</span>
         </div>
-        <div v-if="!nlqResult.results.length" class="row no-match">No matches — try a region, species, or advisory keyword</div>
+        <div v-if="!nlqResult.results.length" class="row no-match">
+          No matches — try a region, species, or advisory keyword
+        </div>
       </template>
     </div>
   </div>
 
-  <ModuleRail :modules="modules" :active-panel="activePanel" @open="openPanel" />
+  <ModuleRail
+    :modules="modules"
+    :active-panel="activePanel"
+    @open="openPanel"
+  />
 
   <LayerPanel :layers="layers" :kpis="kpis" @toggle="toggleLayer" />
 
-  <ImpactCard :station-count="stations.length" :state-count="stateCount" :species-count="speciesCount" />
+  <ImpactCard
+    :station-count="stations.length"
+    :state-count="stateCount"
+    :species-count="speciesCount"
+  />
 
   <TimelineScrubber @change="onTimelineChange" />
 
@@ -562,14 +747,25 @@ onBeforeUnmount(() => {
 
   <div class="side-panel" ref="panelEl">
     <div class="panel-header">
-      <h3>{{ activePanel ? panelTitles[activePanel] : "" }}</h3>
+      <h3>{{ activePanel ? panelTitles[activePanel] : '' }}</h3>
       <button @click="closePanel">×</button>
     </div>
     <div class="panel-body">
-      <StationDetailPanel v-if="activePanel === 'station'" :station="selectedStation" @ask-ai="askAiAboutStation" />
+      <StationDetailPanel
+        v-if="activePanel === 'station'"
+        :station="selectedStation"
+        @ask-ai="askAiAboutStation"
+      />
       <VesselDetail v-if="activePanel === 'vessel'" :vessel="selectedVessel" />
-      <AIChat v-if="activePanel === 'ai'" ref="aiChatRef" :station-context="selectedStation" />
-      <SpeciesExplorer v-if="activePanel === 'species'" @trajectory="onSpeciesTrajectory" />
+      <AIChat
+        v-if="activePanel === 'ai'"
+        ref="aiChatRef"
+        :station-context="selectedStation"
+      />
+      <SpeciesExplorer
+        v-if="activePanel === 'species'"
+        @trajectory="onSpeciesTrajectory"
+      />
       <Predictive v-if="activePanel === 'predict'" />
       <Analytics v-if="activePanel === 'analytics'" />
       <GlossaryPanel v-if="activePanel === 'glossary'" />
@@ -648,8 +844,13 @@ onBeforeUnmount(() => {
   animation: pulse 2s infinite;
 }
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.3; }
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.3;
+  }
 }
 
 .searchwrap {

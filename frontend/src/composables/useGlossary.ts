@@ -1,6 +1,6 @@
-import { ref } from "vue";
-import { getGlossary } from "../api";
-import type { GlossaryEntry } from "../api/types";
+import { ref } from 'vue';
+import { getGlossary } from '../api';
+import type { GlossaryEntry } from '../api/types';
 
 // Module-level singleton: every InfoTip / GlossaryPanel shares one fetch, one cache.
 const entries = ref<GlossaryEntry[]>([]);
@@ -24,6 +24,7 @@ function ensureLoaded(): Promise<void> {
 
 export function useGlossary() {
   ensureLoaded();
-  const byKey = (key: string): GlossaryEntry | undefined => entries.value.find((e) => e.key === key);
+  const byKey = (key: string): GlossaryEntry | undefined =>
+    entries.value.find((e) => e.key === key);
   return { entries, loaded, byKey };
 }

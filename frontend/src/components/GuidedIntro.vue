@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { onBeforeUnmount, onMounted, ref } from "vue";
-import gsap from "gsap";
+import { onBeforeUnmount, onMounted, ref } from 'vue';
+import gsap from 'gsap';
 
-const emit = defineEmits<{ (e: "done"): void }>();
+const emit = defineEmits<{ (e: 'done'): void }>();
 
 interface Step {
   selector: string;
@@ -10,10 +10,22 @@ interface Step {
 }
 
 const STEPS: Step[] = [
-  { selector: "#map", text: "This map tracks real ocean stations, species sightings, and vessels along India's coast." },
-  { selector: ".layer-panel", text: "Toggle layers to see water temperature, coral bleaching risk, vessel tracking, and pollution sources." },
-  { selector: ".fab-stack .fab", text: "Ask the AI assistant anything — it answers from real sensor and fisheries data, not guesses." },
-  { selector: ".scrubber-bar", text: "Scrub through time to see recorded history and short-term forecasts side by side." },
+  {
+    selector: '#map',
+    text: "This map tracks real ocean stations, species sightings, and vessels along India's coast.",
+  },
+  {
+    selector: '.layer-panel',
+    text: 'Toggle layers to see water temperature, coral bleaching risk, vessel tracking, and pollution sources.',
+  },
+  {
+    selector: '.fab-stack .fab',
+    text: 'Ask the AI assistant anything — it answers from real sensor and fisheries data, not guesses.',
+  },
+  {
+    selector: '.scrubber-bar',
+    text: 'Scrub through time to see recorded history and short-term forecasts side by side.',
+  },
 ];
 const STEP_DURATION_MS = 2500;
 
@@ -51,15 +63,24 @@ function showStep(index: number) {
     width: rect.width + 12,
     height: rect.height + 12,
     duration: 0.5,
-    ease: "power2.inOut",
+    ease: 'power2.inOut',
   });
-  gsap.fromTo(captionEl.value, { opacity: 0, y: 8 }, { opacity: 1, y: 0, duration: 0.35, delay: 0.15 });
-  const rawTop = captionAbove.value ? rect.top - 14 - CAPTION_HEIGHT : rect.bottom + 14;
+  gsap.fromTo(
+    captionEl.value,
+    { opacity: 0, y: 8 },
+    { opacity: 1, y: 0, duration: 0.35, delay: 0.15 }
+  );
+  const rawTop = captionAbove.value
+    ? rect.top - 14 - CAPTION_HEIGHT
+    : rect.bottom + 14;
   gsap.to(captionEl.value, {
     left: Math.min(Math.max(rect.left, 16), window.innerWidth - 336),
-    top: Math.min(Math.max(rawTop, 16), window.innerHeight - CAPTION_HEIGHT - 16),
+    top: Math.min(
+      Math.max(rawTop, 16),
+      window.innerHeight - CAPTION_HEIGHT - 16
+    ),
     duration: 0.5,
-    ease: "power2.inOut",
+    ease: 'power2.inOut',
   });
 }
 
@@ -81,8 +102,8 @@ function finish() {
     duration: 0.3,
     onComplete: () => {
       visible.value = false;
-      localStorage.setItem("samudra_intro_seen", "1");
-      emit("done");
+      localStorage.setItem('samudra_intro_seen', '1');
+      emit('done');
     },
   });
 }

@@ -1,20 +1,35 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref } from 'vue';
 
-defineProps<{ stationCount: number; stateCount: number; speciesCount: number }>();
+defineProps<{
+  stationCount: number;
+  stateCount: number;
+  speciesCount: number;
+}>();
 const collapsed = ref(false);
 </script>
 
 <template>
   <div class="impact-card" :class="{ collapsed }">
-    <button class="collapse-btn" @click="collapsed = !collapsed">{{ collapsed ? "Impact ›" : "×" }}</button>
+    <button class="collapse-btn" @click="collapsed = !collapsed">
+      {{ collapsed ? 'Impact ›' : '×' }}
+    </button>
     <template v-if="!collapsed">
       <h4>Coverage snapshot</h4>
       <div class="row"><span>Coastline represented</span><b>~7,500 km</b></div>
-      <div class="row"><span>Stations tracked</span><b>{{ stationCount }}</b></div>
-      <div class="row"><span>States / UTs covered</span><b>{{ stateCount }}</b></div>
-      <div class="row"><span>Species indexed</span><b>{{ speciesCount }}</b></div>
-      <p class="note">India's coastline length is a public figure; the rest updates live from this demo's own data.</p>
+      <div class="row">
+        <span>Stations tracked</span><b>{{ stationCount }}</b>
+      </div>
+      <div class="row">
+        <span>States / UTs covered</span><b>{{ stateCount }}</b>
+      </div>
+      <div class="row">
+        <span>Species indexed</span><b>{{ speciesCount }}</b>
+      </div>
+      <p class="note">
+        India's coastline length is a public figure; the rest updates live from
+        this demo's own data.
+      </p>
     </template>
   </div>
 </template>

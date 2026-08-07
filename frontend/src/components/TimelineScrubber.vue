@@ -1,34 +1,36 @@
 <script setup lang="ts">
-import { computed, onBeforeUnmount, onMounted, ref, watch } from "vue";
-import { getTimeline } from "../api";
-import type { TimelineResponse } from "../api/types";
-import InfoTip from "./InfoTip.vue";
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue';
+import { getTimeline } from '../api';
+import type { TimelineResponse } from '../api/types';
+import InfoTip from './InfoTip.vue';
 
 export interface TimelineChangePayload {
   metric: string;
   day: number;
-  kind: "recorded" | "forecast";
+  kind: 'recorded' | 'forecast';
   values: Record<string, number>;
 }
 
-const emit = defineEmits<{ (e: "change", payload: TimelineChangePayload): void }>();
+const emit = defineEmits<{
+  (e: 'change', payload: TimelineChangePayload): void;
+}>();
 
 const METRICS = [
-  { key: "sst", label: "How warm the water is" },
-  { key: "chlorophyll", label: "How much plankton is in the water" },
+  { key: 'sst', label: 'How warm the water is' },
+  { key: 'chlorophyll', label: 'How much plankton is in the water' },
 ];
 
-const metric = ref("sst");
+const metric = ref('sst');
 const timeline = ref<TimelineResponse | null>(null);
 const day = ref(0);
-const currentKind = ref<"recorded" | "forecast">("recorded");
+const currentKind = ref<'recorded' | 'forecast'>('recorded');
 const playing = ref(false);
 let playTimer: number | undefined;
 
 function emitCurrent() {
   if (!timeline.value) return;
   const values: Record<string, number> = {};
-  let kind: "recorded" | "forecast" = "recorded";
+  let kind: 'recorded' | 'forecast' = 'recorded';
   for (const [stationId, points] of Object.entries(timeline.value.stations)) {
     const point = points.find((p) => p.day === day.value);
     if (point) {
@@ -37,7 +39,7 @@ function emitCurrent() {
     }
   }
   currentKind.value = kind;
-  emit("change", { metric: metric.value, day: day.value, kind, values });
+  emit('change', { metric: metric.value, day: day.value, kind, values });
 }
 
 async function load() {
@@ -79,7 +81,7 @@ onMounted(load);
 onBeforeUnmount(stopPlay);
 
 const dayLabel = computed(() => {
-  if (!timeline.value) return "";
+  if (!timeline.value) return '';
   const ordinal = day.value - timeline.value.min_day + 1;
   return `Day ${ordinal} of ${timeline.value.days} — ${currentKind.value}`;
 });
@@ -89,10 +91,14 @@ const dayLabel = computed(() => {
   <div class="scrubber-bar" v-if="timeline">
     <div class="scrubber-head">
       <select v-model="metric" class="metric-select">
-        <option v-for="m in METRICS" :key="m.key" :value="m.key">{{ m.label }}</option>
+        <option v-for="m in METRICS" :key="m.key" :value="m.key">
+          {{ m.label }}
+        </option>
       </select>
       <InfoTip :glossary-key="metric" />
-      <button class="play-btn" @click="togglePlay">{{ playing ? "Pause" : "Play" }}</button>
+      <button class="play-btn" @click="togglePlay">
+        {{ playing ? 'Pause' : 'Play' }}
+      </button>
       <span class="day-label" :class="currentKind">{{ dayLabel }}</span>
     </div>
     <input

@@ -6,7 +6,7 @@ export interface ModuleDef {
 }
 
 defineProps<{ modules: ModuleDef[]; activePanel: string | null }>();
-const emit = defineEmits<{ (e: "open", key: string): void }>();
+const emit = defineEmits<{ (e: 'open', key: string): void }>();
 </script>
 
 <template>
@@ -18,7 +18,12 @@ const emit = defineEmits<{ (e: "open", key: string): void }>();
       :class="{ active: activePanel === m.key }"
       @click="emit('open', m.key)"
     >
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+      <svg
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        stroke-width="1.7"
+      >
         <path v-for="(d, i) in m.iconPaths" :key="i" :d="d" />
       </svg>
       {{ m.label }}
@@ -50,7 +55,9 @@ const emit = defineEmits<{ (e: "open", key: string): void }>();
   font-weight: 600;
   color: var(--text);
   box-shadow: var(--shadow);
-  transition: border-color 0.12s, color 0.12s;
+  transition:
+    border-color 0.12s,
+    color 0.12s;
 }
 .fab svg {
   width: 15px;

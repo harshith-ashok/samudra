@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import InfoTip from "./InfoTip.vue";
-import type { Vessel } from "../api/types";
+import InfoTip from './InfoTip.vue';
+import type { Vessel } from '../api/types';
 
 defineProps<{ vessel: Vessel | null }>();
 </script>
@@ -8,21 +8,27 @@ defineProps<{ vessel: Vessel | null }>();
 <template>
   <div v-if="vessel">
     <span class="stat-badge" :class="{ violation: vessel.in_violation }">
-      {{ vessel.in_violation ? "VIOLATION" : vessel.type.toUpperCase() }}
+      {{ vessel.in_violation ? 'VIOLATION' : vessel.type.toUpperCase() }}
     </span>
-    <h3 class="stat-name">{{ vessel.name }}<InfoTip glossary-key="vessel_tracking" /></h3>
+    <h3 class="stat-name">
+      {{ vessel.name }}<InfoTip glossary-key="vessel_tracking" />
+    </h3>
     <div class="stat-readout">
-      <b>ID {{ vessel.id }}</b><br />
-      <b>Type {{ vessel.type }}</b><br />
+      <b>ID {{ vessel.id }}</b
+      ><br />
+      <b>Type {{ vessel.type }}</b
+      ><br />
       <b>Speed {{ vessel.speed_knots }} kn</b><br />
       <b>Heading {{ vessel.heading_deg }}°</b>
     </div>
     <div v-if="vessel.in_violation" class="violation-note">
-      Currently inside <b>{{ vessel.violation_zone }}</b> — a protected zone where fishing/extractive activity is restricted.
+      Currently inside <b>{{ vessel.violation_zone }}</b> — a protected zone
+      where fishing/extractive activity is restricted.
     </div>
     <p class="source-note">
-      Position updates from a simulated AIS-like track (see /api/vessels) — real tracking would come from Global
-      Fishing Watch once an API key is configured.
+      Position updates from a simulated AIS-like track (see /api/vessels) — real
+      tracking would come from Global Fishing Watch once an API key is
+      configured.
     </p>
   </div>
 </template>

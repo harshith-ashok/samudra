@@ -1,4 +1,4 @@
-export type StationType = "buoy" | "edna" | "advisory" | "coral";
+export type StationType = 'buoy' | 'edna' | 'advisory' | 'coral';
 
 export interface StationSummary {
   id: string;
@@ -30,7 +30,7 @@ export interface Species {
   sci: string;
   common: string;
   region: string;
-  status: "LC" | "NT" | "VU" | "EN" | null;
+  status: 'LC' | 'NT' | 'VU' | 'EN' | null;
   note: string;
 }
 
@@ -38,10 +38,10 @@ export interface Advisory {
   id: string;
   region: string;
   species: string;
-  status: "active" | "resolved";
+  status: 'active' | 'resolved';
   issued: string;
   summary: string;
-  severity: "low" | "medium" | "high";
+  severity: 'low' | 'medium' | 'high';
 }
 
 export interface ChatResponse {
@@ -60,7 +60,12 @@ export interface StockForecast {
   species: string;
   region: string;
   history: Array<{ date: string; tonnage: number }>;
-  forecast: Array<{ month_offset: number; tonnage: number; low_80ci: number; high_80ci: number }>;
+  forecast: Array<{
+    month_offset: number;
+    tonnage: number;
+    low_80ci: number;
+    high_80ci: number;
+  }>;
   trend_tonnage_per_month: number;
   conclusion: string;
   confidence: string;
@@ -139,7 +144,7 @@ export interface SpeciesTrajectory {
 export interface TimelinePoint {
   day: number;
   value: number;
-  kind: "recorded" | "forecast";
+  kind: 'recorded' | 'forecast';
 }
 
 export interface TimelineResponse {
@@ -187,9 +192,9 @@ export interface TreatmentPlant {
   region: string;
   lat: number;
   lng: number;
-  type: "STP" | "ETP";
+  type: 'STP' | 'ETP';
   discharge_mld: number;
-  compliance: "compliant" | "non-compliant" | "under-review";
+  compliance: 'compliant' | 'non-compliant' | 'under-review';
   last_inspected: string;
 }
 
@@ -223,7 +228,12 @@ export interface ComplianceTrendResponse {
 }
 
 export interface VesselActivityResponse {
-  zones: { zone_id: string; zone_name: string; violation_ticks: number; total_ticks: number }[];
+  zones: {
+    zone_id: string;
+    zone_name: string;
+    violation_ticks: number;
+    total_ticks: number;
+  }[];
   samples_per_vessel_loop: number;
   methodology: string;
 }

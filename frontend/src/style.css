@@ -1,5 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap");
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,500;0,9..144,600;1,9..144,500&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap');
+@import 'tailwindcss';
 
 :root {
   --bg: #f5f8f8;
@@ -17,9 +17,9 @@
   --text: #0f2620;
   --muted: #5c7370;
   --shadow: 0 1px 2px rgba(15, 38, 32, 0.05), 0 6px 18px rgba(15, 38, 32, 0.06);
-  --font-display: "Fraunces", serif;
-  --font-mono: "IBM Plex Mono", monospace;
-  --font-body: "Inter", sans-serif;
+  --font-display: 'Fraunces', serif;
+  --font-mono: 'IBM Plex Mono', monospace;
+  --font-body: 'Inter', sans-serif;
 }
 
 * {
