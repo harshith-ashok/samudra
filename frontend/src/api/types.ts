@@ -1,5 +1,17 @@
 export type StationType = 'buoy' | 'edna' | 'advisory' | 'coral';
 
+export interface OceanPointEstimate {
+  lat: number;
+  lng: number;
+  sst_c: number;
+  salinity_psu: number;
+  chlorophyll_mg_m3: number;
+  nearest_station: string;
+  nearest_station_km: number;
+  stations_used: number;
+  methodology: string;
+}
+
 export interface StationSummary {
   id: string;
   name: string;

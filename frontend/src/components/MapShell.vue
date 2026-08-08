@@ -11,6 +11,7 @@ import L from 'leaflet';
 import 'leaflet.markercluster';
 import gsap from 'gsap';
 import {
+  getOceanPoint,
   getPollution,
   getSpecies,
   getStation,
@@ -23,6 +24,7 @@ import {
 import type {
   MapRegion,
   NlqResponse,
+  OceanPointEstimate,
   Species,
   SpeciesTrajectory,
   StationDetail,
@@ -39,6 +41,7 @@ import Analytics from './Analytics.vue';
 import GlossaryPanel from './GlossaryPanel.vue';
 import VesselDetail from './VesselDetail.vue';
 import ImpactCard from './ImpactCard.vue';
+import OceanPointCard from './OceanPointCard.vue';
 import GuidedIntro from './GuidedIntro.vue';
 import ModuleRail, { type ModuleDef } from './ModuleRail.vue';
 import LayerPanel, { type KpiDef, type LayerDef } from './LayerPanel.vue';
@@ -77,6 +80,10 @@ const speciesCount = ref(0);
 const stateCount = computed(
   () => new Set(stations.value.map((s) => s.state)).size
 );
+const oceanPointClick = ref<{ lat: number; lng: number } | null>(null);
+const oceanPointResult = ref<OceanPointEstimate | null>(null);
+const oceanPointLoading = ref(false);
+const oceanPointError = ref<string | null>(null);
 const showIntro = ref(false);
 const activePanel = ref<PanelKey>(null);
 const clock = ref('');
@@ -222,6 +229,7 @@ const coralCircles: Record<string, L.Circle> = {}; // reef stress-zone overlays,
 const vesselMarkers: Record<string, L.CircleMarker> = {};
 let trajectoryLayer: L.LayerGroup | null = null; // one species' movement path, drawn from the Movement Trends panel
 let regionHighlightLayer: L.LayerGroup | null = null; // temporary area(s) an AI Assistant answer is grounded in (Phase 24)
+let oceanPointMarker: L.CircleMarker | null = null; // temporary marker at the last clicked open-water point
 let mpaPolygonsDrawn = false;
 let clockTimer: number | undefined;
 let vesselPollTimer: number | undefined;
@@ -268,6 +276,7 @@ async function initMap() {
   });
   trajectoryLayer = L.layerGroup().addTo(map);
   regionHighlightLayer = L.layerGroup().addTo(map);
+  map.on('click', onMapClick);
 
   // One shared cluster group across all station types — with 20+ stations,
   // per-type layer groups left dense clumps (Lakshadweep, Gujarat, Kerala) that
@@ -593,6 +602,56 @@ function onChatRegions(mapRegions: MapRegion[]) {
   }
 }
 
+// Distinct from both the AI region-highlight purple and every station/vessel
+// color, so a clicked point reads as "you asked about this spot," not as
+// another permanent layer.
+const OCEAN_POINT_COLOR = '#1D6FD6';
+
+function onMapClick(e: L.LeafletMouseEvent) {
+  // Leaflet's map 'click' still fires the DOM click that a marker/polygon
+  // already handled itself — checking the actual target's class is the only
+  // reliable way to tell "clicked open water" from "clicked a station/vessel/
+  // MPA/region-highlight layer" apart, since those don't stopPropagation.
+  const target = e.originalEvent.target as HTMLElement;
+  if (target.closest('.leaflet-interactive')) return;
+  queryOceanPoint(e.latlng.lat, e.latlng.lng);
+}
+
+async function queryOceanPoint(lat: number, lng: number) {
+  if (!map) return;
+  oceanPointClick.value = { lat, lng };
+  oceanPointResult.value = null;
+  oceanPointError.value = null;
+  oceanPointLoading.value = true;
+
+  if (oceanPointMarker) map.removeLayer(oceanPointMarker);
+  oceanPointMarker = L.circleMarker([lat, lng], {
+    radius: 0,
+    color: '#FFFFFF',
+    weight: 2,
+    fillColor: OCEAN_POINT_COLOR,
+    fillOpacity: 0.95,
+  }).addTo(map);
+  pulseMarker(oceanPointMarker, 7);
+
+  try {
+    oceanPointResult.value = await getOceanPoint(lat, lng);
+  } catch (err) {
+    oceanPointError.value = err instanceof Error ? err.message : String(err);
+  } finally {
+    oceanPointLoading.value = false;
+  }
+}
+
+function closeOceanPoint() {
+  oceanPointClick.value = null;
+  oceanPointResult.value = null;
+  oceanPointError.value = null;
+  oceanPointLoading.value = false;
+  if (map && oceanPointMarker) map.removeLayer(oceanPointMarker);
+  oceanPointMarker = null;
+}
+
 function toggleLayer(key: string) {
   if (!map) return;
   layerVisible.value[key] = !layerVisible.value[key];
@@ -881,6 +940,16 @@ onBeforeUnmount(() => {
     :station-count="stations.length"
     :state-count="stateCount"
     :species-count="speciesCount"
+  />
+
+  <OceanPointCard
+    v-if="oceanPointClick"
+    :lat="oceanPointClick.lat"
+    :lng="oceanPointClick.lng"
+    :loading="oceanPointLoading"
+    :error="oceanPointError"
+    :point="oceanPointResult"
+    @close="closeOceanPoint"
   />
 
   <TimelineScrubber @change="onTimelineChange" />

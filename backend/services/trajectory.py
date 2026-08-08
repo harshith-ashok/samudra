@@ -57,7 +57,7 @@ import numpy as np
 import searoute as sr
 from global_land_mask import globe
 
-from services import conclusions, confidence, data
+from services import conclusions, confidence, data, geo
 
 SMOOTHING_ALPHA = 0.5
 FORECAST_YEARS = 5
@@ -82,14 +82,6 @@ def _bearing_label(lat1: float, lng1: float, lat2: float, lng2: float) -> str:
     bearing = (math.degrees(math.atan2(x, y)) + 360) % 360
     labels = ["N", "NNE", "NE", "ENE", "E", "ESE", "SE", "SSE", "S", "SSW", "SW", "WSW", "W", "WNW", "NW", "NNW"]
     return labels[round(bearing / 22.5) % 16]
-
-
-def _haversine_km(lat1: float, lng1: float, lat2: float, lng2: float) -> float:
-    r = 6371.0
-    lat1r, lat2r = math.radians(lat1), math.radians(lat2)
-    dlat, dlng = math.radians(lat2 - lat1), math.radians(lng2 - lng1)
-    a = math.sin(dlat / 2) ** 2 + math.cos(lat1r) * math.cos(lat2r) * math.sin(dlng / 2) ** 2
-    return 2 * r * math.asin(math.sqrt(a))
 
 
 def _nearest_water(lat: float, lng: float, max_radius_deg: float, step_deg: float = 0.02) -> tuple[float, float] | None:
@@ -245,7 +237,7 @@ def trajectory(query_species_id: str) -> dict:
     route_historical = route_segments_between(smoothed)
     route_forecast = route_segments_between([smoothed[-1], *forecast])
 
-    drift_km = round(_haversine_km(smoothed[0]["lat"], smoothed[0]["lng"], smoothed[-1]["lat"], smoothed[-1]["lng"]), 1)
+    drift_km = round(geo.haversine_km(smoothed[0]["lat"], smoothed[0]["lng"], smoothed[-1]["lat"], smoothed[-1]["lng"]), 1)
     direction = _bearing_label(smoothed[0]["lat"], smoothed[0]["lng"], smoothed[-1]["lat"], smoothed[-1]["lng"])
 
     confidence_label = "low" if len(years) < 5 else "medium"

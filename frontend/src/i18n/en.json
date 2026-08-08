@@ -165,6 +165,14 @@
     "today": "today",
     "daysForecast": "+{n}d forecast"
   },
+  "oceanPoint": {
+    "title": "Point Reading",
+    "loading": "Estimating from nearby stations…",
+    "sst": "Sea surface temp",
+    "salinity": "Salinity",
+    "chlorophyll": "Chlorophyll-a",
+    "nearestStation": "Nearest station"
+  },
   "chat": {
     "welcome": "Hi, I'm the SAMUDRA research assistant. Ask about a region, species, or advisory — I query ocean sensor, fisheries and eDNA records together.",
     "preset1": "Why is sardine catch declining off Kerala?",

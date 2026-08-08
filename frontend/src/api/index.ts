@@ -8,6 +8,7 @@ import type {
   ComplianceTrendResponse,
   GlossaryEntry,
   NlqResponse,
+  OceanPointEstimate,
   RangeShift,
   Species,
   SpeciesTrajectory,
@@ -138,3 +139,17 @@ export const getComplianceTrend = () =>
   getJSON<ComplianceTrendResponse>('/api/analytics/compliance-trend');
 export const getVesselActivity = () =>
   getJSON<VesselActivityResponse>('/api/analytics/vessel-activity');
+
+// Bespoke fetch (not getJSON) because the caller needs the actual reason a
+// point was rejected (on land vs. too far from any station) to show the
+// user something more useful than a generic "404" — FastAPI puts that in
+// the JSON body's `detail`, which getJSON's generic error doesn't surface.
+export async function getOceanPoint(
+  lat: number,
+  lng: number
+): Promise<OceanPointEstimate> {
+  const res = await fetch(`${API_BASE}/api/point?lat=${lat}&lng=${lng}`);
+  const body = await res.json();
+  if (!res.ok) throw new Error(body.detail || `GET /api/point failed: ${res.status}`);
+  return body.data as OceanPointEstimate;
+}
