@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { nextTick, onBeforeUnmount, ref } from 'vue';
 import { postChat, postSttTranscribe, postTranslate } from '../api';
-import type { StationDetail } from '../api/types';
+import type { MapRegion, StationDetail } from '../api/types';
 import type { LanguageOption } from '../composables/useLanguage';
 import { useI18n, tEnglish } from '../composables/useI18n';
 import { useVoiceRecorder } from '../composables/useVoiceRecorder';
@@ -11,6 +11,7 @@ const props = defineProps<{
   stationContext: StationDetail | null;
   speciesContext?: unknown | null;
 }>();
+const emit = defineEmits<{ (e: 'regions', regions: MapRegion[]): void }>();
 
 const { t, currentLanguage } = useI18n();
 
@@ -54,6 +55,7 @@ async function sendMessage(displayMessage: string, englishMessage: string) {
   log.value.push({ role: 'user', text: displayMessage });
   log.value.push({ role: 'ai', text: '···', pending: true });
   const pendingIndex = log.value.length - 1;
+  emit('regions', []); // clear any highlight from a previous answer while this one's pending
   await scrollToBottom();
 
   try {
@@ -66,6 +68,7 @@ async function sendMessage(displayMessage: string, englishMessage: string) {
     entry.originalText = result.answer;
     entry.translations = { en: result.answer };
     entry.sources = result.sources;
+    emit('regions', result.regions);
     if (currentLanguage.value === 'en') {
       entry.text = result.answer;
       entry.displayLang = 'en';

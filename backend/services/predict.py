@@ -6,7 +6,7 @@ frontend/judges can see exactly what ran.
 
 import numpy as np
 
-from services import conclusions, data
+from services import conclusions, confidence, data
 
 
 def _common_name(species: str) -> str | None:
@@ -66,7 +66,8 @@ def stock_forecast(
     forecast_hi = np.maximum(0.0, forecast_hi)
 
     direction = "rising" if slope > 0.5 else "falling" if slope < -0.5 else "roughly flat"
-    confidence = "low" if len(records) < 6 else "medium" if len(records) < 12 else "high"
+    confidence_label = "low" if len(records) < 6 else "medium" if len(records) < 12 else "high"
+    confidence_pct = confidence.pct_from_count(len(records), full_at=12)
     common = _common_name(species)
     species_label = f"{species} ({common})" if common else species
     scenario_active = bool(sst_delta) or fishing_pressure != 1.0
@@ -81,7 +82,7 @@ def stock_forecast(
         f"{direction} at {abs(round(float(slope), 1))} tonnes/month, projecting {round(float(forecast_mean[0]), 0)} "
         f"tonnes next month (80% CI {round(float(forecast_lo[0]), 0)}-{round(float(forecast_hi[0]), 0)})."
         f"{scenario_note}",
-        confidence,
+        confidence_label,
     )
 
     return {
@@ -99,7 +100,8 @@ def stock_forecast(
         ],
         "trend_tonnage_per_month": round(float(slope), 2),
         "conclusion": conclusion,
-        "confidence": confidence,
+        "confidence": confidence_label,
+        "confidence_pct": confidence_pct,
         "methodology": "Linear regression (numpy polyfit, degree 1) of monthly catch tonnage vs. time; 80% CI band widens linearly with forecast horizon. Trend-extrapolation only, not a stock assessment.",
         "source": "simulated catch records (CMFRI-shaped)",
         "scenario": {
@@ -143,11 +145,12 @@ def bleaching_risk(station_id: str) -> dict:
         alert = "No Stress"
 
     risk_pct = round(min(100, dhw / 8 * 100), 1)
-    confidence = "medium" if n_weeks < 8 else "high"
+    confidence_label = "medium" if n_weeks < 8 else "high"
+    confidence_pct = confidence.pct_from_count(n_weeks, full_at=8)
     conclusion = conclusions.conclude(
         f"{st['name']} has accumulated {dhw} Degree Heating Weeks over the trailing {n_weeks} weeks, "
         f"putting it at '{alert}' ({risk_pct}% of the alert-2 threshold). Baseline SST proxy {round(baseline, 1)}C, latest reading {st['latest']['sst_c']}C.",
-        confidence,
+        confidence_label,
     )
 
     return {
@@ -160,7 +163,8 @@ def bleaching_risk(station_id: str) -> dict:
         "threshold_sst_c": round(threshold, 2),
         "latest_sst_c": st["latest"]["sst_c"],
         "conclusion": conclusion,
-        "confidence": confidence,
+        "confidence": confidence_label,
+        "confidence_pct": confidence_pct,
         "methodology": "Degree Heating Weeks: sum of weekly-mean SST minus (baseline + 1°C) for weeks above threshold, over the trailing 12 weeks (NOAA Coral Reef Watch-style). Baseline here is a 2-week-early-window proxy, not a multi-year climatology.",
         "source": st["source"],
     }
@@ -200,7 +204,11 @@ def range_shift(species: str, sst_delta: float = 0.0) -> dict:
     projected_lats = anchor_lat + scenario_slope * (future_years - last_year)
 
     direction = "northward (poleward)" if slope > 0 else "southward (equatorward)" if slope < 0 else "no clear shift"
-    confidence = "low" if len(series) < 5 else "medium"
+    confidence_label = "low" if len(series) < 5 else "medium"
+    # This label logic never reaches "high" — full_at=10 is a reasonable
+    # illustrative ceiling for the percentage, not a claim that 10 years
+    # would actually earn a "high" label above.
+    confidence_pct = confidence.pct_from_count(len(series), full_at=10)
     scenario_active = bool(sst_delta)
     scenario_note = (
         f" Simulated what-if scenario applied: SST anomaly {sst_delta:+.1f}°C scales the projected drift velocity "
@@ -211,7 +219,7 @@ def range_shift(species: str, sst_delta: float = 0.0) -> dict:
     conclusion = conclusions.conclude(
         f"Yearly mean occurrence latitude for {matched_key} across {len(series)} years of OBIS/GBIF records "
         f"trends {direction} at {abs(round(float(slope), 3))} degrees latitude/year.{scenario_note}",
-        confidence,
+        confidence_label,
     )
 
     return {
@@ -224,7 +232,8 @@ def range_shift(species: str, sst_delta: float = 0.0) -> dict:
         "slope_deg_lat_per_year": round(float(slope), 4),
         "direction": direction,
         "conclusion": conclusion,
-        "confidence": confidence,
+        "confidence": confidence_label,
+        "confidence_pct": confidence_pct,
         "methodology": "Linear regression (numpy polyfit) of yearly mean occurrence latitude (OBIS/GBIF, Indian EEZ bbox) vs. year, projected 5 years forward. A basic correlation, not a species distribution model.",
         "source": "OBIS/GBIF real occurrence records",
         "scenario": {"active": scenario_active, "sst_delta_c": sst_delta},

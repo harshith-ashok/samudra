@@ -71,7 +71,8 @@
   },
   "glossaryPanel": {
     "intro": "Plain-language notes on every metric and layer used in SAMUDRA — for a quick skim instead of hunting for the (i) icons.",
-    "whyItMatters": "Why it matters:"
+    "whyItMatters": "Why it matters:",
+    "details": "Details:"
   },
   "infoTip": {
     "about": "About {title}"

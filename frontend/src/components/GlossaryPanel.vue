@@ -15,6 +15,9 @@ const { t } = useI18n();
       <p class="entry-why">
         <b>{{ t('glossaryPanel.whyItMatters') }}</b> {{ e.why_it_matters }}
       </p>
+      <p v-if="e.details" class="entry-details">
+        <b>{{ t('glossaryPanel.details') }}</b> {{ e.details }}
+      </p>
     </div>
   </div>
 </template>
@@ -53,5 +56,17 @@ const { t } = useI18n();
 .entry-why b {
   color: var(--text);
   font-weight: 600;
+}
+.entry-details {
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin-top: 5px;
+  font-family: var(--font-mono);
+}
+.entry-details b {
+  color: var(--text);
+  font-weight: 600;
+  font-family: var(--font-body);
 }
 </style>

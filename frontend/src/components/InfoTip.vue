@@ -38,6 +38,9 @@ function close() {
       <p class="info-tip-why">
         <b>{{ t('glossaryPanel.whyItMatters') }}</b> {{ entry.why_it_matters }}
       </p>
+      <p v-if="entry.details" class="info-tip-details">
+        <b>{{ t('glossaryPanel.details') }}</b> {{ entry.details }}
+      </p>
     </div>
   </span>
 </template>
@@ -75,7 +78,7 @@ function close() {
   bottom: calc(100% + 8px);
   left: 50%;
   transform: translateX(-50%);
-  width: 240px;
+  width: 270px;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 9px;
@@ -103,6 +106,18 @@ function close() {
   color: var(--muted);
 }
 .info-tip-why b {
+  color: var(--text);
+  font-weight: 600;
+}
+.info-tip-details {
+  font-size: 10.5px;
+  line-height: 1.5;
+  color: var(--muted);
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--border);
+}
+.info-tip-details b {
   color: var(--text);
   font-weight: 600;
 }

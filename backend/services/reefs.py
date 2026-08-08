@@ -16,7 +16,7 @@ it's illustrative:
 
 import numpy as np
 
-from services import conclusions, data
+from services import conclusions, confidence, data
 
 WEIGHTS = {"dhw": 0.60, "chlorophyll_trend": 0.25, "historical_frequency": 0.15}
 
@@ -198,7 +198,8 @@ def bleaching_trend(station_id: str, sst_delta: float = 0.0, chlorophyll_delta: 
         },
     ]
 
-    confidence = "medium" if len(weeks) < 8 else "high"
+    confidence_label = "medium" if len(weeks) < 8 else "high"
+    confidence_pct = confidence.pct_from_count(len(weeks), full_at=8)
     threshold_countdown = _time_to_next_alert(composite, weeks, chl_stress, freq_norm)
     scenario_active = bool(sst_delta) or bool(chlorophyll_delta)
     scenario_note = (
@@ -212,7 +213,7 @@ def bleaching_trend(station_id: str, sst_delta: float = 0.0, chlorophyll_delta: 
         f"DHW {final_dhw} contributes {factors[0]['contribution_pct']} pts, chlorophyll drift of "
         f"{chl_total_change} mg/m3 contributes {factors[1]['contribution_pct']} pts, historical bleaching "
         f"frequency ({len(events)} known events) contributes {factors[2]['contribution_pct']} pts.{scenario_note}",
-        confidence,
+        confidence_label,
     )
 
     return {
@@ -225,7 +226,8 @@ def bleaching_trend(station_id: str, sst_delta: float = 0.0, chlorophyll_delta: 
         "alert_level": alert,
         "factors": factors,
         "conclusion": conclusion,
-        "confidence": confidence,
+        "confidence": confidence_label,
+        "confidence_pct": confidence_pct,
         "threshold_countdown": threshold_countdown,
         "methodology": (
             "Composite = 60% Degree Heating Weeks (NOAA Coral Reef Watch-style, trailing weeks of recorded SST) "

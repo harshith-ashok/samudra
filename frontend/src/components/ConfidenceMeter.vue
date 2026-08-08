@@ -2,7 +2,7 @@
 import { computed } from 'vue';
 import { useI18n } from '../composables/useI18n';
 
-const props = defineProps<{ confidence: string }>();
+const props = defineProps<{ confidence: string; confidencePct?: number }>();
 const { t } = useI18n();
 
 // Any confidence string the backend hasn't standardized to low/medium/high yet
@@ -16,9 +16,11 @@ const LEVELS: Record<string, { fill: number; labelKey: string }> = {
 
 const level = computed(() => {
   const found = LEVELS[props.confidence.toLowerCase()];
+  const label = found ? t(found.labelKey) : props.confidence;
   return {
     fill: found?.fill ?? 1,
-    label: found ? t(found.labelKey) : props.confidence,
+    label:
+      props.confidencePct === undefined ? label : `${label} (${Math.round(props.confidencePct)}%)`,
   };
 });
 </script>

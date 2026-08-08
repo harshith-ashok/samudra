@@ -57,7 +57,7 @@ import numpy as np
 import searoute as sr
 from global_land_mask import globe
 
-from services import conclusions, data
+from services import conclusions, confidence, data
 
 SMOOTHING_ALPHA = 0.5
 FORECAST_YEARS = 5
@@ -248,12 +248,16 @@ def trajectory(query_species_id: str) -> dict:
     drift_km = round(_haversine_km(smoothed[0]["lat"], smoothed[0]["lng"], smoothed[-1]["lat"], smoothed[-1]["lng"]), 1)
     direction = _bearing_label(smoothed[0]["lat"], smoothed[0]["lng"], smoothed[-1]["lat"], smoothed[-1]["lng"])
 
-    confidence = "low" if len(years) < 5 else "medium"
+    confidence_label = "low" if len(years) < 5 else "medium"
+    # Same "never reaches high" situation as predict.range_shift — full_at=10
+    # is an illustrative ceiling for the percentage, not a claim that the
+    # label logic above would call 10 years "high".
+    confidence_pct = confidence.pct_from_count(len(years), full_at=10)
     conclusion = conclusions.conclude(
         f"{common} ({sci}) occurrence centroid drifted about {drift_km} km {direction} across {len(years)} years "
         f"of OBIS/GBIF records ({years[0]}-{years[-1]}), and the recent velocity vector projects it continuing "
         f"{direction} over the next {FORECAST_YEARS} years.",
-        confidence,
+        confidence_label,
     )
 
     correction_note = ""
@@ -274,7 +278,8 @@ def trajectory(query_species_id: str) -> dict:
         "drift_km": drift_km,
         "direction": direction,
         "conclusion": conclusion,
-        "confidence": confidence,
+        "confidence": confidence_label,
+        "confidence_pct": confidence_pct,
         "methodology": (
             f"Per-year mean lat/lng centroid of real OBIS/GBIF occurrence records, smoothed with exponential "
             f"smoothing (alpha={SMOOTHING_ALPHA}) to reduce year-to-year sampling noise, then extrapolated "

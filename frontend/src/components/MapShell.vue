@@ -21,6 +21,7 @@ import {
   postTranslate,
 } from '../api';
 import type {
+  MapRegion,
   NlqResponse,
   Species,
   SpeciesTrajectory,
@@ -220,6 +221,7 @@ const stationBaseRadius: Record<string, number> = {};
 const coralCircles: Record<string, L.Circle> = {}; // reef stress-zone overlays, resized/darkened as the timeline scrubs SST (Phase 16/18)
 const vesselMarkers: Record<string, L.CircleMarker> = {};
 let trajectoryLayer: L.LayerGroup | null = null; // one species' movement path, drawn from the Movement Trends panel
+let regionHighlightLayer: L.LayerGroup | null = null; // temporary area(s) an AI Assistant answer is grounded in (Phase 24)
 let mpaPolygonsDrawn = false;
 let clockTimer: number | undefined;
 let vesselPollTimer: number | undefined;
@@ -265,6 +267,7 @@ async function initMap() {
     radiusLayers[key] = L.layerGroup().addTo(map!);
   });
   trajectoryLayer = L.layerGroup().addTo(map);
+  regionHighlightLayer = L.layerGroup().addTo(map);
 
   // One shared cluster group across all station types — with 20+ stations,
   // per-type layer groups left dense clumps (Lakshadweep, Gujarat, Kerala) that
@@ -533,6 +536,63 @@ function onSpeciesTrajectory(t: SpeciesTrajectory | null) {
   });
 }
 
+// A distinct color from every other layer on the map — this is meant to read
+// as "the AI Assistant is pointing at this," not blend in with the
+// permanent advisory/coral/vessel styling.
+const REGION_HIGHLIGHT_COLOR = '#7C3AED';
+
+function onChatRegions(mapRegions: MapRegion[]) {
+  if (!map || !regionHighlightLayer) return;
+  regionHighlightLayer.clearLayers();
+  if (!mapRegions.length) return;
+
+  const drawn: (L.Polygon | L.Circle)[] = [];
+  mapRegions.forEach((region) => {
+    const tooltip = region.approximate
+      ? `<b>${region.name}</b><br>approximate area`
+      : `<b>${region.name}</b>`;
+    let layer: L.Polygon | L.Circle;
+    if (region.kind === 'polygon') {
+      layer = L.polygon(region.polygon, {
+        color: REGION_HIGHLIGHT_COLOR,
+        weight: 2,
+        fillColor: REGION_HIGHLIGHT_COLOR,
+        fillOpacity: 0,
+        dashArray: '6,5',
+      });
+    } else {
+      layer = L.circle([region.lat, region.lng], {
+        radius: region.radius_km * 1000,
+        color: REGION_HIGHLIGHT_COLOR,
+        weight: 2,
+        fillColor: REGION_HIGHLIGHT_COLOR,
+        fillOpacity: 0,
+        dashArray: '6,5',
+      });
+    }
+    layer.bindTooltip(tooltip, { direction: 'center', sticky: true });
+    layer.addTo(regionHighlightLayer!);
+    drawn.push(layer);
+  });
+
+  // Fade the fill in rather than snapping it on — same "temporary, not just
+  // another static layer" treatment as the marker pulse-on-load.
+  drawn.forEach((layer) => {
+    const proxy = { opacity: 0 };
+    gsap.to(proxy, {
+      opacity: 0.16,
+      duration: 0.4,
+      ease: 'power1.out',
+      onUpdate: () => layer.setStyle({ fillOpacity: proxy.opacity }),
+    });
+  });
+
+  const bounds = L.featureGroup(drawn).getBounds();
+  if (bounds.isValid()) {
+    map.flyToBounds(bounds, { padding: [60, 60], maxZoom: 8, duration: 0.8 });
+  }
+}
+
 function toggleLayer(key: string) {
   if (!map) return;
   layerVisible.value[key] = !layerVisible.value[key];
@@ -580,6 +640,7 @@ function closePanel() {
 }
 
 watch(activePanel, async (panel) => {
+  if (panel !== 'ai') onChatRegions([]); // highlight is only meaningful while the chat is open
   await nextTick();
   if (!panelEl.value) return;
   const closedX = panelEl.value.getBoundingClientRect().width;
@@ -843,6 +904,7 @@ onBeforeUnmount(() => {
         ref="aiChatRef"
         :station-context="selectedStation"
         :species-context="speciesChatContext"
+        @regions="onChatRegions"
       />
       <SpeciesExplorer
         v-if="activePanel === 'species'"

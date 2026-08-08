@@ -422,7 +422,10 @@ onBeforeUnmount(() => {
             }}{{ scenarioUpdating ? t('predictive.updating') : '' }}
           </div>
           <p class="conclusion">{{ stock.conclusion }}</p>
-          <ConfidenceMeter :confidence="stock.confidence" />
+          <ConfidenceMeter
+            :confidence="stock.confidence"
+            :confidence-pct="stock.confidence_pct"
+          />
           <div class="sub">
             {{
               t('predictive.monthProjection', {
@@ -449,7 +452,10 @@ onBeforeUnmount(() => {
           }}{{ scenarioUpdating ? t('predictive.updating') : '' }}
         </div>
         <p class="conclusion">{{ bleaching.conclusion }}</p>
-        <ConfidenceMeter :confidence="bleaching.confidence" />
+        <ConfidenceMeter
+          :confidence="bleaching.confidence"
+          :confidence-pct="bleaching.confidence_pct"
+        />
         <div class="sub">
           {{ t('predictive.compositeScore') }}
           <b class="coral-text">{{ bleaching.composite_score }}/100</b> ·
@@ -494,7 +500,10 @@ onBeforeUnmount(() => {
           }}{{ scenarioUpdating ? t('predictive.updating') : '' }}
         </div>
         <p class="conclusion">{{ rangeA.conclusion }}</p>
-        <ConfidenceMeter :confidence="rangeA.confidence" />
+        <ConfidenceMeter
+          :confidence="rangeA.confidence"
+          :confidence-pct="rangeA.confidence_pct"
+        />
         <div class="sub">{{ t('predictive.observedProjection') }}</div>
         <canvas ref="rangeCanvas" height="140"></canvas>
         <p class="methodology">{{ rangeA.methodology }}</p>

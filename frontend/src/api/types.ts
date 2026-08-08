@@ -53,9 +53,28 @@ export interface Advisory {
   severity: 'low' | 'medium' | 'high';
 }
 
+export interface MapRegionPolygon {
+  name: string;
+  kind: 'polygon';
+  polygon: [number, number][];
+  approximate: boolean;
+}
+
+export interface MapRegionCircle {
+  name: string;
+  kind: 'circle';
+  lat: number;
+  lng: number;
+  radius_km: number;
+  approximate: boolean;
+}
+
+export type MapRegion = MapRegionPolygon | MapRegionCircle;
+
 export interface ChatResponse {
   answer: string;
   sources: string[];
+  regions: MapRegion[];
 }
 
 export interface NlqResponse {
@@ -85,6 +104,7 @@ export interface StockForecast {
   trend_tonnage_per_month: number;
   conclusion: string;
   confidence: string;
+  confidence_pct: number;
   methodology: string;
   source: string;
   scenario: ScenarioMeta;
@@ -140,6 +160,7 @@ export interface BleachingTrend {
   factors: BleachingFactor[];
   conclusion: string;
   confidence: string;
+  confidence_pct: number;
   threshold_countdown: ThresholdCountdown;
   methodology: string;
   source: string;
@@ -169,6 +190,7 @@ export interface SpeciesTrajectory {
   direction: string;
   conclusion: string;
   confidence: string;
+  confidence_pct: number;
   methodology: string;
   source: string;
 }
@@ -275,6 +297,7 @@ export interface GlossaryEntry {
   title: string;
   what_it_is: string;
   why_it_matters: string;
+  details?: string;
 }
 
 export interface RangeShift {
@@ -285,6 +308,7 @@ export interface RangeShift {
   direction: string;
   conclusion: string;
   confidence: string;
+  confidence_pct: number;
   methodology: string;
   source: string;
   scenario: ScenarioMeta;

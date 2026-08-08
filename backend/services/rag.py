@@ -9,7 +9,7 @@ one call, not two separate pipelines bolted together after the fact.
 
 import json
 
-from services import embed, llm, tools
+from services import embed, llm, regions, tools
 
 SYSTEM_PROMPT = """You are the SAMUDRA research assistant, unifying ocean sensor, \
 fisheries, and biodiversity/eDNA data for the Indian coast.
@@ -59,21 +59,37 @@ def answer(message: str, station_context: dict | None = None, species_context: d
         )
     messages.append({"role": "user", "content": message})
 
+    # Regions to (maybe) highlight on the map — grounded in what the TOOL
+    # CALLS actually returned, not parsed from the model's free-text answer.
+    # See services/regions.py's module docstring for why: it's the only way
+    # to guarantee this only fires for the "specific set of questions" that
+    # touch real region-tagged data, never a hallucinated or passing mention.
+    touched_regions: set[str] = set()
+
     for _ in range(MAX_TOOL_ROUNDS):
         response = llm.chat(messages, tools=tools.TOOL_SPECS)
         msg = response.message
         messages.append(msg.model_dump(exclude_none=True))
 
         if not msg.tool_calls:
-            return {"answer": msg.content or "", "sources": sources}
+            return {
+                "answer": msg.content or "",
+                "sources": sources,
+                "regions": regions.resolve_many(touched_regions),
+            }
 
         for call in msg.tool_calls:
             result = tools.run_tool(call.function.name, dict(call.function.arguments))
             sources.append(f"tool:{call.function.name}({dict(call.function.arguments)})")
+            touched_regions |= regions.extract_region_names(result)
             messages.append(
                 {"role": "tool", "tool_name": call.function.name, "content": json.dumps(result, default=str)}
             )
 
     # ran out of tool rounds — force a final answer with no more tool access
     final = llm.chat(messages)
-    return {"answer": final.message.content or "", "sources": sources}
+    return {
+        "answer": final.message.content or "",
+        "sources": sources,
+        "regions": regions.resolve_many(touched_regions),
+    }

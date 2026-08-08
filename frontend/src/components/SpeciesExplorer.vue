@@ -211,7 +211,10 @@ onBeforeUnmount(() => {
         <p v-else-if="trajectoryError" class="error">{{ trajectoryError }}</p>
         <template v-else-if="trajectory">
           <p class="conclusion">{{ trajectory.conclusion }}</p>
-          <ConfidenceMeter :confidence="trajectory.confidence" />
+          <ConfidenceMeter
+            :confidence="trajectory.confidence"
+            :confidence-pct="trajectory.confidence_pct"
+          />
           <div class="sub">
             {{ t('species.drifted') }}
             <b>{{ trajectory.drift_km }} km {{ trajectory.direction }}</b> ·
