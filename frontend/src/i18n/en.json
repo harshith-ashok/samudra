@@ -187,5 +187,80 @@
     "unreachable": "Couldn't reach the SAMUDRA backend / gpt-oss model. Make sure the backend is running (uv run main.py) and Ollama has gpt-oss:120b-cloud available.",
     "micError": "Couldn't transcribe — is the backend running?",
     "micDenied": "Microphone access denied or unavailable."
+  },
+  "datasets": {
+    "pageTitle": "Data Dashboard",
+    "backToMap": "‹ Back to map",
+    "navLabel": "Data Dashboard",
+    "recordCount": "{count} records",
+    "searchPlaceholder": "Search this dataset…",
+    "sortBy": "Sort by",
+    "ascending": "Ascending",
+    "descending": "Descending",
+    "noResults": "No records match your search.",
+    "loading": "Loading…",
+    "error": "Couldn't reach the SAMUDRA backend.",
+    "correlationTitle": "Correlate parameters",
+    "correlationUnavailable": "This dataset doesn't have two numeric parameters to correlate.",
+    "xAxis": "X parameter",
+    "yAxis": "Y parameter",
+    "correlationR": "Pearson r = {r}",
+    "correlationN": "{n} paired records",
+    "source": "Source",
+    "catalog": {
+      "stations": {
+        "name": "Ocean sensor stations",
+        "description": "Live buoy, eDNA, advisory, and coral monitoring points along the Indian coastline."
+      },
+      "species": {
+        "name": "Species registry",
+        "description": "Species tracked across the platform, with region and IUCN conservation status."
+      },
+      "catch_records": {
+        "name": "Fisheries catch records",
+        "description": "Monthly catch tonnage by species and region, paired with sea surface temperature."
+      },
+      "biodiversity": {
+        "name": "Biodiversity & eDNA detections",
+        "description": "Species occurrence records and eDNA detections, real survey data plus simulated eDNA matches."
+      },
+      "advisories": {
+        "name": "Fishing advisories",
+        "description": "Active and resolved advisory notices by region and species."
+      },
+      "pollution": {
+        "name": "Coastal treatment plants",
+        "description": "STP/ETP discharge and compliance status for coastal treatment plants."
+      }
+    },
+    "fields": {
+      "id": "ID",
+      "name": "Name",
+      "type": "Type",
+      "state": "State",
+      "sst_c": "SST (°C)",
+      "salinity_psu": "Salinity (psu)",
+      "chlorophyll_mg_m3": "Chlorophyll-a (mg/m³)",
+      "sci": "Scientific name",
+      "common": "Common name",
+      "region": "Region",
+      "status": "Status",
+      "species": "Species",
+      "date": "Date",
+      "tonnage": "Tonnage",
+      "advisory_status": "Advisory status",
+      "scientific_name": "Scientific name",
+      "common_name": "Common name",
+      "method": "Method",
+      "conservation_status": "Conservation status",
+      "confidence": "Confidence",
+      "year": "Year",
+      "issued": "Issued",
+      "severity": "Severity",
+      "city": "City",
+      "discharge_mld": "Discharge (MLD)",
+      "compliance": "Compliance",
+      "last_inspected": "Last inspected"
+    }
   }
 }

@@ -312,6 +312,38 @@ export interface GlossaryEntry {
   details?: string;
 }
 
+export type DatasetFieldType = 'string' | 'category' | 'number' | 'date';
+
+export interface DatasetSummary {
+  id: string;
+  record_count: number;
+  fields: Record<string, DatasetFieldType>;
+  search_fields: string[];
+  numeric_fields: string[];
+  default_sort: string;
+  correlatable: boolean;
+  source: string;
+}
+
+export type DatasetRecord = Record<string, string | number | boolean | null>;
+
+export interface DatasetRecordsResponse {
+  rows: DatasetRecord[];
+  total: number;
+  sort: string;
+  order: 'asc' | 'desc';
+}
+
+export interface DatasetCorrelation {
+  dataset: string;
+  x: string;
+  y: string;
+  points: { x: number; y: number; label: string }[];
+  correlation_r: number;
+  n: number;
+  methodology: string;
+}
+
 export interface RangeShift {
   species: string;
   observed: Array<{ year: number; mean_lat: number; n: number }>;

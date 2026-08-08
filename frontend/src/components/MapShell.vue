@@ -855,6 +855,9 @@ onBeforeUnmount(() => {
         )
       }}</span>
       <span id="clock">{{ clock }}</span>
+      <router-link to="/datasets" class="datasets-link">{{
+        t('datasets.navLabel')
+      }}</router-link>
       <LanguageToggle v-model="currentLanguage" />
     </div>
   </div>
@@ -1047,6 +1050,14 @@ onBeforeUnmount(() => {
 .ticker .alert {
   color: var(--coral);
   font-weight: 600;
+}
+.datasets-link {
+  color: var(--teal);
+  font-weight: 600;
+  text-decoration: none;
+}
+.datasets-link:hover {
+  text-decoration: underline;
 }
 .ticker .dot {
   display: inline-block;

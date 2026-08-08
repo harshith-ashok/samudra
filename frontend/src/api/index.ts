@@ -6,6 +6,9 @@ import type {
   CatchVsSstResponse,
   ChatResponse,
   ComplianceTrendResponse,
+  DatasetCorrelation,
+  DatasetRecordsResponse,
+  DatasetSummary,
   GlossaryEntry,
   NlqResponse,
   OceanPointEstimate,
@@ -139,6 +142,26 @@ export const getComplianceTrend = () =>
   getJSON<ComplianceTrendResponse>('/api/analytics/compliance-trend');
 export const getVesselActivity = () =>
   getJSON<VesselActivityResponse>('/api/analytics/vessel-activity');
+
+export const getDatasets = () => getJSON<DatasetSummary[]>('/api/datasets');
+
+export const getDatasetRecords = (
+  datasetId: string,
+  search = '',
+  sort?: string,
+  order: 'asc' | 'desc' = 'asc'
+) => {
+  const params = new URLSearchParams({ search, order });
+  if (sort) params.set('sort', sort);
+  return getJSON<DatasetRecordsResponse>(
+    `/api/datasets/${encodeURIComponent(datasetId)}/records?${params}`
+  );
+};
+
+export const getDatasetCorrelation = (datasetId: string, x: string, y: string) =>
+  getJSON<DatasetCorrelation>(
+    `/api/datasets/${encodeURIComponent(datasetId)}/correlate?x=${encodeURIComponent(x)}&y=${encodeURIComponent(y)}`
+  );
 
 // Bespoke fetch (not getJSON) because the caller needs the actual reason a
 // point was rejected (on land vs. too far from any station) to show the

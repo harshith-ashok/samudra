@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from routers import advisories, analytics, chat, glossary, nlq, point, pollution, predict, reefs, species, stations, stt, timeline, translate, vessels
+from routers import advisories, analytics, chat, datasets, glossary, nlq, point, pollution, predict, reefs, species, stations, stt, timeline, translate, vessels
 from services import embed
 from services import stt as stt_service  # module, not the router above
 
@@ -29,6 +29,7 @@ app.include_router(reefs.router)
 app.include_router(stt.router)
 app.include_router(translate.router)
 app.include_router(point.router)
+app.include_router(datasets.router)
 
 
 @app.on_event("startup")
