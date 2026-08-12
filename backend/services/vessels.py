@@ -42,9 +42,13 @@ FLEET = [
         "name": "Meenakshi Star",
         "type": "trawler",
         "period_s": 90,
+        # Waypoint [9.18, 78.86] deliberately sits inside the real Gulf of
+        # Mannar polygon (mpa-mannar-1) so the violation flag still has a
+        # live demonstration now that MPA boundaries are real, disjoint reef
+        # clusters rather than one hand-traced blob covering the whole strait.
         "track": [
             [9.0, 78.4],
-            [9.15, 78.7],
+            [9.18, 78.86],
             [9.05, 79.0],
             [8.85, 79.15],
             [8.9, 78.7],
@@ -217,7 +221,10 @@ def _simulated_fleet() -> list[dict]:
                 "speed_knots": round(4 + 3 * math.sin(now / 17 + hash(v["id"]) % 10), 1),
                 "track": v["track"],
                 "in_violation": violated_zone is not None,
-                "violation_zone": violated_zone["name"] if violated_zone else None,
+                # Real MPA boundaries can be split across several disjoint
+                # polygon entries sharing one region (see data/mpa_zones.json)
+                # — report the region, not the per-fragment "(part N/M)" name.
+                "violation_zone": violated_zone["region"] if violated_zone else None,
             }
         )
     return vessels

@@ -1,0 +1,169 @@
+{
+  "pulled_at": "2026-08-12T16:14:06.989801+00:00",
+  "sst_dataset": "METOFFICE-GLO-SST-L4-NRT-OBS-SST-V2",
+  "chl_nrt_dataset": "cmems_obs-oc_glo_bgc-plankton_nrt_l4-gapfree-multi-4km_P1D",
+  "chl_my_dataset": "cmems_obs-oc_glo_bgc-plankton_my_l4-gapfree-multi-4km_P1D",
+  "stations": {
+    "mumbai": {
+      "rows": 10199,
+      "sst_days": 938,
+      "chl_days": 10174,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "goa": {
+      "rows": 9920,
+      "sst_days": 938,
+      "chl_days": 9852,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "kochi": {
+      "rows": 10545,
+      "sst_days": 938,
+      "chl_days": 10544,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "chennai": {
+      "rows": 10544,
+      "sst_days": 938,
+      "chl_days": 10543,
+      "date_min": "1997-09-06",
+      "date_max": "2026-08-11"
+    },
+    "vizag": {
+      "rows": 10545,
+      "sst_days": 938,
+      "chl_days": 10544,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "sundarbans": {
+      "rows": 8725,
+      "sst_days": 938,
+      "chl_days": 8527,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "lakshadweep": {
+      "rows": 10545,
+      "sst_days": 938,
+      "chl_days": 10544,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "mannar": {
+      "rows": 10545,
+      "sst_days": 938,
+      "chl_days": 10544,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "portblair": {
+      "rows": 10545,
+      "sst_days": 938,
+      "chl_days": 10544,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "ratnagiri": {
+      "rows": 10161,
+      "sst_days": 938,
+      "chl_days": 10121,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "mangalore": {
+      "rows": 10467,
+      "sst_days": 938,
+      "chl_days": 10457,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "kollam": {
+      "rows": 10545,
+      "sst_days": 938,
+      "chl_days": 10544,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "puducherry": {
+      "rows": 10545,
+      "sst_days": 938,
+      "chl_days": 10544,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "paradip": {
+      "rows": 10545,
+      "sst_days": 938,
+      "chl_days": 10544,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "digha": {
+      "rows": 10545,
+      "sst_days": 938,
+      "chl_days": 10544,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "porbandar": {
+      "rows": 10081,
+      "sst_days": 938,
+      "chl_days": 10041,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "veraval": {
+      "rows": 10254,
+      "sst_days": 938,
+      "chl_days": 10238,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "kutch": {
+      "rows": 10221,
+      "sst_days": 938,
+      "chl_days": 10199,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "agatti": {
+      "rows": 10545,
+      "sst_days": 938,
+      "chl_days": 10544,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "kadmat": {
+      "rows": 10545,
+      "sst_days": 938,
+      "chl_days": 10544,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "havelock": {
+      "rows": 10545,
+      "sst_days": 938,
+      "chl_days": 10544,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "diu": {
+      "rows": 10118,
+      "sst_days": 938,
+      "chl_days": 10086,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    },
+    "alappuzha": {
+      "rows": 10545,
+      "sst_days": 938,
+      "chl_days": 10544,
+      "date_min": "1997-09-04",
+      "date_max": "2026-08-11"
+    }
+  }
+}

@@ -6,16 +6,29 @@ here is a new data source, just a different cut of existing ones.
 
 import statistics
 
-from services import data, vessels
+from services import data, ocean_cache, vessels
 
 
 def catch_vs_sst() -> dict:
-    """Monthly (SST, tonnage) pairs per species/region, plus Pearson's r."""
+    """Monthly (SST, tonnage) pairs per species/region, plus Pearson's r.
+
+    SST is real (Copernicus Marine, via ocean_cache.region_monthly_sst) for
+    any record whose region/month falls inside the cached range; falls back
+    to the record's own seed sst_c otherwise. Tonnage stays simulated
+    (CMFRI-shaped) either way — there's no real catch-tonnage source in this
+    build, only real SST to pair it against.
+    """
     records = data.catch_records()
     series: dict[str, list[dict]] = {}
+    any_real = False
     for r in records:
         key = f"{r['species']}|{r['region']}"
-        series.setdefault(key, []).append({"date": r["date"], "sst_c": r["sst_c"], "tonnage": r["tonnage"]})
+        real_sst, sst_source = ocean_cache.region_monthly_sst(r["region"], r["date"])
+        sst_c = real_sst if real_sst is not None else r["sst_c"]
+        any_real = any_real or real_sst is not None
+        series.setdefault(key, []).append(
+            {"date": r["date"], "sst_c": sst_c, "sst_source": sst_source, "tonnage": r["tonnage"]}
+        )
 
     result = []
     for key, points in series.items():
@@ -24,10 +37,18 @@ def catch_vs_sst() -> dict:
         tonnage_vals = [p["tonnage"] for p in points]
         r = _pearson(sst_vals, tonnage_vals)
         result.append({"species": species, "region": region, "points": points, "correlation_r": r})
-    return {
-        "series": result,
-        "methodology": "Pearson correlation coefficient between monthly SST and catch tonnage. sst_c is a simulated value paired with the (also simulated) tonnage series — see catch_records.json.",
-    }
+    methodology = (
+        "Pearson correlation coefficient between monthly SST and catch tonnage. "
+        + (
+            "sst_c is real Copernicus Marine SST (OSTIA L4 NRT, monthly mean at the region's nearest station) "
+            "paired with simulated (CMFRI-shaped) tonnage — see catch_records.json for tonnage, "
+            "services/ocean_cache.py for the SST join. Individual points carry an sst_source field for any "
+            "region/month that fell back to the seed sst_c instead."
+            if any_real
+            else "sst_c is a simulated value paired with the (also simulated) tonnage series — see catch_records.json."
+        )
+    )
+    return {"series": result, "methodology": methodology}
 
 
 def _pearson(xs: list[float], ys: list[float]) -> float:
@@ -85,19 +106,25 @@ def vessel_activity() -> dict:
     """
     zones = data.mpa_zones()
     samples_per_loop = 12
-    zone_counts = {z["id"]: {"zone_id": z["id"], "zone_name": z["name"], "violation_ticks": 0, "total_ticks": 0} for z in zones}
+    # Real MPA boundaries can be disjoint (e.g. Gulf of Mannar's island clusters
+    # are 5 separate polygons sharing one region) — group by region so the
+    # output stays one row per named area, not one row per polygon fragment.
+    region_counts = {
+        z["region"]: {"zone_id": z["region"], "zone_name": z["region"], "violation_ticks": 0, "total_ticks": 0}
+        for z in zones
+    }
 
     for v in vessels.FLEET:
         for i in range(samples_per_loop):
             t = i / samples_per_loop
             lat, lng, _ = vessels.position_on_track(v["track"], t)
             for zone in zones:
-                zone_counts[zone["id"]]["total_ticks"] += 1
+                region_counts[zone["region"]]["total_ticks"] += 1
                 if vessels.point_in_polygon(lat, lng, zone["polygon"]):
-                    zone_counts[zone["id"]]["violation_ticks"] += 1
+                    region_counts[zone["region"]]["violation_ticks"] += 1
 
     return {
-        "zones": list(zone_counts.values()),
+        "zones": list(region_counts.values()),
         "samples_per_vessel_loop": samples_per_loop,
         "methodology": f"Each vessel's fixed loop track is sampled at {samples_per_loop} evenly-spaced points and checked against each MPA polygon — a real point-in-polygon computation over the simulated tracks, not a persisted historical log.",
     }

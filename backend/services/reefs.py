@@ -138,7 +138,17 @@ def bleaching_trend(station_id: str, sst_delta: float = 0.0, chlorophyll_delta: 
     if st["type"] != "coral":
         return {"error": f"'{station_id}' is not a coral reef site"}
 
-    history = st["history"]
+    # Trailing 12 weeks only — st["history"] can now hold ~2.5 years of real
+    # Copernicus data (see services/ocean_cache.py), and DHW/chlorophyll-trend
+    # are both meant to read a recent window, not accumulate over the whole
+    # available history. This was an implicit assumption baked into the old
+    # ~60-day simulated data; making it explicit here is what keeps the
+    # methodology (12-week DHW, "drift over the same window") true now that
+    # real data is deeper. predict.py's bleaching_risk() does the equivalent
+    # windowing via n_weeks = min(12, len//7); this mirrors that at the
+    # history-slice level so _weekly_dhw_series/_chlorophyll_trend_factor
+    # don't need their own caps.
+    history = st["history"][-84:]
     sst_series_actual = [h["sst"] for h in history]
     sst_series = [s + sst_delta for s in sst_series_actual]
     chl_series = [h["chlorophyll"] for h in history]

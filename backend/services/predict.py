@@ -6,7 +6,7 @@ frontend/judges can see exactly what ran.
 
 import numpy as np
 
-from services import conclusions, confidence, data
+from services import conclusions, confidence, data, ocean_cache
 
 
 def _common_name(species: str) -> str | None:
@@ -43,11 +43,19 @@ def stock_forecast(
     # opposite. Only applied to the forward projection, never the historical fit.
     scenario_slope = slope * fishing_pressure if slope <= 0 else slope / max(fishing_pressure, 1e-3)
 
-    # SST sensitivity: regression of tonnage on this same series' real per-record
-    # sst_c values gives a tonnes-per-degree coefficient, applied as a constant
-    # offset for the assumed anomaly. Falls back to 0 if SST barely varies in the window.
+    # SST sensitivity: regression of tonnage on this same series' SST values gives
+    # a tonnes-per-degree coefficient, applied as a constant offset for the assumed
+    # anomaly. Falls back to 0 if SST barely varies in the window. SST itself is
+    # real (Copernicus Marine, via ocean_cache) for any record whose region/month
+    # is covered, simulated seed sst_c otherwise — tonnage stays simulated either way.
     sst_effect_per_degree = 0.0
-    sst_vals = np.array([r["sst_c"] for r in records], dtype=float)
+    real_sst_count = 0
+    sst_list = []
+    for r in records:
+        real_sst, _ = ocean_cache.region_monthly_sst(r["region"], r["date"])
+        sst_list.append(real_sst if real_sst is not None else r["sst_c"])
+        real_sst_count += real_sst is not None
+    sst_vals = np.array(sst_list, dtype=float)
     if sst_delta and float(np.std(sst_vals)) > 1e-6:
         sst_slope, _ = np.polyfit(sst_vals, y, 1)
         sst_effect_per_degree = float(sst_slope)
@@ -103,7 +111,13 @@ def stock_forecast(
         "confidence": confidence_label,
         "confidence_pct": confidence_pct,
         "methodology": "Linear regression (numpy polyfit, degree 1) of monthly catch tonnage vs. time; 80% CI band widens linearly with forecast horizon. Trend-extrapolation only, not a stock assessment.",
-        "source": "simulated catch records (CMFRI-shaped)",
+        "source": (
+            f"catch tonnage: simulated (CMFRI-shaped). SST input: real Copernicus Marine SST "
+            f"(OSTIA L4 NRT) for {real_sst_count}/{len(records)} months, simulated seed value otherwise — "
+            "half-real, not a fully live forecast."
+            if real_sst_count
+            else "simulated catch records (CMFRI-shaped)"
+        ),
         "scenario": {
             "active": scenario_active,
             "sst_delta_c": sst_delta,
